@@ -12,7 +12,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # --- Quick-start development settings ---
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
-ALLOWED_HOSTS = ['*'] if DEBUG else []
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=[
+                         '127.0.0.1', 'localhost'])
 
 # --- Application definition ---
 INSTALLED_APPS = [
@@ -51,6 +52,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://89.232.185.143",
+    "http://62.122.218.88",
 ]
 
 ROOT_URLCONF = 'b2b_glasses.urls'
@@ -97,6 +100,8 @@ USE_TZ = True
 # --- Static files ---
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_ROOT = '/app/staticfiles'
 
 # --- Кастомные настройки ---
 AUTH_USER_MODEL = 'users.User'

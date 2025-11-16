@@ -3865,3 +3865,612 @@ INFO 2025-11-15 22:43:29,987 basehttp 39 123869508654784 "GET /admin/orders/orde
 INFO 2025-11-15 22:43:30,015 basehttp 39 123869508654784 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
 INFO 2025-11-15 22:43:33,813 basehttp 39 123869508654784 "POST /admin/orders/order/42/change/ HTTP/1.1" 302 0
 INFO 2025-11-15 22:43:33,892 basehttp 39 123869508654784 "GET /admin/orders/order/ HTTP/1.1" 200 20960
+INFO 2025-11-16 15:51:28,277 scheduler 1 126495372635008 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 15:51:29,444 scheduler 8 129963255778176 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 15:51:29,522 autoreload 8 129963255778176 Watching for file changes with StatReloader
+INFO 2025-11-16 15:51:44,386 basehttp 8 129963092080320 "GET /admin/ HTTP/1.1" 200 19718
+INFO 2025-11-16 15:51:44,420 basehttp 8 129963083687616 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-11-16 15:51:44,421 basehttp 8 129963092080320 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-11-16 15:51:44,421 basehttp 8 129963074246336 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-11-16 15:51:44,425 basehttp 8 129963057460928 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-11-16 15:51:44,425 basehttp 8 129963065853632 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-11-16 15:51:44,425 basehttp 8 129963049068224 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-11-16 15:51:44,431 basehttp 8 129963057460928 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-11-16 15:51:44,437 basehttp 8 129963057460928 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-16 15:51:44,437 basehttp 8 129963049068224 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-16 15:51:44,437 basehttp 8 129963065853632 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+WARNING 2025-11-16 15:51:44,498 log 8 129963057460928 Not Found: /favicon.ico
+WARNING 2025-11-16 15:51:44,499 basehttp 8 129963057460928 "GET /favicon.ico HTTP/1.1" 404 2678
+WARNING 2025-11-16 15:51:47,845 log 8 129963057460928 Not Found: /
+WARNING 2025-11-16 15:51:47,846 basehttp 8 129963057460928 "GET / HTTP/1.1" 404 2627
+INFO 2025-11-16 15:51:55,321 basehttp 8 129963057460928 "GET /admin/ HTTP/1.1" 200 19718
+INFO 2025-11-16 15:52:19,510 basehttp 8 129963057460928 "GET /admin/orders/order/ HTTP/1.1" 200 20689
+INFO 2025-11-16 15:52:19,527 basehttp 8 129963057460928 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-11-16 15:52:19,532 basehttp 8 129963074246336 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-11-16 15:52:19,534 basehttp 8 129963083687616 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-11-16 15:52:19,534 basehttp 8 129963057460928 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-11-16 15:52:19,535 basehttp 8 129963092080320 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-11-16 15:52:19,537 basehttp 8 129963065853632 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-11-16 15:52:19,537 basehttp 8 129963074246336 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-11-16 15:52:19,540 basehttp 8 129963057460928 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-11-16 15:52:19,541 basehttp 8 129963049068224 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-11-16 15:52:19,542 basehttp 8 129963083687616 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-11-16 15:52:19,554 basehttp 8 129963083687616 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-11-16 15:52:19,566 basehttp 8 129963049068224 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-11-16 15:52:19,566 basehttp 8 129963074246336 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-11-16 15:52:20,264 basehttp 8 129963074246336 "GET /admin/users/user/ HTTP/1.1" 200 19218
+INFO 2025-11-16 15:52:20,292 basehttp 8 129963049068224 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-11-16 15:52:20,306 basehttp 8 129963074246336 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:52:20,322 basehttp 8 129963074246336 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-16 15:52:23,982 basehttp 8 129963074246336 "POST /admin/users/user/ HTTP/1.1" 200 14616
+INFO 2025-11-16 15:52:23,997 basehttp 8 129963074246336 "GET /static/admin/js/cancel.js HTTP/1.1" 200 884
+INFO 2025-11-16 15:52:33,500 basehttp 8 129963074246336 "POST /admin/users/user/ HTTP/1.1" 200 14616
+INFO 2025-11-16 15:52:36,007 basehttp 8 129963074246336 "GET /admin/users/user/ HTTP/1.1" 200 19218
+INFO 2025-11-16 15:52:36,032 basehttp 8 129963074246336 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:52:39,153 basehttp 8 129963074246336 "POST /admin/users/user/ HTTP/1.1" 200 14616
+INFO 2025-11-16 15:52:41,958 basehttp 8 129963074246336 "GET /admin/users/user/ HTTP/1.1" 200 19218
+INFO 2025-11-16 15:52:41,983 basehttp 8 129963074246336 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:52:43,245 basehttp 8 129963074246336 "GET /admin/users/user/85/change/ HTTP/1.1" 200 27899
+INFO 2025-11-16 15:52:43,260 basehttp 8 129963074246336 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-11-16 15:52:43,265 basehttp 8 129963065853632 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-11-16 15:52:43,265 basehttp 8 129963083687616 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-11-16 15:52:43,266 basehttp 8 129963049068224 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-11-16 15:52:43,276 basehttp 8 129963057460928 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:52:43,280 basehttp 8 129963057460928 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-11-16 15:52:43,305 basehttp 8 129963074246336 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11973
+INFO 2025-11-16 15:52:43,339 basehttp 8 129963057460928 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-11-16 15:52:43,339 basehttp 8 129963074246336 "GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+INFO 2025-11-16 15:52:45,173 basehttp 8 129963074246336 "GET /admin/orders/order/ HTTP/1.1" 200 20689
+INFO 2025-11-16 15:52:52,215 basehttp 8 129963074246336 "GET /admin/orders/order/42/change/ HTTP/1.1" 200 22339
+INFO 2025-11-16 15:52:52,231 basehttp 8 129963057460928 "GET /static/admin/js/inlines.js HTTP/1.1" 200 15628
+INFO 2025-11-16 15:52:52,242 basehttp 8 129963074246336 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:52:55,773 basehttp 8 129963074246336 "GET /admin/users/user/ HTTP/1.1" 200 19218
+INFO 2025-11-16 15:52:55,802 basehttp 8 129963074246336 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:52:58,832 basehttp 8 129963074246336 "GET /admin/users/user/85/change/ HTTP/1.1" 200 27899
+INFO 2025-11-16 15:52:58,858 basehttp 8 129963074246336 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:53:00,905 basehttp 8 129963074246336 "GET /admin/users/user/85/delete/ HTTP/1.1" 200 14675
+INFO 2025-11-16 15:54:57,851 autoreload 8 129963255778176 /app/b2b_glasses/orders/admin.py changed, reloading.
+INFO 2025-11-16 15:54:59,257 scheduler 17 135010422324096 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 15:54:59,357 autoreload 17 135010422324096 Watching for file changes with StatReloader
+INFO 2025-11-16 15:55:03,475 scheduler 1 134719534467968 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 15:55:04,641 scheduler 9 129643353734016 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 15:55:04,716 autoreload 9 129643353734016 Watching for file changes with StatReloader
+INFO 2025-11-16 15:55:05,640 basehttp 9 129643185174208 "GET /admin/users/user/85/delete/ HTTP/1.1" 200 16137
+INFO 2025-11-16 15:55:06,582 basehttp 9 129643185174208 "POST /admin/users/user/85/delete/ HTTP/1.1" 302 0
+INFO 2025-11-16 15:55:06,617 basehttp 9 129643185174208 "GET /admin/users/user/ HTTP/1.1" 200 16668
+INFO 2025-11-16 15:55:06,651 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:08,712 basehttp 9 129643185174208 "GET /admin/orders/order/ HTTP/1.1" 200 21382
+INFO 2025-11-16 15:55:08,740 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:09,958 basehttp 9 129643185174208 "GET /admin/orders/order/40/change/ HTTP/1.1" 200 22103
+INFO 2025-11-16 15:55:09,985 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:11,156 basehttp 9 129643185174208 "GET /admin/orders/order/40/delete/ HTTP/1.1" 200 15290
+INFO 2025-11-16 15:55:13,474 basehttp 9 129643185174208 "POST /admin/orders/order/40/delete/ HTTP/1.1" 302 0
+INFO 2025-11-16 15:55:13,548 basehttp 9 129643185174208 "GET /admin/orders/order/ HTTP/1.1" 200 20978
+INFO 2025-11-16 15:55:13,580 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:18,407 basehttp 9 129643185174208 "POST /admin/orders/order/ HTTP/1.1" 200 15884
+INFO 2025-11-16 15:55:19,428 basehttp 9 129643185174208 "POST /admin/orders/order/ HTTP/1.1" 302 0
+INFO 2025-11-16 15:55:19,451 basehttp 9 129643185174208 "GET /admin/orders/order/ HTTP/1.1" 200 17435
+INFO 2025-11-16 15:55:19,481 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:20,622 basehttp 9 129643185174208 "GET /admin/users/user/ HTTP/1.1" 200 16466
+INFO 2025-11-16 15:55:20,650 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:21,717 basehttp 9 129643185174208 "GET /admin/users/user/add/ HTTP/1.1" 200 18468
+INFO 2025-11-16 15:55:21,736 basehttp 9 129643176781504 "GET /static/admin/css/unusable_password_field.css HTTP/1.1" 200 663
+INFO 2025-11-16 15:55:21,739 basehttp 9 129643176781504 "GET /static/admin/js/unusable_password_field.js HTTP/1.1" 200 1480
+INFO 2025-11-16 15:55:21,744 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+INFO 2025-11-16 15:55:23,924 basehttp 9 129643185174208 "POST /admin/users/user/add/ HTTP/1.1" 302 0
+INFO 2025-11-16 15:55:23,966 basehttp 9 129643185174208 "GET /admin/users/user/86/change/ HTTP/1.1" 200 29833
+INFO 2025-11-16 15:55:24,002 basehttp 9 129643185174208 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+DEBUG 2025-11-16 15:55:31,587 views 9 129643168388800 CheckUserStatusView: Проверка статуса 6804147668. Результат: False
+WARNING 2025-11-16 15:55:31,589 log 9 129643168388800 Not Found: /api/v1/internal/check-status/
+WARNING 2025-11-16 15:55:31,590 basehttp 9 129643168388800 "GET /api/v1/internal/check-status/?telegram_id=6804147668 HTTP/1.1" 404 21
+INFO 2025-11-16 15:55:31,591 basehttp 9 129643168388800 - Broken pipe from ('172.18.0.4', 50360)
+INFO 2025-11-16 15:55:37,617 views 9 129643168388800 Успешная регистрация: Пользователь Никита Карташев (TG ID: 6804147668) привязан.
+INFO 2025-11-16 15:55:37,621 basehttp 9 129643168388800 "POST /api/v1/auth/register/ HTTP/1.1" 200 76
+INFO 2025-11-16 15:55:45,667 basehttp 9 129643168388800 "OPTIONS /api/v1/auth/login/ HTTP/1.1" 200 0
+WARNING 2025-11-16 15:55:45,805 views 9 129643168388800 Неудачный вход (Ошибка 401): Неверные учетные данные для логина '+998934257454'.
+WARNING 2025-11-16 15:55:45,833 log 9 129643168388800 Unauthorized: /api/v1/auth/login/
+WARNING 2025-11-16 15:55:45,834 basehttp 9 129643168388800 "POST /api/v1/auth/login/ HTTP/1.1" 401 56
+WARNING 2025-11-16 15:55:48,609 views 9 129643168388800 Неудачный вход (Ошибка 401): Неверные учетные данные для логина '+998934257454'.
+WARNING 2025-11-16 15:55:48,610 log 9 129643168388800 Unauthorized: /api/v1/auth/login/
+WARNING 2025-11-16 15:55:48,611 basehttp 9 129643168388800 "POST /api/v1/auth/login/ HTTP/1.1" 401 56
+INFO 2025-11-16 15:55:51,552 views 9 129643168388800 Успешный вход: Пользователь Никита Карташев вошел через браузер.
+INFO 2025-11-16 15:55:51,553 basehttp 9 129643168388800 "POST /api/v1/auth/login/ HTTP/1.1" 200 52
+INFO 2025-11-16 15:55:51,573 basehttp 9 129643168388800 "OPTIONS /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 0
+INFO 2025-11-16 15:55:51,582 basehttp 9 129643159996096 "OPTIONS /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 0
+DEBUG 2025-11-16 15:55:51,600 pagination 9 129643159996096 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:55:51,628 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:55:51,666 basehttp 9 129643168388800 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+INFO 2025-11-16 15:55:51,671 basehttp 9 129643159996096 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+DEBUG 2025-11-16 15:57:09,698 pagination 9 129643168388800 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:57:09,701 pagination 9 129643159996096 Используется кастомный page_size=5
+INFO 2025-11-16 15:57:09,729 basehttp 9 129643168388800 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:57:09,735 basehttp 9 129643159996096 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+DEBUG 2025-11-16 15:57:09,743 pagination 9 129643168388800 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:57:09,752 pagination 9 129643159996096 Используется кастомный page_size=5
+INFO 2025-11-16 15:57:09,764 basehttp 9 129643168388800 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:57:09,780 basehttp 9 129643159996096 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+DEBUG 2025-11-16 15:57:19,565 pagination 9 129643159996096 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:57:19,566 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:57:19,585 basehttp 9 129643168388800 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+DEBUG 2025-11-16 15:57:19,599 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:57:19,600 basehttp 9 129643159996096 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+DEBUG 2025-11-16 15:57:19,619 pagination 9 129643159996096 Используется кастомный page_size=5
+INFO 2025-11-16 15:57:19,621 basehttp 9 129643168388800 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:57:19,647 basehttp 9 129643159996096 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+WARNING 2025-11-16 15:59:07,452 views 9 129643159996096 Неудачный вход (Ошибка 401): Неверные учетные данные для логина '@nik82i3'.
+WARNING 2025-11-16 15:59:07,453 log 9 129643159996096 Unauthorized: /api/v1/auth/login/
+WARNING 2025-11-16 15:59:07,454 basehttp 9 129643159996096 "POST /api/v1/auth/login/ HTTP/1.1" 401 56
+WARNING 2025-11-16 15:59:10,604 views 9 129643159996096 Неудачный вход (Ошибка 401): Неверные учетные данные для логина '@nik82i3'.
+WARNING 2025-11-16 15:59:10,605 log 9 129643159996096 Unauthorized: /api/v1/auth/login/
+WARNING 2025-11-16 15:59:10,606 basehttp 9 129643159996096 "POST /api/v1/auth/login/ HTTP/1.1" 401 56
+INFO 2025-11-16 15:59:16,243 views 9 129643159996096 Успешный вход: Пользователь Никита Карташев вошел через браузер.
+INFO 2025-11-16 15:59:16,244 basehttp 9 129643159996096 "POST /api/v1/auth/login/ HTTP/1.1" 200 52
+DEBUG 2025-11-16 15:59:16,271 pagination 9 129643159996096 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:59:16,272 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:59:16,296 basehttp 9 129643159996096 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+INFO 2025-11-16 15:59:16,297 basehttp 9 129643168388800 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+DEBUG 2025-11-16 15:59:19,261 pagination 9 129643168388800 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:59:19,262 pagination 9 129643159996096 Используется кастомный page_size=5
+INFO 2025-11-16 15:59:19,279 basehttp 9 129643159996096 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:59:19,286 basehttp 9 129643168388800 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+DEBUG 2025-11-16 15:59:19,291 pagination 9 129643159996096 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:59:19,299 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:59:19,308 basehttp 9 129643159996096 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:59:19,320 basehttp 9 129643168388800 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+DEBUG 2025-11-16 15:59:22,672 pagination 9 129643159996096 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:59:22,673 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:59:22,689 basehttp 9 129643159996096 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:59:22,701 basehttp 9 129643168388800 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+DEBUG 2025-11-16 15:59:22,705 pagination 9 129643159996096 Используется кастомный page_size=5
+DEBUG 2025-11-16 15:59:22,715 pagination 9 129643168388800 Используется кастомный page_size=5
+INFO 2025-11-16 15:59:22,723 basehttp 9 129643159996096 "GET /api/v1/catalog/lenses/?page_size=5 HTTP/1.1" 200 1104
+INFO 2025-11-16 15:59:22,744 basehttp 9 129643168388800 "GET /api/v1/catalog/frames/?page_size=5 HTTP/1.1" 200 2161
+INFO 2025-11-16 16:25:04,647 scheduler 9 129643159996096 --- [APScheduler] Запуск планового импорта 1С... ---
+INFO 2025-11-16 16:25:04,647 scheduler 1 134719450638016 --- [APScheduler] Запуск планового импорта 1С... ---
+INFO 2025-11-16 16:25:04,787 import_1c_xml 9 129643159996096 --- [RUN ID: 067c2b90-985b-473b-a0b9-4b2449fd2afc] ---
+INFO 2025-11-16 16:25:04,790 import_1c_xml 9 129643159996096 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-11-16 16:25:04,791 import_1c_xml 9 129643159996096 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-11-16 16:25:04,803 import_1c_xml 1 134719450638016 --- [RUN ID: 0efd7df1-3a62-4c55-bc07-35607790cfa1] ---
+INFO 2025-11-16 16:25:04,807 import_1c_xml 1 134719450638016 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-11-16 16:25:04,807 import_1c_xml 1 134719450638016 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-11-16 16:25:04,820 import_1c_xml 9 129643159996096 Успешно подключен к FTP (UTF-8).
+INFO 2025-11-16 16:25:04,820 import_1c_xml 9 129643159996096 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-11-16 16:25:04,826 import_1c_xml 9 129643159996096 Скачиваю 4 файла...
+INFO 2025-11-16 16:25:04,848 import_1c_xml 1 134719450638016 Успешно подключен к FTP (UTF-8).
+INFO 2025-11-16 16:25:04,849 import_1c_xml 1 134719450638016 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-11-16 16:25:04,854 import_1c_xml 1 134719450638016 Скачиваю 4 файла...
+INFO 2025-11-16 16:25:49,118 import_1c_xml 9 129643159996096 Успешно скачано 4 файла.
+INFO 2025-11-16 16:25:49,125 import_1c_xml 9 129643159996096 Запуск "Pre-flight" проверки скачанных XML-файлов...
+INFO 2025-11-16 16:25:50,833 import_1c_xml 1 134719450638016 Успешно скачано 4 файла.
+INFO 2025-11-16 16:25:50,842 import_1c_xml 1 134719450638016 Запуск "Pre-flight" проверки скачанных XML-файлов...
+INFO 2025-11-16 16:25:54,132 import_1c_xml 9 129643159996096 ...[OK] Все XML-файлы корректны и готовы к импорту.
+INFO 2025-11-16 16:25:54,133 import_1c_xml 9 129643159996096 --- Начало импорта каталога 1C ---
+INFO 2025-11-16 16:25:54,140 import_1c_xml 9 129643159996096 Шаг 1: Импорт Оправ (import0_1.xml)...
+INFO 2025-11-16 16:25:54,226 import_1c_xml 9 129643159996096   ...Классификатор Оправ загружен (Найдено 11 свойств).
+INFO 2025-11-16 16:25:54,227 import_1c_xml 9 129643159996096   ...Кеширование справочников...
+INFO 2025-11-16 16:25:54,233 import_1c_xml 9 129643159996096   ...Кеширование завершено.
+INFO 2025-11-16 16:25:54,233 import_1c_xml 9 129643159996096   Найдено 664 товаров (Оправ). Начинаю обработку...
+INFO 2025-11-16 16:25:55,303 import_1c_xml 9 129643159996096 Обработано 664 Оправ.
+INFO 2025-11-16 16:25:55,303 import_1c_xml 9 129643159996096 Шаг 2: Импорт Линз (import1_1.xml)...
+INFO 2025-11-16 16:25:55,599 import_1c_xml 1 134719450638016 ...[OK] Все XML-файлы корректны и готовы к импорту.
+INFO 2025-11-16 16:25:55,600 import_1c_xml 1 134719450638016 --- Начало импорта каталога 1C ---
+INFO 2025-11-16 16:25:55,607 import_1c_xml 1 134719450638016 Шаг 1: Импорт Оправ (import0_1.xml)...
+INFO 2025-11-16 16:25:55,682 import_1c_xml 1 134719450638016   ...Классификатор Оправ загружен (Найдено 11 свойств).
+INFO 2025-11-16 16:25:55,683 import_1c_xml 1 134719450638016   ...Кеширование справочников...
+INFO 2025-11-16 16:25:55,689 import_1c_xml 1 134719450638016   ...Кеширование завершено.
+INFO 2025-11-16 16:25:55,689 import_1c_xml 1 134719450638016   Найдено 664 товаров (Оправ). Начинаю обработку...
+INFO 2025-11-16 16:25:58,690 import_1c_xml 9 129643159996096   ...Кеширование Серий Линз...
+INFO 2025-11-16 16:25:58,692 import_1c_xml 9 129643159996096   ...Кеширование завершено.
+INFO 2025-11-16 16:25:58,696 import_1c_xml 9 129643159996096   Найдено 44136 товаров (Линз). Начинаю обработку...
+INFO 2025-11-16 16:26:44,359 import_1c_xml 9 129643159996096 Обработано 44136 Линз.
+INFO 2025-11-16 16:26:44,360 import_1c_xml 9 129643159996096 Шаг 3: Обновление Цен/Остатков Оправ (offers0_1.xml)...
+INFO 2025-11-16 16:26:44,382 import_1c_xml 9 129643159996096   Найдено 664 предложений. Начинаю Python-обработку...
+INFO 2025-11-16 16:26:44,395 import_1c_xml 9 129643159996096   ...[OK] Python-обработка 664 предложений завершена.
+WARNING 2025-11-16 16:26:44,396 import_1c_xml 9 129643159996096   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (7 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-11-16 16:26:44,618 import_1c_xml 9 129643159996096   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-11-16 16:26:44,621 import_1c_xml 9 129643159996096 Обновлено 664 Оправ.
+INFO 2025-11-16 16:26:44,622 import_1c_xml 9 129643159996096 Шаг 4: Обновление Цен/Остатков Линз (offers1_1.xml)...
+INFO 2025-11-16 16:26:45,687 import_1c_xml 9 129643159996096   Найдено 44136 предложений. Начинаю Python-обработку...
+INFO 2025-11-16 16:26:46,410 import_1c_xml 9 129643159996096   ...[OK] Python-обработка 44136 предложений завершена.
+WARNING 2025-11-16 16:26:46,411 import_1c_xml 9 129643159996096   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (442 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-11-16 16:26:54,300 import_1c_xml 9 129643159996096   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-11-16 16:26:54,364 import_1c_xml 9 129643159996096 Обновлено 44136 Линз.
+INFO 2025-11-16 16:26:54,365 import_1c_xml 9 129643159996096 --- Шаг 5: Атомарная очистка (Удаление старых товаров) ---
+WARNING 2025-11-16 16:26:54,365 import_1c_xml 9 129643159996096   ...[!] Начинаю УДАЛЕНИЕ старых записей... ОЖИДАЙТЕ...
+INFO 2025-11-16 16:26:54,415 import_1c_xml 9 129643159996096   ...[OK] УДАЛЕНИЕ старых записей завершено.
+INFO 2025-11-16 16:26:54,664 import_1c_xml 9 129643159996096 Очистка завершена. Удалено 0 старых Оправ.
+INFO 2025-11-16 16:26:54,665 import_1c_xml 9 129643159996096 Очистка завершена. Удалено 0 старых Линз.
+INFO 2025-11-16 16:26:54,667 import_1c_xml 9 129643159996096 --- Импорт (RUN ID: 067c2b90-985b-473b-a0b9-4b2449fd2afc) успешно завершен! ---
+INFO 2025-11-16 16:26:54,683 scheduler 9 129643159996096 --- [APScheduler] Плановый импорт 1С успешно завершен. ---
+INFO 2025-11-16 16:26:55,551 import_1c_xml 1 134719450638016 Обработано 664 Оправ.
+INFO 2025-11-16 16:26:55,552 import_1c_xml 1 134719450638016 Шаг 2: Импорт Линз (import1_1.xml)...
+INFO 2025-11-16 16:26:57,268 import_1c_xml 1 134719450638016   ...Кеширование Серий Линз...
+INFO 2025-11-16 16:26:57,270 import_1c_xml 1 134719450638016   ...Кеширование завершено.
+INFO 2025-11-16 16:26:57,275 import_1c_xml 1 134719450638016   Найдено 44136 товаров (Линз). Начинаю обработку...
+INFO 2025-11-16 16:27:44,119 import_1c_xml 1 134719450638016 Обработано 44136 Линз.
+INFO 2025-11-16 16:27:44,120 import_1c_xml 1 134719450638016 Шаг 3: Обновление Цен/Остатков Оправ (offers0_1.xml)...
+INFO 2025-11-16 16:27:44,141 import_1c_xml 1 134719450638016   Найдено 664 предложений. Начинаю Python-обработку...
+INFO 2025-11-16 16:27:44,155 import_1c_xml 1 134719450638016   ...[OK] Python-обработка 664 предложений завершена.
+WARNING 2025-11-16 16:27:44,155 import_1c_xml 1 134719450638016   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (7 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-11-16 16:27:44,275 import_1c_xml 1 134719450638016   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-11-16 16:27:44,277 import_1c_xml 1 134719450638016 Обновлено 664 Оправ.
+INFO 2025-11-16 16:27:44,277 import_1c_xml 1 134719450638016 Шаг 4: Обновление Цен/Остатков Линз (offers1_1.xml)...
+INFO 2025-11-16 16:27:45,856 import_1c_xml 1 134719450638016   Найдено 44136 предложений. Начинаю Python-обработку...
+INFO 2025-11-16 16:27:46,694 import_1c_xml 1 134719450638016   ...[OK] Python-обработка 44136 предложений завершена.
+WARNING 2025-11-16 16:27:46,695 import_1c_xml 1 134719450638016   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (442 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-11-16 16:27:54,387 import_1c_xml 1 134719450638016   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-11-16 16:27:54,453 import_1c_xml 1 134719450638016 Обновлено 44136 Линз.
+INFO 2025-11-16 16:27:54,454 import_1c_xml 1 134719450638016 --- Шаг 5: Атомарная очистка (Удаление старых товаров) ---
+WARNING 2025-11-16 16:27:54,455 import_1c_xml 1 134719450638016   ...[!] Начинаю УДАЛЕНИЕ старых записей... ОЖИДАЙТЕ...
+INFO 2025-11-16 16:27:54,494 import_1c_xml 1 134719450638016   ...[OK] УДАЛЕНИЕ старых записей завершено.
+INFO 2025-11-16 16:27:54,735 import_1c_xml 1 134719450638016 Очистка завершена. Удалено 0 старых Оправ.
+INFO 2025-11-16 16:27:54,735 import_1c_xml 1 134719450638016 Очистка завершена. Удалено 0 старых Линз.
+INFO 2025-11-16 16:27:54,736 import_1c_xml 1 134719450638016 --- Импорт (RUN ID: 0efd7df1-3a62-4c55-bc07-35607790cfa1) успешно завершен! ---
+INFO 2025-11-16 16:27:54,749 scheduler 1 134719450638016 --- [APScheduler] Плановый импорт 1С успешно завершен. ---
+INFO 2025-11-16 17:33:47,580 scheduler 1 127529299622784 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:33:48,766 scheduler 8 125527331150720 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:33:48,863 autoreload 8 125527331150720 Watching for file changes with StatReloader
+INFO 2025-11-16 17:34:13,951 scheduler 1 138355857132416 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:34:15,097 scheduler 8 127274583874432 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:34:15,175 autoreload 8 127274583874432 Watching for file changes with StatReloader
+INFO 2025-11-16 17:34:45,320 scheduler 1 125240023890816 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:34:46,517 scheduler 8 128092663282560 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:34:46,611 autoreload 8 128092663282560 Watching for file changes with StatReloader
+INFO 2025-11-16 17:36:23,710 basehttp 8 128092499605184 "GET /admin/users/user/86/change/ HTTP/1.1" 200 27907
+WARNING 2025-11-16 17:36:23,731 log 8 128092499605184 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:36:23,733 log 8 128092491212480 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:36:23,735 log 8 128092480722624 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:23,735 basehttp 8 128092499605184 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,736 log 8 128092472329920 Not Found: /static/admin/css/forms.css
+WARNING 2025-11-16 17:36:23,737 log 8 128092463937216 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:36:23,737 basehttp 8 128092491212480 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,738 log 8 128092455544512 Not Found: /static/admin/js/vendor/jquery/jquery.min.js
+WARNING 2025-11-16 17:36:23,739 basehttp 8 128092480722624 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,739 basehttp 8 128092472329920 "GET /static/admin/css/forms.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,740 basehttp 8 128092463937216 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,741 log 8 128092491212480 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:23,742 basehttp 8 128092455544512 "GET /static/admin/js/vendor/jquery/jquery.min.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,744 log 8 128092472329920 Not Found: /static/admin/js/calendar.js
+WARNING 2025-11-16 17:36:23,745 log 8 128092463937216 Not Found: /static/admin/js/jquery.init.js
+WARNING 2025-11-16 17:36:23,745 basehttp 8 128092491212480 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,746 log 8 128092455544512 Not Found: /static/admin/js/admin/DateTimeShortcuts.js
+WARNING 2025-11-16 17:36:23,746 basehttp 8 128092472329920 "GET /static/admin/js/calendar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,747 basehttp 8 128092463937216 "GET /static/admin/js/jquery.init.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,747 basehttp 8 128092455544512 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 404 179
+INFO 2025-11-16 17:36:23,754 basehttp 8 128092480722624 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+WARNING 2025-11-16 17:36:23,757 log 8 128092480722624 Not Found: /static/admin/js/core.js
+WARNING 2025-11-16 17:36:23,758 basehttp 8 128092480722624 "GET /static/admin/js/core.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,780 log 8 128092499605184 Not Found: /static/admin/js/admin/RelatedObjectLookups.js
+WARNING 2025-11-16 17:36:23,781 basehttp 8 128092499605184 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,793 log 8 128092455544512 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:23,794 log 8 128092463937216 Not Found: /static/admin/js/actions.js
+WARNING 2025-11-16 17:36:23,794 log 8 128092491212480 Not Found: /static/admin/css/forms.css
+WARNING 2025-11-16 17:36:23,795 log 8 128092472329920 Not Found: /static/admin/js/vendor/xregexp/xregexp.min.js
+WARNING 2025-11-16 17:36:23,796 basehttp 8 128092455544512 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,796 basehttp 8 128092463937216 "GET /static/admin/js/actions.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,797 basehttp 8 128092491212480 "GET /static/admin/css/forms.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,798 basehttp 8 128092472329920 "GET /static/admin/js/vendor/xregexp/xregexp.min.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,803 log 8 128092480722624 Not Found: /static/admin/js/urlify.js
+WARNING 2025-11-16 17:36:23,803 basehttp 8 128092480722624 "GET /static/admin/js/urlify.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,823 log 8 128092499605184 Not Found: /static/admin/js/prepopulate.js
+WARNING 2025-11-16 17:36:23,824 basehttp 8 128092499605184 "GET /static/admin/js/prepopulate.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,842 log 8 128092455544512 Not Found: /static/admin/js/prepopulate_init.js
+WARNING 2025-11-16 17:36:23,843 basehttp 8 128092455544512 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,869 log 8 128092480722624 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:23,870 log 8 128092472329920 Not Found: /static/admin/img/icon-changelink.svg
+WARNING 2025-11-16 17:36:23,870 log 8 128092463937216 Not Found: /static/admin/img/icon-addlink.svg
+WARNING 2025-11-16 17:36:23,871 log 8 128092491212480 Not Found: /static/admin/img/icon-viewlink.svg
+WARNING 2025-11-16 17:36:23,871 log 8 128092499605184 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:36:23,872 basehttp 8 128092480722624 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,872 basehttp 8 128092472329920 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,873 basehttp 8 128092463937216 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,873 basehttp 8 128092491212480 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,874 basehttp 8 128092499605184 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:23,888 log 8 128092455544512 Not Found: /static/admin/js/change_form.js
+WARNING 2025-11-16 17:36:23,888 basehttp 8 128092455544512 "GET /static/admin/js/change_form.js HTTP/1.1" 404 179
+INFO 2025-11-16 17:36:25,204 basehttp 8 128092455544512 "GET /admin/users/user/86/change/ HTTP/1.1" 200 27907
+WARNING 2025-11-16 17:36:25,219 log 8 128092455544512 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:36:25,220 log 8 128092480722624 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:25,221 log 8 128092499605184 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:36:25,221 basehttp 8 128092455544512 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,221 log 8 128092463937216 Not Found: /static/admin/css/forms.css
+WARNING 2025-11-16 17:36:25,222 log 8 128092491212480 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:36:25,224 basehttp 8 128092480722624 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,224 basehttp 8 128092499605184 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,225 basehttp 8 128092463937216 "GET /static/admin/css/forms.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,226 basehttp 8 128092491212480 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,227 log 8 128092480722624 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:25,228 log 8 128092499605184 Not Found: /static/admin/js/vendor/jquery/jquery.min.js
+WARNING 2025-11-16 17:36:25,229 log 8 128092463937216 Not Found: /static/admin/js/calendar.js
+WARNING 2025-11-16 17:36:25,230 log 8 128092491212480 Not Found: /static/admin/js/jquery.init.js
+WARNING 2025-11-16 17:36:25,231 basehttp 8 128092480722624 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,231 basehttp 8 128092499605184 "GET /static/admin/js/vendor/jquery/jquery.min.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,232 basehttp 8 128092463937216 "GET /static/admin/js/calendar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,232 basehttp 8 128092491212480 "GET /static/admin/js/jquery.init.js HTTP/1.1" 404 179
+INFO 2025-11-16 17:36:25,234 basehttp 8 128092472329920 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+WARNING 2025-11-16 17:36:25,237 log 8 128092472329920 Not Found: /static/admin/js/admin/DateTimeShortcuts.js
+WARNING 2025-11-16 17:36:25,237 basehttp 8 128092472329920 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,268 log 8 128092455544512 Not Found: /static/admin/js/core.js
+WARNING 2025-11-16 17:36:25,268 basehttp 8 128092455544512 "GET /static/admin/js/core.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,275 log 8 128092480722624 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:25,276 log 8 128092499605184 Not Found: /static/admin/css/forms.css
+WARNING 2025-11-16 17:36:25,277 log 8 128092463937216 Not Found: /static/admin/js/admin/RelatedObjectLookups.js
+WARNING 2025-11-16 17:36:25,277 basehttp 8 128092480722624 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,278 basehttp 8 128092499605184 "GET /static/admin/css/forms.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,278 basehttp 8 128092463937216 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,279 log 8 128092491212480 Not Found: /static/admin/js/actions.js
+WARNING 2025-11-16 17:36:25,280 basehttp 8 128092491212480 "GET /static/admin/js/actions.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,283 log 8 128092472329920 Not Found: /static/admin/js/urlify.js
+WARNING 2025-11-16 17:36:25,283 basehttp 8 128092472329920 "GET /static/admin/js/urlify.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,313 log 8 128092455544512 Not Found: /static/admin/js/prepopulate.js
+WARNING 2025-11-16 17:36:25,313 basehttp 8 128092455544512 "GET /static/admin/js/prepopulate.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,324 log 8 128092480722624 Not Found: /static/admin/js/vendor/xregexp/xregexp.min.js
+WARNING 2025-11-16 17:36:25,325 basehttp 8 128092480722624 "GET /static/admin/js/vendor/xregexp/xregexp.min.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,326 log 8 128092463937216 Not Found: /static/admin/js/prepopulate_init.js
+WARNING 2025-11-16 17:36:25,330 basehttp 8 128092463937216 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,373 log 8 128092499605184 Not Found: /static/admin/img/icon-addlink.svg
+WARNING 2025-11-16 17:36:25,374 log 8 128092491212480 Not Found: /static/admin/img/icon-viewlink.svg
+WARNING 2025-11-16 17:36:25,374 log 8 128092455544512 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:25,374 log 8 128092472329920 Not Found: /static/admin/img/icon-changelink.svg
+WARNING 2025-11-16 17:36:25,375 log 8 128092480722624 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:36:25,376 basehttp 8 128092499605184 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,377 basehttp 8 128092491212480 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,378 basehttp 8 128092455544512 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,379 basehttp 8 128092472329920 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,379 basehttp 8 128092480722624 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:25,380 log 8 128092499605184 Not Found: /static/admin/js/change_form.js
+WARNING 2025-11-16 17:36:25,384 basehttp 8 128092499605184 "GET /static/admin/js/change_form.js HTTP/1.1" 404 179
+INFO 2025-11-16 17:36:26,109 basehttp 8 128092499605184 "GET /admin/users/user/86/change/ HTTP/1.1" 200 27907
+WARNING 2025-11-16 17:36:26,125 log 8 128092499605184 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:36:26,126 log 8 128092480722624 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:36:26,126 log 8 128092455544512 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:36:26,127 log 8 128092472329920 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:26,129 log 8 128092491212480 Not Found: /static/admin/css/forms.css
+WARNING 2025-11-16 17:36:26,129 basehttp 8 128092499605184 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,130 basehttp 8 128092480722624 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,130 basehttp 8 128092455544512 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,131 basehttp 8 128092472329920 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,131 basehttp 8 128092491212480 "GET /static/admin/css/forms.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,132 log 8 128092480722624 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:26,133 log 8 128092455544512 Not Found: /static/admin/js/vendor/jquery/jquery.min.js
+WARNING 2025-11-16 17:36:26,134 log 8 128092472329920 Not Found: /static/admin/js/calendar.js
+WARNING 2025-11-16 17:36:26,135 log 8 128092491212480 Not Found: /static/admin/js/jquery.init.js
+WARNING 2025-11-16 17:36:26,136 basehttp 8 128092480722624 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,136 basehttp 8 128092455544512 "GET /static/admin/js/vendor/jquery/jquery.min.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,137 basehttp 8 128092472329920 "GET /static/admin/js/calendar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,137 basehttp 8 128092491212480 "GET /static/admin/js/jquery.init.js HTTP/1.1" 404 179
+INFO 2025-11-16 17:36:26,140 basehttp 8 128092463937216 "GET /admin/jsi18n/ HTTP/1.1" 200 16820
+WARNING 2025-11-16 17:36:26,142 log 8 128092463937216 Not Found: /static/admin/js/admin/DateTimeShortcuts.js
+WARNING 2025-11-16 17:36:26,143 basehttp 8 128092463937216 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,176 log 8 128092499605184 Not Found: /static/admin/js/core.js
+WARNING 2025-11-16 17:36:26,177 basehttp 8 128092499605184 "GET /static/admin/js/core.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,181 log 8 128092455544512 Not Found: /static/admin/css/forms.css
+WARNING 2025-11-16 17:36:26,182 log 8 128092472329920 Not Found: /static/admin/js/admin/RelatedObjectLookups.js
+WARNING 2025-11-16 17:36:26,182 log 8 128092491212480 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:26,183 log 8 128092480722624 Not Found: /static/admin/js/actions.js
+WARNING 2025-11-16 17:36:26,183 basehttp 8 128092455544512 "GET /static/admin/css/forms.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,183 basehttp 8 128092472329920 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,184 basehttp 8 128092491212480 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,184 basehttp 8 128092480722624 "GET /static/admin/js/actions.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,191 log 8 128092463937216 Not Found: /static/admin/js/urlify.js
+WARNING 2025-11-16 17:36:26,192 basehttp 8 128092463937216 "GET /static/admin/js/urlify.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,225 log 8 128092499605184 Not Found: /static/admin/js/prepopulate.js
+WARNING 2025-11-16 17:36:26,227 basehttp 8 128092499605184 "GET /static/admin/js/prepopulate.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,229 log 8 128092455544512 Not Found: /static/admin/js/vendor/xregexp/xregexp.min.js
+WARNING 2025-11-16 17:36:26,230 basehttp 8 128092455544512 "GET /static/admin/js/vendor/xregexp/xregexp.min.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,231 log 8 128092480722624 Not Found: /static/admin/js/prepopulate_init.js
+WARNING 2025-11-16 17:36:26,232 basehttp 8 128092480722624 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,280 log 8 128092480722624 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:36:26,280 log 8 128092491212480 Not Found: /static/admin/js/change_form.js
+WARNING 2025-11-16 17:36:26,281 log 8 128092455544512 Not Found: /static/admin/img/icon-changelink.svg
+WARNING 2025-11-16 17:36:26,281 log 8 128092472329920 Not Found: /static/admin/img/icon-viewlink.svg
+WARNING 2025-11-16 17:36:26,282 log 8 128092499605184 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:26,283 log 8 128092463937216 Not Found: /static/admin/img/icon-addlink.svg
+WARNING 2025-11-16 17:36:26,284 basehttp 8 128092480722624 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,284 basehttp 8 128092491212480 "GET /static/admin/js/change_form.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,284 basehttp 8 128092455544512 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,285 basehttp 8 128092472329920 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,285 basehttp 8 128092499605184 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:26,286 basehttp 8 128092463937216 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 404 179
+INFO 2025-11-16 17:36:29,759 basehttp 8 128092480722624 "GET /admin/ HTTP/1.1" 200 19656
+WARNING 2025-11-16 17:36:29,775 log 8 128092480722624 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:36:29,776 basehttp 8 128092480722624 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,777 log 8 128092499605184 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:36:29,778 log 8 128092455544512 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:36:29,778 log 8 128092491212480 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:29,779 log 8 128092463937216 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:29,779 log 8 128092472329920 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:36:29,780 basehttp 8 128092499605184 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,780 basehttp 8 128092455544512 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,781 basehttp 8 128092491212480 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,782 basehttp 8 128092463937216 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,782 basehttp 8 128092472329920 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,785 log 8 128092472329920 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:36:29,786 basehttp 8 128092472329920 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,822 log 8 128092491212480 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:36:29,823 log 8 128092480722624 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:36:29,823 log 8 128092463937216 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:36:29,824 basehttp 8 128092491212480 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,824 basehttp 8 128092480722624 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:36:29,824 basehttp 8 128092463937216 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+INFO 2025-11-16 17:37:17,046 scheduler 1 136476379868032 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:37:18,248 scheduler 8 125519561313152 --- [APScheduler] Планировщик запущен. Задание 'import_1c_xml_job' будет выполняться каждые 30 минут. ---
+INFO 2025-11-16 17:37:18,326 autoreload 8 125519561313152 Watching for file changes with StatReloader
+INFO 2025-11-16 17:37:19,611 basehttp 8 125519466059456 "GET /admin/ HTTP/1.1" 200 19656
+WARNING 2025-11-16 17:37:19,630 log 8 125519448225472 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:37:19,631 log 8 125519423047360 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:37:19,631 log 8 125519466059456 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:37:19,631 log 8 125519439832768 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:37:19,631 log 8 125519457666752 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:37:19,631 log 8 125519431440064 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:37:19,632 basehttp 8 125519448225472 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,632 basehttp 8 125519423047360 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,633 basehttp 8 125519466059456 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,633 basehttp 8 125519439832768 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,633 basehttp 8 125519457666752 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,634 basehttp 8 125519431440064 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,637 log 8 125519431440064 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:37:19,637 basehttp 8 125519431440064 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,678 log 8 125519466059456 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:37:19,679 log 8 125519457666752 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:37:19,680 log 8 125519439832768 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:37:19,683 basehttp 8 125519466059456 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,685 basehttp 8 125519457666752 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:19,705 basehttp 8 125519439832768 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+INFO 2025-11-16 17:37:21,652 basehttp 8 125519466059456 "GET /admin/ HTTP/1.1" 200 19656
+WARNING 2025-11-16 17:37:21,667 log 8 125519466059456 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:37:21,667 basehttp 8 125519466059456 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,669 log 8 125519439832768 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:37:21,670 log 8 125519457666752 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:37:21,670 log 8 125519423047360 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:37:21,671 log 8 125519431440064 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:37:21,671 log 8 125519448225472 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:37:21,672 basehttp 8 125519439832768 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,672 basehttp 8 125519457666752 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,673 basehttp 8 125519423047360 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,673 basehttp 8 125519431440064 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,674 basehttp 8 125519448225472 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,676 log 8 125519448225472 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:37:21,676 basehttp 8 125519448225472 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,715 log 8 125519423047360 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:37:21,715 log 8 125519466059456 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:37:21,716 log 8 125519431440064 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:37:21,717 basehttp 8 125519423047360 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,717 basehttp 8 125519466059456 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:21,717 basehttp 8 125519431440064 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+INFO 2025-11-16 17:37:23,752 basehttp 8 125519466059456 "GET /admin/ HTTP/1.1" 200 19656
+WARNING 2025-11-16 17:37:23,766 log 8 125519466059456 Not Found: /static/admin/css/base.css
+WARNING 2025-11-16 17:37:23,767 basehttp 8 125519466059456 "GET /static/admin/css/base.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,768 log 8 125519448225472 Not Found: /static/admin/css/dark_mode.css
+WARNING 2025-11-16 17:37:23,768 log 8 125519423047360 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:37:23,769 log 8 125519457666752 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:37:23,769 log 8 125519431440064 Not Found: /static/admin/js/theme.js
+WARNING 2025-11-16 17:37:23,770 log 8 125519439832768 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:37:23,771 basehttp 8 125519448225472 "GET /static/admin/css/dark_mode.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,771 basehttp 8 125519423047360 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,771 basehttp 8 125519457666752 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,772 basehttp 8 125519431440064 "GET /static/admin/js/theme.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,772 basehttp 8 125519439832768 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,775 log 8 125519439832768 Not Found: /static/admin/js/nav_sidebar.js
+WARNING 2025-11-16 17:37:23,775 basehttp 8 125519439832768 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,814 log 8 125519466059456 Not Found: /static/admin/css/nav_sidebar.css
+WARNING 2025-11-16 17:37:23,815 log 8 125519431440064 Not Found: /static/admin/css/dashboard.css
+WARNING 2025-11-16 17:37:23,816 log 8 125519457666752 Not Found: /static/admin/css/responsive.css
+WARNING 2025-11-16 17:37:23,817 basehttp 8 125519466059456 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,817 basehttp 8 125519431440064 "GET /static/admin/css/dashboard.css HTTP/1.1" 404 179
+WARNING 2025-11-16 17:37:23,818 basehttp 8 125519457666752 "GET /static/admin/css/responsive.css HTTP/1.1" 404 179
+INFO 2025-11-16 18:16:48,053 views 8 133782631422848 Успешный вход: Пользователь Никита Карташев вошел через браузер.
+DEBUG 2025-11-16 18:16:48,109 pagination 8 133782631422848 Используется кастомный page_size=5
+DEBUG 2025-11-16 18:16:48,116 pagination 9 133782631422848 Используется кастомный page_size=5
+ERROR 2025-11-16 18:19:12,017 log 8 133782631422848 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:20:45,990 log 9 133782631422848 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:21:06,322 log 8 133782631422848 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:21:19,570 log 8 133782631422848 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:21:25,111 log 10 133782631422848 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:23:43,081 log 7 131723958205312 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:23:49,095 log 7 131723958205312 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+ERROR 2025-11-16 18:23:53,866 log 8 131723958205312 Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.

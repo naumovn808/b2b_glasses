@@ -1025,3 +1025,117 @@ django.core.exceptions.SynchronousOnlyOperation: You cannot call this from an as
 2025-11-15 22:44:25,717 - aiogram.dispatcher - WARNING - Received SIGTERM signal
 2025-11-15 22:44:25,718 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
 2025-11-15 22:44:25,721 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 15:51:29,294 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 15:51:29,297 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 15:51:29,645 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 15:51:29,752 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 15:54:59,606 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 15:54:59,607 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 15:54:59,608 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 15:55:05,409 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 15:55:05,412 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 15:55:05,821 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 15:55:05,923 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 15:55:37,467 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-11-16 15:55:37,621 - __main__ - INFO - Успешная регистрация для TG ID: 6804147668
+2025-11-16 17:33:49,061 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:33:49,064 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:33:49,406 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:33:49,529 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:33:56,530 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 17:33:56,532 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:33:56,544 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 17:34:15,384 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:34:15,387 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:34:15,747 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:34:15,852 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:34:29,282 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 17:34:29,284 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:34:29,285 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 17:34:46,857 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:34:46,859 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:34:47,188 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:34:47,300 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:37:13,001 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 17:37:13,003 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:37:13,003 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 17:37:18,828 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:37:18,831 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:37:19,381 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:37:19,487 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:41:46,626 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:41:46,628 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:41:46,974 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:41:47,084 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:48:48,987 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 17:48:48,990 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:48:48,992 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 17:49:23,723 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:49:23,726 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:49:24,132 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:49:24,456 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:57:23,706 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:57:23,709 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:57:24,107 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:57:24,210 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 17:59:03,308 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 17:59:03,311 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 17:59:03,696 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 17:59:03,796 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:02:08,303 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:02:08,304 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:02:08,305 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 18:02:20,952 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 18:02:20,955 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 18:02:21,312 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 18:02:21,415 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:07:05,653 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:07:05,654 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:07:05,661 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 18:07:12,249 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 18:07:12,251 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 18:07:12,593 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 18:07:12,694 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:13:46,519 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:13:46,521 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:13:46,522 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 18:13:52,377 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 18:13:52,380 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 18:13:52,834 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 18:13:52,945 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:19:12,020 - __main__ - ERROR - Сервер опций НЕ ПУСТИЛ (TG ID: 6804147668, Status: 400)
+2025-11-16 18:20:45,985 - __main__ - INFO - Пользователь 6804147668 нажал /start
+2025-11-16 18:21:06,319 - __main__ - INFO - Пользователь 6804147668 нажал /start
+2025-11-16 18:21:25,107 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-11-16 18:21:25,114 - __main__ - WARNING - Ошибка регистрации (Django): 400 - Ошибка сервера (400).
+2025-11-16 18:21:25,114 - __main__ - WARNING - Ошибка регистрации для TG ID 6804147668: Ошибка сервера (400).
+2025-11-16 18:21:49,147 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:21:49,154 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:21:49,155 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 18:21:56,353 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 18:21:56,355 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 18:21:56,724 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 18:21:57,024 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:21:59,260 - __main__ - ERROR - Ошибка получения опций фильтра: Cannot connect to host 127.0.0.1:80 ssl:default [Connect call failed ('127.0.0.1', 80)]
+2025-11-16 18:22:07,449 - __main__ - ERROR - Ошибка получения опций фильтра: Cannot connect to host 127.0.0.1:80 ssl:default [Connect call failed ('127.0.0.1', 80)]
+2025-11-16 18:22:13,849 - __main__ - INFO - Пользователь 6804147668 нажал /start
+2025-11-16 18:22:13,850 - __main__ - ERROR - Критическая ошибка проверки статуса: Cannot connect to host 127.0.0.1:80 ssl:default [Connect call failed ('127.0.0.1', 80)]
+2025-11-16 18:22:19,998 - __main__ - ERROR - Критическая ошибка проверки статуса: Cannot connect to host 127.0.0.1:80 ssl:default [Connect call failed ('127.0.0.1', 80)]
+2025-11-16 18:22:24,525 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-11-16 18:22:24,527 - __main__ - ERROR - Критическая ошибка регистрации (aiohttp): Cannot connect to host 127.0.0.1:80 ssl:default [Connect call failed ('127.0.0.1', 80)]
+2025-11-16 18:22:24,527 - __main__ - WARNING - Ошибка регистрации для TG ID 6804147668: Ошибка: не удалось подключиться к серверу.
+2025-11-16 18:23:13,101 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:23:13,103 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:23:13,108 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 18:23:24,725 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 18:23:24,728 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 18:23:25,158 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 18:23:25,279 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:23:49,092 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-11-16 18:23:49,096 - __main__ - WARNING - Ошибка регистрации (Django): 400 - Ошибка сервера (400).
+2025-11-16 18:23:49,097 - __main__ - WARNING - Ошибка регистрации для TG ID 6804147668: Ошибка сервера (400).
+2025-11-16 18:23:51,310 - __main__ - INFO - Пользователь 6804147668 отменил состояние RegistrationFSM:waiting_for_password
+2025-11-16 18:23:53,868 - __main__ - ERROR - Сервер опций НЕ ПУСТИЛ (TG ID: 6804147668, Status: 400)
+2025-11-16 18:25:30,714 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:25:30,715 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:25:30,716 - aiogram.dispatcher - INFO - Polling stopped
