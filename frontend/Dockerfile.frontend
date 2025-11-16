@@ -1,0 +1,21 @@
+# --- ИЗМЕНЕНИЕ: Используем Node.js v20 (это было правильно) ---
+FROM node:20-alpine
+
+# Устанавливаем рабочую папку
+WORKDIR /app/frontend
+
+# --- ИЗМЕНЕНИЕ: Мы больше не запускаем "npm install" внутри Docker ---
+# (Мы предполагаем, что вы запустили его на Windows,
+# и Docker "подхватит" вашу папку node_modules)
+# COPY package*.json ./
+# RUN npm install
+# ---
+
+# Копируем ВЕСЬ ваш код из /frontend (включая /src, /public, и т.д.)
+COPY . .
+
+# "Открываем" порт Vite
+EXPOSE 3000
+
+# Запускаем Vite dev-сервер
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,60 @@
+services:
+  # 1. Сервис Базы Данных (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: b2b_db
+    env_file:
+      - ./b2b_glasses/.env 
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # 2. Сервис Django (Web API)
+  web:
+    build: . 
+    container_name: b2b_web
+    command: python b2b_glasses/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./b2b_glasses/.env
+    depends_on:
+      - db
+
+  # 3. Сервис Бота
+  bot:
+    build: . 
+    container_name: b2b_bot
+    command: python b2b_glasses/bot.py
+    volumes:
+      - .:/app
+    env_file:
+      - ./b2b_glasses/.env
+    depends_on:
+      - web
+
+  # --- 4. FRONTEND (ИСПРАВЛЕН) ---
+  frontend:
+    container_name: b2b_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    volumes:
+      # --- ИЗМЕНЕНИЕ: Мы "монтируем" ВСЁ, включая node_modules ---
+      - ./frontend:/app/frontend
+      # (Строка '- /app/frontend/node_modules' УДАЛЕНА)
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web 
+  # ---
+
+volumes:
+  postgres_data:
