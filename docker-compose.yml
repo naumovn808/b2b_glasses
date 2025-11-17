@@ -1,5 +1,5 @@
 services:
-  # 1. Сервис Базы Данных (PostgreSQL)
+  
   db:
     image: postgres:15-alpine
     container_name: b2b_db
@@ -14,31 +14,31 @@ services:
     ports:
       - "5432:5432"
 
-  # 2. Сервис Django (Web API)
+  
   web:
     build: . 
     container_name: b2b_web
     
-    # --- ИСПРАВЛЕНИЕ 1: Gunicorn + Правильный путь ---
-    # (Так как WORKDIR /app/b2b_glasses, 'b2b_glasses.wsgi' - правильный путь)
+    
+    
     command: gunicorn b2b_glasses.wsgi:application --bind 0.0.0.0:8000 --workers 4
     
     volumes:
       - .:/app
-      - static_volume:/app/staticfiles # (Для Nginx)
+      - static_volume:/app/staticfiles 
     
     env_file:
       - ./b2b_glasses/.env
     depends_on:
       - db
 
-  # 3. Сервис Бота
+  
   bot:
     build: . 
     container_name: b2b_bot
     
-    # --- ИСПРАВЛЕНИЕ 1: Правильный путь к bot.py ---
-    # (Так как WORKDIR /app/b2b_glasses)
+    
+    
     command: python bot.py
     
     volumes:
@@ -48,14 +48,14 @@ services:
     depends_on:
       - web
 
-  # 4. FRONTEND
+  
   frontend:
     container_name: b2b_frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile.frontend
     volumes:
-      # --- ИСПРАВЛЕНИЕ 2: Защищаем node_modules (Фикс Rollup) ---
+      
       - ./frontend:/app/frontend
       - /app/frontend/node_modules 
     ports:
@@ -63,7 +63,7 @@ services:
     depends_on:
       - web 
   
-  # 5. NGINX
+  
   nginx:
     image: nginx:1.25-alpine 
     container_name: b2b_nginx
@@ -71,7 +71,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      # --- (Nginx "смотрит" на статику, которую Gunicorn собрал в /app/staticfiles) ---
+      
       - static_volume:/app/staticfiles 
     depends_on:
       - web
@@ -79,4 +79,4 @@ services:
 
 volumes:
   postgres_data:
-  static_volume: # (Папка для CSS/JS админки)
+  static_volume: 

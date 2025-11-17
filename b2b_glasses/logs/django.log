@@ -4474,3 +4474,12 @@ Traceback (most recent call last):
   File "/usr/local/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'web:8000'. You may need to add 'web' to ALLOWED_HOSTS.
+DEBUG 2025-11-16 18:25:43,889 views 9 124284896455552 CheckUserStatusView: Проверка статуса 6804147668. Результат: False
+WARNING 2025-11-16 18:25:43,891 log 9 124284896455552 Not Found: /api/v1/internal/check-status/
+DEBUG 2025-11-16 18:26:11,185 views 9 124284896455552 CheckUserStatusView: Проверка статуса 6804147668. Результат: False
+WARNING 2025-11-16 18:26:11,186 log 9 124284896455552 Not Found: /api/v1/internal/check-status/
+INFO 2025-11-16 18:26:15,546 views 9 124284896455552 Успешная регистрация: Пользователь Никита Карташев (TG ID: 6804147668) привязан.
+DEBUG 2025-11-16 18:26:30,478 pagination 10 124284896455552 Используется кастомный page_size=5
+INFO 2025-11-16 18:26:44,395 views 8 124284896455552 Успешный вход: Пользователь Никита Карташев вошел через браузер.
+DEBUG 2025-11-16 18:26:44,424 pagination 10 124284896455552 Используется кастомный page_size=5
+DEBUG 2025-11-16 18:26:44,664 pagination 7 124284896455552 Используется кастомный page_size=5

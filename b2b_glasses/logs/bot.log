@@ -1139,3 +1139,13 @@ django.core.exceptions.SynchronousOnlyOperation: You cannot call this from an as
 2025-11-16 18:25:30,714 - aiogram.dispatcher - WARNING - Received SIGTERM signal
 2025-11-16 18:25:30,715 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
 2025-11-16 18:25:30,716 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-16 18:25:37,475 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-11-16 18:25:37,478 - __main__ - INFO - --- Запуск бота ---
+2025-11-16 18:25:37,828 - aiogram.dispatcher - INFO - Start polling
+2025-11-16 18:25:37,929 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:25:43,629 - __main__ - INFO - Пользователь 6804147668 нажал /start
+2025-11-16 18:26:15,396 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-11-16 18:26:15,550 - __main__ - INFO - Успешная регистрация для TG ID: 6804147668
+2025-11-16 18:30:18,142 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-11-16 18:30:18,145 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-11-16 18:30:18,146 - aiogram.dispatcher - INFO - Polling stopped
