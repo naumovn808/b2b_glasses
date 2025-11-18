@@ -11,4 +11,4 @@ WORKDIR /app/frontend
 COPY --from=builder /app/frontend/dist ./dist
 COPY package.json .
 RUN npm install
-CMD ["npm", "run", "preview", "--", "--host"]
+CMD ["npm", "run", "preview", "--", "--host", "--port", "3000"]
