@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 // --- API Endpoints (Доступные из браузера) ---
-const LOGIN_URL = "http://127.0.0.1/api/v1/auth/login/";
+const LOGIN_URL = "http://62.122.218.88/api/v1/auth/login/";
 // (Запросим по 5 шт. для примера)
-const FRAMES_URL = "http://127.0.0.1/api/v1/catalog/frames/?page_size=5";
-const LENSES_URL = "http://127.0.0.1/api/v1/catalog/lenses/?page_size=5";
+const FRAMES_URL = "http://62.122.218.88/api/v1/catalog/frames/?page_size=5";
+const LENSES_URL = "http://62.122.218.88/api/v1/catalog/lenses/?page_size=5";
 
 // (Определим типы для TypeScript, чтобы было "чисто")
 interface Frame {
