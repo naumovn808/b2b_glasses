@@ -91,10 +91,11 @@ def upload_order_to_ftp(order_id: int):
 
 def schedule_ftp_upload(order: Order):
     """
-    Добавляет "одноразовую" работу в APScheduler,
-    чтобы она выполнилась НЕМЕДЛЕННО в фоне.
+    Добавляет задачу в базу данных. 
+    ВЫПОЛНЯТЬ её будет отдельный контейнер b2b_scheduler.
     """
     try:
+
         scheduler = BackgroundScheduler()
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
@@ -105,11 +106,12 @@ def schedule_ftp_upload(order: Order):
             args=[order.pk],
             id=f"upload_order_{order.pk}_{timezone.now().timestamp()}",
             replace_existing=False,
-            misfire_grace_time=60
+            misfire_grace_time=60 * 30
         )
-        scheduler.start()
+
         logger.info(
-            f"[Checkout] Заказ #{order.pk} поставлен в очередь на FTP-выгрузку.")
+            f"[Checkout] Заказ #{order.pk} успешно добавлен в очередь задач (DB).")
+
     except Exception as e:
         logger.error(
             f"[Checkout] ОШИБКА: не удалось поставить Заказ #{order.pk} в очередь: {e}")
