@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, OrderItem
+from .models import Order, OrderItem, CustomOrder
 from catalog.models import Frame, Lens
 from django.contrib.contenttypes.models import ContentType
 import logging
@@ -79,3 +79,21 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id', 'user', 'status', 'total_price', 'created_at', 'items')
+
+
+# --- НОВЫЙ СЕРИАЛИЗАТОР ---
+class CustomOrderSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для создания индивидуального заказа (через бота)
+    """
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = CustomOrder
+        fields = (
+            'id', 'user',
+            'series', 'sph', 'cyl', 'dia',
+            'design', 'photochrom',
+            'status', 'created_at'
+        )
+        read_only_fields = ('id', 'status', 'created_at')

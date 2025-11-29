@@ -8,8 +8,7 @@ from catalog.models import Frame, Lens
 
 class Order(models.Model):
     """
-    Модель Заказа.
-    (Этот класс остается без изменений)
+    Модель Заказа (Обычная корзина).
     """
     class OrderStatus(models.TextChoices):
         CART = 'cart', 'В корзине'
@@ -39,8 +38,8 @@ class Order(models.Model):
         auto_now=True, verbose_name="Дата обновления")
 
     class Meta:
-        verbose_name = "Заказ"
-        verbose_name_plural = "Заказы"
+        verbose_name = "Заказ (Каталог)"
+        verbose_name_plural = "Заказы (Каталог)"
         ordering = ['-created_at']
 
     def __str__(self):
@@ -83,20 +82,62 @@ class OrderItem(models.Model):
         verbose_name_plural = "Позиции заказа"
         unique_together = ('order', 'content_type', 'object_id')
 
-    # --- 2. ИСПРАВЛЕНА ФУНКЦИЯ __str__ ---
     def __str__(self):
-        """
-        "Умное" отображение, которое проверяет тип товара.
-        """
         if isinstance(self.product, Frame):
-            # Если это Оправа, у нее есть .name
             product_name = self.product.name
         elif isinstance(self.product, Lens):
-            # Если это Линза, мы используем ЕЕ __str__
-            # (который вернет "HIKARI... (SPH: ...)")
             product_name = str(self.product)
         else:
             product_name = "Неизвестный товар"
 
         return f"{product_name} (x{self.quantity})"
-    # ---
+
+
+# --- НОВАЯ МОДЕЛЬ: ИНДИВИДУАЛЬНЫЙ ЗАКАЗ ---
+class CustomOrder(models.Model):
+    class Status(models.TextChoices):
+        NEW = 'new', 'Новая заявка'
+        PROCESSING = 'processing', 'В обработке'
+        COMPLETED = 'completed', 'Выполнен'
+        CANCELLED = 'cancelled', 'Отменен'
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Пользователь",
+        related_name="custom_orders"
+    )
+
+    # Параметры из фильтра (то, что искали)
+    series = models.CharField(max_length=100, verbose_name="Серия (желаемая)")
+    sph = models.CharField(max_length=50, verbose_name="SPH")
+    cyl = models.CharField(max_length=50, verbose_name="CYL")
+    dia = models.CharField(
+        max_length=50, verbose_name="DIA", blank=True, null=True)
+
+    # Доп. параметры (ручной ввод)
+    design = models.CharField(max_length=255, verbose_name="Дизайн")
+    photochrom = models.CharField(max_length=255, verbose_name="Фотохром")
+
+    comment = models.TextField(
+        verbose_name="Комментарий менеджера", blank=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.NEW,
+        verbose_name="Статус"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(
+        auto_now=True, verbose_name="Дата обновления")
+
+    class Meta:
+        verbose_name = "Заказ (Индивидуальный)"
+        verbose_name_plural = "Заказы (Индивидуальные)"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Custom #{self.pk} - {self.user.username}"

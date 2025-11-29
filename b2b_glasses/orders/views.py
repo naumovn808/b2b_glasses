@@ -7,8 +7,11 @@ from django.db import transaction
 from django.utils import timezone
 from django.db.models import Q
 
-from .models import Order, OrderItem
-from .serializers import OrderSerializer, AddCartItemSerializer, OrderItemSerializer
+from .models import Order, OrderItem, CustomOrder
+from .serializers import (
+    OrderSerializer, AddCartItemSerializer,
+    OrderItemSerializer, CustomOrderSerializer
+)
 from catalog.models import Frame, Lens
 from .ftp_uploader import schedule_ftp_upload
 
@@ -78,7 +81,6 @@ class AddCartItemView(views.APIView):
             order_item.quantity = quantity
             order_item.price_at_order = product.price
             order_item.save()
-            # --- ИСПРАВЛЕНИЕ (ОШИБКА 2): Используем str(product) вместо .name ---
             logger.info(
                 f"Обновлено кол-во товара {str(product)} в корзине {cart.pk}")
 
@@ -89,7 +91,6 @@ class AddCartItemView(views.APIView):
                 quantity=quantity,
                 price_at_order=product.price
             )
-            # --- ИСПРАВЛЕНИЕ (ОШИБКА 2): Используем str(product) вместо .name ---
             logger.info(
                 f"Добавлен новый товар {str(product)} в корзину {cart.pk}")
 
@@ -132,8 +133,8 @@ class RemoveCartItemView(generics.DestroyAPIView):
 
     @swagger_auto_schema(
         tags=['Orders (Корзина)'],
-        operation_summary="4. Удалить 1 товар из корзины",
-        operation_description="Принимает ID *позиции заказа* (OrderItem.id), а НЕ ID товара.",
+        operation_summary="4. Удалить 1 позицию из корзины (по OrderItem ID)",
+        operation_description="Принимает ID *позиции заказа* (OrderItem.id).",
         responses={204: "No Content", 404: "Позиция заказа не найдена"}
     )
     def get_queryset(self):
@@ -145,8 +146,33 @@ class RemoveCartItemView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         cart = instance.order
         super().perform_destroy(instance)
+        # Важно: пересчитываем сумму после удаления
         cart.update_total_price()
         logger.info(f"Удален товар {instance.pk} из корзины {cart.pk}")
+
+
+class UpdateCartItemView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+
+    @swagger_auto_schema(
+        tags=['Orders (Корзина)'],
+        operation_summary="5. Изменить кол-во товара (по OrderItem ID)",
+        operation_description="Позволяет изменить 'quantity' у конкретной записи в корзине. Используйте PATCH.",
+        responses={200: OrderSerializer, 404: "Позиция не найдена"}
+    )
+    def get_queryset(self):
+        return self.queryset.filter(
+            order__user=self.request.user,
+            order__status=Order.OrderStatus.CART
+        )
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        instance.order.update_total_price()
+        logger.info(
+            f"В корзине {instance.order.pk} обновлено кол-во товара {instance.pk} -> {instance.quantity}")
 
 
 class CheckoutView(views.APIView):
@@ -154,23 +180,10 @@ class CheckoutView(views.APIView):
 
     @swagger_auto_schema(
         tags=['Orders (Корзина)'],
-        operation_summary="5. Оформить заказ (Checkout)",
-        operation_description="Превращает 'Корзину' (status='cart') в 'Заказ' (status='pending') и ставит его в очередь на выгрузку в 1С.",
+        operation_summary="6. Оформить заказ (Checkout)",
+        operation_description="Превращает 'Корзину' (status='cart') в 'Заказ' (status='pending').",
         request_body=None,
-        responses={
-            200: openapi.Response(
-                "Заказ успешно оформлен",
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Заказ успешно оформлен'),
-                        'order_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID созданного заказа')
-                    }
-                )
-            ),
-            400: "Нельзя оформить пустую корзину",
-            404: "Корзина не найдена"
-        }
+        responses={200: "Заказ оформлен", 400: "Ошибка"}
     )
     def post(self, request, *args, **kwargs):
         try:
@@ -199,10 +212,6 @@ class CheckoutView(views.APIView):
             status=status.HTTP_200_OK
         )
 
-# ---
-# НОВЫЙ VIEW: ИСТОРИЯ ЗАКАЗОВ
-# ---
-
 
 class OrderHistoryView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -210,12 +219,8 @@ class OrderHistoryView(generics.ListAPIView):
 
     @swagger_auto_schema(
         tags=['Orders (История)'],
-        operation_summary="6. Получить историю заказов",
-        operation_description="Возвращает список всех заказов пользователя (кроме 'cart') с пагинацией.",
-        responses={
-            200: OrderSerializer(many=True),
-            401: "Не аутентифицирован"
-        }
+        operation_summary="7. Получить историю заказов",
+        responses={200: OrderSerializer(many=True)}
     )
     def get_queryset(self):
         return Order.objects.filter(
@@ -223,3 +228,21 @@ class OrderHistoryView(generics.ListAPIView):
         ).exclude(
             status=Order.OrderStatus.CART
         ).order_by('-created_at')
+
+
+# --- НОВЫЙ VIEW: СОЗДАНИЕ ИНДИВИДУАЛЬНОГО ЗАКАЗА ---
+class CreateCustomOrderView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CustomOrderSerializer
+
+    @swagger_auto_schema(
+        tags=['Orders (Индивидуальные)'],
+        operation_summary="Создать индивидуальный заказ (Custom)",
+        operation_description="Создает заявку на линзы с произвольными параметрами.",
+        responses={201: CustomOrderSerializer}
+    )
+    def perform_create(self, serializer):
+        # Пользователь подставляется автоматически через HiddenField
+        order = serializer.save()
+        logger.info(
+            f"Создан Custom Order #{order.pk} пользователем {self.request.user}")

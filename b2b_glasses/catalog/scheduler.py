@@ -1,101 +1,56 @@
+import os
 import logging
-from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import DjangoJobStore
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
 from django.core.management import call_command
 
-# Получаем логгер 'catalog', который мы настроили в settings.py
 logger = logging.getLogger(__name__)
 
-# --- Константы ---
-DEFAULT_INTERVAL_MINUTES = 30
-RETRY_INTERVAL_MINUTES = 5
-JOB_ID = 'import_1c_xml_job'
-
-# --- ИЗМЕНЕНИЕ:
-# Создаем scheduler здесь, как ГЛОБАЛЬНЫЙ объект, один раз
-scheduler = BackgroundScheduler()
-scheduler.add_jobstore(DjangoJobStore(), "default")
+JOB_ID = "smart_1c_import"
+TIMESTAMP_FILE = os.path.join(settings.BASE_DIR, 'last_import_success.txt')
+SUCCESS_INTERVAL_MINUTES = 30
 
 
-def scheduled_import_job():
-    """
-    Работа, которую мы будем выполнять по расписанию.
-    Она использует ГЛОБАЛЬНЫЙ 'scheduler' для самомодификации.
-    """
-    # Аргумент (scheduler) больше не нужен
-
-    logger.info("--- [APScheduler] Запуск планового импорта 1С... ---")
+def get_last_success_time():
+    if not os.path.exists(TIMESTAMP_FILE):
+        return None
     try:
-        # Вызываем нашу команду
+        with open(TIMESTAMP_FILE, 'r') as f:
+            return timezone.datetime.fromisoformat(f.read().strip())
+    except:
+        return None
+
+
+def set_last_success_time(dt):
+    with open(TIMESTAMP_FILE, 'w') as f:
+        f.write(dt.isoformat())
+
+
+def smart_import_job():
+    """
+    Запускается планировщиком каждые 5 минут.
+    """
+    now = timezone.now()
+    last_success = get_last_success_time()
+
+    # 1. Если с последнего успеха прошло меньше 30 минут — ничего не делаем
+    if last_success:
+        if (now - last_success) < timedelta(minutes=SUCCESS_INTERVAL_MINUTES):
+            return
+
+    # 2. Пытаемся запустить импорт
+    try:
+        logger.info("[Smart Import] Запуск команды импорта...")
+
+        # Запускаем твою команду (имя файла из tree.txt)
         call_command('import_1c_xml')
 
-        logger.info(
-            "--- [APScheduler] Плановый импорт 1С успешно завершен. ---")
-
-        # --- ИЗМЕНЕНИЕ: Используем ГЛОБАЛЬНЫЙ scheduler ---
-        current_job = scheduler.get_job(JOB_ID)
-
-        if (current_job and
-                current_job.trigger.interval.total_seconds() != DEFAULT_INTERVAL_MINUTES * 60):
-
-            logger.warning(
-                f"--- [APScheduler] Успех! Возвращаю интервал на {DEFAULT_INTERVAL_MINUTES} минут. ---")
-
-            # Используем ГЛОБАЛЬНЫЙ scheduler
-            scheduler.modify_job(
-                JOB_ID,
-                trigger='interval',
-                minutes=DEFAULT_INTERVAL_MINUTES
-            )
+        # 3. Если команда выполнилась без ошибок — обновляем время успеха
+        logger.info("[Smart Import] Импорт завершен успешно.")
+        set_last_success_time(now)
 
     except Exception as e:
-        logger.error("--- [APScheduler] ПЛАНОВЫЙ ИМПОРТ 1С ПРОВАЛИЛСЯ! ---")
-        logger.error(e, exc_info=True)
-
-        logger.warning(
-            f"--- [APScheduler] Ошибка! Следующая попытка через {RETRY_INTERVAL_MINUTES} минут. ---")
-
-        # --- ИЗМЕНЕНИЕ: Используем ГЛОБАЛЬНЫЙ scheduler ---
-        scheduler.modify_job(
-            JOB_ID,
-            trigger='interval',
-            minutes=RETRY_INTERVAL_MINUTES
-        )
-
-
-def start():
-    """
-    Главная функция запуска планировщика.
-    """
-    # --- ИЗМЕНЕНИЕ: scheduler уже создан и настроен выше ---
-
-    # Добавляем нашу работу в расписание
-    scheduler.add_job(
-        scheduled_import_job,         # <--- Функция без аргументов
-        trigger='interval',
-        minutes=DEFAULT_INTERVAL_MINUTES,
-        id=JOB_ID,
-
-        # args=[scheduler],  <--- ЭТА СТРОКА УДАЛЕНА (ОНА ВЫЗЫВАЛА ОШИБКУ)
-
-        replace_existing=True,
-        misfire_grace_time=60*5
-    )
-
-    logger.info(
-        f"--- [APScheduler] Планировщик запущен. Задание '{JOB_ID}' будет выполняться каждые {DEFAULT_INTERVAL_MINUTES} минут. ---")
-
-    # --- ВАЖНОЕ ИЗМЕНЕНИЕ: Защита от двойного запуска ---
-    # В режиме разработки (runserver) Django Autoreloader запускает
-    # .ready() дважды. Эта проверка не даст запустить scheduler второй раз.
-    try:
-        if not scheduler.running:
-            scheduler.start()
-        else:
-            logger.warning(
-                "--- [APScheduler] Планировщик уже запущен (пропуск из-за autoreload). ---")
-    except Exception as e:
-        logger.error(
-            f"--- [APScheduler] Не удалось запустить планировщик: {e}")
-        # Очищаем задачи, если что-то пошло не так при запуске
-        scheduler.shutdown()
+        # 4. Если ошибка — логгируем и НЕ обновляем время.
+        # В следующий тик (через 5 минут) условие времени снова пустит нас сюда.
+        logger.error(f"[Smart Import] Ошибка при импорте: {e}")

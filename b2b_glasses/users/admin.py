@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import User, Company, TelegramLinkToken
 
-# --- 1. ИМПОРТИРУЕМ ВСЕ, ЧТО ХОТИМ СПРЯТАТЬ ---
+# --- ИМПОРТЫ ДЛЯ UNREGISTER ---
 from django.contrib.auth.models import Group
 from rest_framework.authtoken.models import Token
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
@@ -17,9 +17,7 @@ from catalog.models import (
     FrameAgeGroup, Frame, LensSeries, Lens
 )
 
-# --- 2. "ПРЯЧЕМ" ИХ (UNREGISTER) С ПРОВЕРКОЙ ---
-# (Это исправит ошибку "NotRegistered")
-
+# --- UNREGISTER LOGIC ---
 if admin.site.is_registered(Group):
     admin.site.unregister(Group)
 
@@ -32,7 +30,6 @@ if admin.site.is_registered(DjangoJob):
 if admin.site.is_registered(DjangoJobExecution):
     admin.site.unregister(DjangoJobExecution)
 
-# (На тот случай, если 'catalog' загрузится раньше)
 if admin.site.is_registered(Brand):
     admin.site.unregister(Brand)
 if admin.site.is_registered(FrameMaterial):
@@ -51,23 +48,83 @@ if admin.site.is_registered(LensSeries):
     admin.site.unregister(LensSeries)
 if admin.site.is_registered(Lens):
     admin.site.unregister(Lens)
-# --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+
+# --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ССЫЛКИ ---
+def get_telegram_link_html(user):
+    """
+    Генерирует HTML для копирования ссылки. 
+    Вынесена отдельно, чтобы использовать и в UserAdmin, и в Inline.
+    """
+    if not user.pk:
+        return "Сохраните пользователя, чтобы получить ссылку"
+
+    if user.telegram_id:
+        return "Аккаунт уже привязан"
+
+    token_obj = TelegramLinkToken.objects.filter(user=user).first()
+
+    # Благодаря сигналам, токен должен быть всегда. Но на всякий случай:
+    if not token_obj:
+        return "Токен не найден (попробуйте пересохранить)"
+
+    bot_username = getattr(settings, 'TELEGRAM_BOT_USERNAME', 'bot_username')
+    link = f"https://t.me/{bot_username}?start={token_obj.token}"
+
+    input_id = f"telegram-link-input-{user.pk}"
+    feedback_id = f"telegram-link-feedback-{user.pk}"
+
+    js_onclick = (
+        f"var input = document.getElementById('{input_id}');"
+        f"var feedback = document.getElementById('{feedback_id}');"
+        "input.select();"
+        "input.setSelectionRange(0, 99999);"
+        "document.execCommand('copy');"
+        "feedback.style.display = 'inline';"
+        "feedback.style.opacity = '1';"
+        "setTimeout(function() {{"
+        "  feedback.style.opacity = '0';"
+        "  setTimeout(function() {{ feedback.style.display = 'none'; }}, 500);"
+        "}}, 2000);"
+    ).replace('"', '&quot;')
+
+    html_output = f"""
+        <div style="display: flex; align-items: center; position: relative;">
+            <span 
+                onclick="{js_onclick}"
+                title="Нажмите, чтобы скопировать"
+                style="color: var(--link-color, #007bff); cursor: pointer; text-decoration: underline; font-weight: 500;"
+            >
+                Скопировать ссылку
+            </span>
+            <span id="{feedback_id}" style="margin-left: 10px; color: green; font-weight: bold; display: none; opacity: 0; transition: opacity 0.5s;">
+                Скопировано!
+            </span>
+            <input type="text" value="{link}" id="{input_id}" style="position:absolute; left:-9999px; top:0px; opacity:0;">
+        </div>
+    """
+    return format_html(html_output)
 
 
 class UserInline(admin.TabularInline):
     """
-    "Инлайн" для отображения и ДОБАВЛЕНИЯ Пользователей
-    ВНУТРИ страницы Компании.
+    Инлайн пользователей внутри Компании.
     """
     model = User
-    fields = ('username', 'is_active', 'first_name', 'last_name')
-    readonly_fields = ()
+    fields = ('username', 'first_name', 'last_name',
+              'is_active', 'telegram_link_display')
+    readonly_fields = ('telegram_link_display',)
     can_delete = True
     extra = 1
     show_change_link = True
 
     def has_add_permission(self, request, obj=None):
         return True
+
+    def telegram_link_display(self, obj):
+        return get_telegram_link_html(obj)
+
+    telegram_link_display.short_description = "Ссылка Telegram"
 
 
 @admin.register(Company)
@@ -81,8 +138,6 @@ class CompanyAdmin(admin.ModelAdmin):
 class TelegramLinkTokenAdmin(admin.ModelAdmin):
     list_display = ('user', 'token', 'created_at')
     search_fields = ('user__username',)
-
-# ... (AssignedCompanyFilter и UserAdminCreationForm остаются без изменений) ...
 
 
 class AssignedCompanyFilter(admin.SimpleListFilter):
@@ -142,84 +197,9 @@ class UserAdmin(BaseUserAdmin):
             qs = qs.exclude(is_superuser=True)
         return qs
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        if not change and not obj.telegram_id:
-            TelegramLinkToken.objects.get_or_create(user=obj)
+    # Мы убрали save_model, так как теперь всю работу делает signal в signals.py!
 
     def generated_telegram_link(self, obj):
-        """
-        (v19) Показывает элегантную ссылку, которая
-        копируется в буфер при клике.
-        """
-        if obj.telegram_id:
-            return "Аккаунт уже привязан"
-
-        token_obj = TelegramLinkToken.objects.filter(user=obj).first()
-        if not token_obj:
-            return "Нажмите 'Сохранить', чтобы сгенерировать токен"
-
-        bot_username = settings.TELEGRAM_BOT_USERNAME
-        link = f"https://t.me/{bot_username}?start={token_obj.token}"
-
-        # Уникальные ID для HTML-элементов этого пользователя
-        input_id = f"telegram-link-input-{obj.pk}"
-        feedback_id = f"telegram-link-feedback-{obj.pk}"
-
-        # JavaScript, который будет выполнен при нажатии.
-        # Он находит невидимый input, копирует его
-        # и показывает "красивое сообщение"
-        js_onclick = (
-            f"var input = document.getElementById('{input_id}');"
-            f"var feedback = document.getElementById('{feedback_id}');"
-            "input.select();"
-            "input.setSelectionRange(0, 99999);"  # Для мобильных
-            "document.execCommand('copy');"
-            # Показываем "Скопировано!"
-            "feedback.style.display = 'inline';"
-            "feedback.style.opacity = '1';"
-            # Прячем "Скопировано!" через 2 секунды
-            "setTimeout(function() {{"
-            "  feedback.style.opacity = '0';"
-            "  setTimeout(function() {{ feedback.style.display = 'none'; }}, 500);"
-            "}}, 2000);"
-        ).replace('"', '&quot;')  # Экранируем кавычки для HTML
-
-        # HTML-вывод:
-        html_output = f"""
-            <div style="display: flex; align-items: center; position: relative;">
-                
-                <span 
-                    onclick="{js_onclick}"
-                    title="Нажмите, чтобы скопировать"
-                    style="color: var(--link-color, #007bff); 
-                        cursor: pointer; 
-                        text-decoration: underline; 
-                        font-weight: 500;"
-                >
-                    {link}
-                </span>
-
-                <span 
-                    id="{feedback_id}" 
-                    style="margin-left: 15px; 
-                        color: var(--success-color, green); 
-                        font-weight: bold; 
-                        display: none; 
-                        opacity: 0;
-                        transition: opacity 0.5s ease;"
-                >
-                    Скопировано!
-                </span>
-
-                <input 
-                    type="text" 
-                    value="{link}" 
-                    id="{input_id}" 
-                    style="position:absolute; left:-9999px; top:0px; opacity:0;"
-                >
-            </div> """
-
-        return format_html(html_output)
+        return get_telegram_link_html(obj)
 
     generated_telegram_link.short_description = "Ссылка для привязки Telegram"

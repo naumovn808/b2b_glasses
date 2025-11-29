@@ -26,7 +26,7 @@ import logging
 import logging.handlers
 from pathlib import Path
 
-print("[DEBUG] bot_loader.py (v4.3): Запускаю настройку Django...")
+print("[DEBUG] bot_loader.py (v4.4): Запускаю настройку Django...")
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.append(str(PROJECT_ROOT))
 sys.path.append(str(PROJECT_ROOT.parent))
@@ -34,10 +34,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'b2b_glasses.settings')
 
 try:
     django.setup()
-    print("[DEBUG] bot_loader.py (v4.3): Настройка Django завершена.")
+    print("[DEBUG] bot_loader.py (v4.4): Настройка Django завершена.")
 except Exception as e:
     print(
-        f"[DEBUG] bot_loader.py (v4.3): КРИТИЧЕСКАЯ ОШИБКА. Не удалось настроить Django: {e}")
+        f"[DEBUG] bot_loader.py (v4.4): КРИТИЧЕСКАЯ ОШИБКА. Не удалось настроить Django: {e}")
     raise
 
 
@@ -68,10 +68,7 @@ setup_bot_logging()
 # --- КОНЕЦ ЗАГРУЗЧИКА ---
 
 
-# --- 2. ВСЕ ИМПОРТЫ ---
-
-
-# --- 3. FSM СОСТОЯНИЯ ---
+# --- 2. FSM СОСТОЯНИЯ ---
 
 
 class RegistrationFSM(StatesGroup):
@@ -85,14 +82,27 @@ class LensFilterFSM(StatesGroup):
     waiting_for_cyl = State()
     waiting_for_dia = State()
     waiting_for_search_query = State()
+    # Состояния для добавления в корзину по ID
     waiting_for_add_id = State()
     waiting_for_add_qty = State()
 
 
-# --- 4. НАСТРОЙКИ И API-КЛИЕНТ ---
+class CustomOrderFSM(StatesGroup):
+    waiting_for_design = State()
+    waiting_for_photochrom = State()
+
+
+class CartEditFSM(StatesGroup):
+    waiting_for_item_select = State()
+    waiting_for_new_qty = State()
+
+
+# --- 3. НАСТРОЙКИ И API-КЛИЕНТ ---
 BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
 WEBSITE_URL = settings.WEBSITE_URL
 LENS_PAGE_SIZE = settings.REST_FRAMEWORK.get('PAGE_SIZE', 5)
+# ЗАМЕНИТЬ на реальный юзернейм менеджера (без @)
+MANAGER_USERNAME = settings.MANAGER_USERNAME
 
 # URL'ы
 DJANGO_REG_URL = settings.DJANGO_REG_URL
@@ -108,13 +118,17 @@ CART_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/"
 CART_ADD_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/add/"
 CART_CLEAR_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/clear/"
 CART_CHECKOUT_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/checkout/"
+CUSTOM_ORDER_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/custom/create/"
+# Предполагаемые URL для редактирования (Нужно реализовать в Django!)
+# + {id}/
+CART_ITEM_UPDATE_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/items/"
 HISTORY_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/history/"
 
 logger = logging.getLogger(__name__)
 dp = Dispatcher(storage=MemoryStorage())
 
 # ---
-# 5. ВСЕ ФУНКЦИИ API
+# 4. ВСЕ ФУНКЦИИ API
 # ---
 
 
@@ -217,6 +231,52 @@ async def add_to_cart(auth_token: str, product_type: str, product_id: int, quant
         return False
 
 
+async def create_custom_order_api(auth_token: str, payload: dict) -> bool:
+    headers = {"Authorization": f"Token {auth_token}"}
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(CUSTOM_ORDER_URL, headers=headers, json=payload) as response:
+                if response.status == 201:
+                    return True
+                logger.error(f"Ошибка создания Custom Order: {response.status} - {await response.text()}")
+                return False
+    except Exception as e:
+        logger.error(f"Ошибка create_custom_order_api: {e}")
+        return False
+
+
+async def update_cart_item(auth_token: str, item_id: int, quantity: int) -> bool:
+    """Обновляет количество товара в корзине.
+       Требует реализации PATCH/PUT на стороне Django: /api/v1/orders/cart/items/{id}/
+    """
+    headers = {"Authorization": f"Token {auth_token}"}
+    url = f"{CART_ITEM_UPDATE_URL}{item_id}/update/"
+    payload = {"quantity": quantity}
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Используем patch или put в зависимости от реализации бэкенда
+            async with session.patch(url, headers=headers, json=payload) as response:
+                return response.status in [200, 204]
+    except Exception as e:
+        logger.error(f"Ошибка update_cart_item: {e}")
+        return False
+
+
+async def delete_cart_item(auth_token: str, item_id: int) -> bool:
+    """Удаляет позицию из корзины.
+       Требует реализации DELETE на стороне Django: /api/v1/orders/cart/items/{id}/
+    """
+    headers = {"Authorization": f"Token {auth_token}"}
+    url = f"{CART_ITEM_UPDATE_URL}{item_id}/"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.delete(url, headers=headers) as response:
+                return response.status == 204
+    except Exception as e:
+        logger.error(f"Ошибка delete_cart_item: {e}")
+        return False
+
+
 async def clear_cart(auth_token: str) -> bool:
     headers = {"Authorization": f"Token {auth_token}"}
     try:
@@ -257,7 +317,7 @@ async def get_history(auth_token: str, page: int = 1) -> dict | None:
         return None
 
 # ---
-# 6. ВСЕ ФУНКЦИИ КЛАВИАТУР
+# 5. ВСЕ ФУНКЦИИ КЛАВИАТУР
 # ---
 
 BUTTONS_PER_PAGE = 8
@@ -270,7 +330,7 @@ def get_main_menu_keyboard():
     builder.row(InlineKeyboardButton(
         text="Линзы (Подобрать в боте)", callback_data="start_lens_filter"))
     builder.row(InlineKeyboardButton(
-        text="Поиск Линз (по ID или Серии)", callback_data="start_lens_search"))
+        text="Поиск Линз (Рецептурный заказ)", callback_data="start_lens_search"))
     builder.row(
         InlineKeyboardButton(text="🛒 Моя Корзина", callback_data="view_cart"),
         InlineKeyboardButton(text="📜 История Заказов",
@@ -288,9 +348,6 @@ def get_phone_keyboard():
 
 
 def build_filter_buttons(items: list, prefix: str, page: int = 1, show_back_button: bool = False) -> InlineKeyboardBuilder:
-    """
-    (v4.2) ВОЗВРАЩАЕТ BUILDER (а не as_markup())
-    """
     builder = InlineKeyboardBuilder()
     total_items = len(items)
     total_pages = (total_items + BUTTONS_PER_PAGE - 1) // BUTTONS_PER_PAGE
@@ -318,18 +375,14 @@ def build_filter_buttons(items: list, prefix: str, page: int = 1, show_back_butt
         builder.row(*row)
     back_button = []
     if show_back_button:
-        # (Мы определяем 'назад' в update_filter_message)
         pass
     back_button.append(InlineKeyboardButton(
         text="❌ Отмена", callback_data="filter_cancel"))
     builder.row(*back_button)
-    return builder  # <-- Возвращаем Builder
+    return builder
 
 
 def build_pagination_keyboard(current_page: int, total_pages: int, prefix: str = "page_") -> InlineKeyboardBuilder:
-    """
-    (v4.2) ВОЗВРАЩАЕТ BUILDER (а не as_markup())
-    """
     builder = InlineKeyboardBuilder()
     prev_page = InlineKeyboardButton(
         text="<", callback_data=f"{prefix}{current_page - 1}")
@@ -346,7 +399,7 @@ def build_pagination_keyboard(current_page: int, total_pages: int, prefix: str =
     builder.row(*row)
     builder.row(InlineKeyboardButton(
         text="❌ Закрыть", callback_data="filter_cancel"))
-    return builder  # <-- Возвращаем Builder
+    return builder
 
 
 def get_cart_keyboard(cart_is_empty: bool) -> InlineKeyboardBuilder:
@@ -355,13 +408,29 @@ def get_cart_keyboard(cart_is_empty: bool) -> InlineKeyboardBuilder:
         builder.row(InlineKeyboardButton(
             text="✅ Оформить заказ", callback_data="cart_checkout"))
         builder.row(InlineKeyboardButton(
+            text="✏️ Управление товарами", callback_data="cart_manage_items"))
+        builder.row(InlineKeyboardButton(
             text="🗑 Очистить корзину", callback_data="cart_clear"))
     builder.row(InlineKeyboardButton(
         text="❌ Закрыть", callback_data="filter_cancel"))
     return builder.as_markup()
 
+
+def get_no_results_keyboard() -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
+    # Ссылка на менеджера
+    builder.row(InlineKeyboardButton(
+        text="👨‍💻 Написать менеджеру", url=f"https://t.me/{MANAGER_USERNAME}"))
+    # Кнопка для кастомного заказа
+    builder.row(InlineKeyboardButton(
+        text="📝 Сделать заказ (Custom)", callback_data="custom_order_start"))
+    # Назад в меню
+    builder.row(InlineKeyboardButton(
+        text="↩️ В меню", callback_data="filter_cancel"))
+    return builder.as_markup()
+
 # ---
-# 7. ВСЕ ХЭНДЛЕРЫ БОТА
+# 6. ВСЕ ХЭНДЛЕРЫ БОТА
 # ---
 
 # --- Регистрация ---
@@ -632,12 +701,15 @@ async def filter_final_result(query: CallbackQuery, state: FSMContext):
 
     if keyboard:
         builder = InlineKeyboardBuilder.from_markup(keyboard)
-        builder.row(
-            InlineKeyboardButton(
-                text="🛒 Добавить товар в корзину (по ID)",
-                callback_data="add_to_cart_start"
+        # Если это стандартная клавиатура пагинации, добавляем кнопку добавления в корзину
+        # Но если товаров 0, там уже другая клавиатура (custom_order)
+        if "custom_order_start" not in [b.callback_data for row in builder.as_markup().inline_keyboard for b in row]:
+            builder.row(
+                InlineKeyboardButton(
+                    text="🛒 Добавить товар в корзину (по ID)",
+                    callback_data="add_to_cart_start"
+                )
             )
-        )
         keyboard = builder.as_markup()
 
     await query.message.edit_text(text, reply_markup=keyboard)
@@ -651,8 +723,17 @@ async def show_lens_results(params: dict) -> Tuple[str, InlineKeyboardBuilder]:
         return "❌ Ошибка: не удалось загрузить товары (возможно, доступ деактивирован).", None
     results = response_data.get('results', [])
     count = response_data.get('count', 0)
+
+    # --- НОВАЯ ЛОГИКА: ЕСЛИ НИЧЕГО НЕ НАЙДЕНО ---
     if count == 0:
-        return "😕 По вашему запросу ничего не найдено.", get_main_menu_keyboard()
+        return (
+            "😕 <b>По вашему запросу ничего не найдено.</b>\n\n"
+            "Вы можете обратиться к менеджеру для уточнения наличия "
+            "или оформить специальный заказ с указанием дополнительных параметров.",
+            get_no_results_keyboard()
+        )
+    # ---------------------------------------------
+
     total_pages = math.ceil(count / LENS_PAGE_SIZE)
     current_page = params.get('page', 1)
     text_result = f"✅ Найдено товаров: {count} (Стр. {current_page} из {total_pages})\n\n"
@@ -665,10 +746,8 @@ async def show_lens_results(params: dict) -> Tuple[str, InlineKeyboardBuilder]:
             "--------------------\n"
         )
 
-    # --- ИСПРАВЛЕНИЕ (v4.2): Возвращаем готовую клавиатуру ---
     keyboard = build_pagination_keyboard(current_page, total_pages)
     return text_result, keyboard.as_markup()
-    # ---
 
 
 @dp.callback_query(F.data.startswith("page_"))
@@ -686,12 +765,16 @@ async def handle_pagination(query: CallbackQuery, state: FSMContext):
 
     if keyboard:
         builder = InlineKeyboardBuilder.from_markup(keyboard)
-        builder.row(
-            InlineKeyboardButton(
-                text="🛒 Добавить товар в корзину (по ID)",
-                callback_data="add_to_cart_start"
+        # Проверяем, не является ли это клавиатурой "ничего не найдено"
+        all_callbacks = [
+            b.callback_data for row in builder.as_markup().inline_keyboard for b in row]
+        if "custom_order_start" not in all_callbacks:
+            builder.row(
+                InlineKeyboardButton(
+                    text="🛒 Добавить товар в корзину (по ID)",
+                    callback_data="add_to_cart_start"
+                )
             )
-        )
         keyboard = builder.as_markup()
 
     await query.message.edit_text(text, reply_markup=keyboard)
@@ -744,12 +827,15 @@ async def search_final_result(message: Message, state: FSMContext):
 
     if keyboard:
         builder = InlineKeyboardBuilder.from_markup(keyboard)
-        builder.row(
-            InlineKeyboardButton(
-                text="🛒 Добавить товар в корзину (по ID)",
-                callback_data="add_to_cart_start"
+        all_callbacks = [
+            b.callback_data for row in builder.as_markup().inline_keyboard for b in row]
+        if "custom_order_start" not in all_callbacks:
+            builder.row(
+                InlineKeyboardButton(
+                    text="🛒 Добавить товар в корзину (по ID)",
+                    callback_data="add_to_cart_start"
+                )
             )
-        )
         keyboard = builder.as_markup()
 
     await message.bot.edit_message_text(
@@ -757,7 +843,86 @@ async def search_final_result(message: Message, state: FSMContext):
     )
 
 # ---
-# 5. ЛОГИКА КОРЗИНЫ
+# 7. ЛОГИКА КАСТОМНОГО ЗАКАЗА (Когда ничего не найдено)
+# ---
+
+
+@dp.callback_query(F.data == "custom_order_start")
+async def custom_order_step_1_design(query: CallbackQuery, state: FSMContext):
+    # Сохраняем фильтры, которые были введены ранее (sph, cyl и т.д.)
+    # Они уже есть в state data
+    await state.set_state(CustomOrderFSM.waiting_for_design)
+    await query.message.edit_text(
+        "<b>Оформление специального заказа (Шаг 1 из 2)</b>\n\n"
+        "Пожалуйста, введите желаемый <b>Дизайн</b> линзы:",
+        reply_markup=InlineKeyboardBuilder().row(
+            InlineKeyboardButton(
+                text="❌ Отмена", callback_data="filter_cancel")
+        ).as_markup()
+    )
+
+
+@dp.message(CustomOrderFSM.waiting_for_design, F.text)
+async def custom_order_step_2_photochrom(message: Message, state: FSMContext):
+    await state.update_data(custom_design=message.text)
+    await state.set_state(CustomOrderFSM.waiting_for_photochrom)
+    await message.answer(
+        "<b>Оформление специального заказа (Шаг 2 из 2)</b>\n\n"
+        "Пожалуйста, укажите параметры <b>Фотохрома</b>:",
+        reply_markup=InlineKeyboardBuilder().row(
+            InlineKeyboardButton(
+                text="❌ Отмена", callback_data="filter_cancel")
+        ).as_markup()
+    )
+
+
+@dp.message(CustomOrderFSM.waiting_for_photochrom, F.text)
+async def custom_order_finish(message: Message, state: FSMContext):
+    await state.update_data(custom_photochrom=message.text)
+    data = await state.get_data()
+
+    # 1. Получаем токен пользователя
+    from users.models import User
+    from rest_framework.authtoken.models import Token
+    try:
+        user = await User.objects.aget(telegram_id=message.from_user.id, is_active=True)
+        token, _ = await Token.objects.aget_or_create(user=user)
+    except User.DoesNotExist:
+        await message.answer("❌ Ошибка: Пользователь не найден.")
+        return
+
+    # 2. Формируем данные для отправки в Django
+    payload = {
+        "series": data.get("series_name", "Unknown"),
+        "sph": data.get("sph", "0"),
+        "cyl": data.get("cyl", "0"),
+        "dia": data.get("dia", "Unknown"),
+        "design": data.get("custom_design"),
+        "photochrom": message.text  # Последний введенный текст
+    }
+
+    await message.answer("⏳ Отправляю заявку...")
+
+    # 3. Отправляем в API
+    success = await create_custom_order_api(token.key, payload)
+
+    if success:
+        await message.answer(
+            "✅ <b>Заявка принята!</b>\n\n"
+            "Ваш индивидуальный заказ сохранен в системе. Менеджер увидит его и свяжется с вами.",
+            reply_markup=get_main_menu_keyboard()
+        )
+    else:
+        await message.answer(
+            "❌ Произошла ошибка при сохранении заявки. Попробуйте позже.",
+            reply_markup=get_main_menu_keyboard()
+        )
+
+    await state.clear()
+
+
+# ---
+# 8. ЛОГИКА КОРЗИНЫ
 # ---
 
 
@@ -818,17 +983,12 @@ async def add_to_cart_final(message: Message, state: FSMContext):
 
     from catalog.models import Lens
     try:
-        # --- ИСПРАВЛЕНИЕ (v4.3 - SynchronousOnlyOperation) ---
-        # Мы "пред-загружаем" .series, чтобы Django
-        # не делал синхронный запрос в async-функции
         product = await Lens.objects.select_related('series').aget(id_1c=product_id_1c)
         product_db_id = product.pk
-        # ---
     except Lens.DoesNotExist:
         await message.answer(f"❌ Ошибка: Товар с ID <code>{html.quote(product_id_1c)}</code> не найден в каталоге.")
         return
 
-    # --- ИСПРАВЛЕНИЕ (v4.2): "lense" -> "lens" ---
     success = await add_to_cart(auth_token, 'lens', product_db_id, quantity)
 
     if success:
@@ -856,8 +1016,8 @@ async def format_cart_text(cart_data: dict) -> Tuple[str, bool]:
     if not items:
         text += "<i>(Пусто)</i>"
         return text, True
-    for item in items:
-        text += f"<b>{item['product']}</b>\n"
+    for idx, item in enumerate(items, 1):
+        text += f"<b>{idx}. {item['product']}</b>\n"
         text += f"  Кол-во: {item['quantity']} шт.\n"
         text += f"  Цена: {item['price_at_order']} UZS\n"
         text += f"  <b>Итого: {item['total_price']} UZS</b>\n"
@@ -880,16 +1040,120 @@ async def view_cart(query: CallbackQuery, state: FSMContext):
         await query.message.edit_text("❌ Ошибка: Ваш пользователь не найден в БД.")
         return
 
+    # Сохраняем токен в state, пригодится для редактирования
+    await state.update_data(auth_token=token.key)
+
     cart_data = await get_cart(query.from_user.id, token.key)
     if cart_data is None:
         await query.message.edit_text("❌ Ошибка: не удалось загрузить корзину.")
         return
+
+    # Сохраняем данные корзины, чтобы потом использовать при редактировании
+    await state.update_data(cart_items=cart_data.get('items', []))
 
     text, is_empty = await format_cart_text(cart_data)
     await query.message.edit_text(
         text,
         reply_markup=get_cart_keyboard(cart_is_empty=is_empty)
     )
+
+# --- НОВАЯ ЛОГИКА УПРАВЛЕНИЯ КОРЗИНОЙ ---
+
+
+@dp.callback_query(F.data == "cart_manage_items")
+async def cart_manage_list(query: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    items = data.get('cart_items', [])
+
+    if not items:
+        await query.answer("Корзина пуста!")
+        return
+
+    builder = InlineKeyboardBuilder()
+    for item in items:
+        # Предполагаем, что у item есть 'id' (id записи в корзине) и 'product' (название)
+        # Если API не возвращает ID записи корзины, нужно поправить сериалайзер Django!
+        item_id = item.get('id')
+        item_name = item.get('product')[:20]  # обрезаем длинные названия
+        builder.row(InlineKeyboardButton(
+            text=f"{item_name} ({item['quantity']} шт.)",
+            callback_data=f"cart_edit_{item_id}"
+        ))
+
+    builder.row(InlineKeyboardButton(
+        text="↩️ Назад в корзину", callback_data="view_cart"))
+
+    await query.message.edit_text("Выберите товар для изменения:", reply_markup=builder.as_markup())
+
+
+@dp.callback_query(F.data.startswith("cart_edit_"))
+async def cart_item_options(query: CallbackQuery, state: FSMContext):
+    item_id = query.data.split('_')[-1]
+    await state.update_data(selected_cart_item_id=item_id)
+
+    builder = InlineKeyboardBuilder()
+    builder.row(InlineKeyboardButton(
+        text="🔢 Изменить количество", callback_data="cart_act_qty"))
+    builder.row(InlineKeyboardButton(
+        text="🗑 Удалить позицию", callback_data="cart_act_del"))
+    builder.row(InlineKeyboardButton(text="↩️ Назад к списку",
+                callback_data="cart_manage_items"))
+
+    await query.message.edit_text(f"Что сделать с товаром (ID записи: {item_id})?", reply_markup=builder.as_markup())
+
+
+@dp.callback_query(F.data == "cart_act_del")
+async def cart_item_delete_confirm(query: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    item_id = data.get('selected_cart_item_id')
+    token = data.get('auth_token')
+
+    if await delete_cart_item(token, item_id):
+        await query.answer("Товар удален!", show_alert=True)
+        # Обновляем корзину
+        await view_cart(query, state)
+    else:
+        await query.answer("Ошибка при удалении. Попробуйте позже.", show_alert=True)
+
+
+@dp.callback_query(F.data == "cart_act_qty")
+async def cart_item_qty_input(query: CallbackQuery, state: FSMContext):
+    await state.set_state(CartEditFSM.waiting_for_new_qty)
+    await query.message.edit_text(
+        "Введите новое количество товара (число):",
+        reply_markup=InlineKeyboardBuilder().row(
+            InlineKeyboardButton(text="❌ Отмена", callback_data="view_cart")
+        ).as_markup()
+    )
+
+
+@dp.message(CartEditFSM.waiting_for_new_qty, F.text)
+async def cart_item_qty_save(message: Message, state: FSMContext):
+    try:
+        qty = int(message.text)
+        if qty <= 0:
+            raise ValueError
+    except ValueError:
+        await message.answer("Введите корректное число > 0")
+        return
+
+    data = await state.get_data()
+    item_id = data.get('selected_cart_item_id')
+    token = data.get('auth_token')
+
+    await message.answer("Обновляю количество...")
+
+    if await update_cart_item(token, item_id, qty):
+        await message.answer("✅ Количество обновлено!")
+        # Имитируем нажатие "view_cart" для возврата в корзину
+        # Но так как это Message, нам нужно отправить новое сообщение с корзиной
+        cart_data = await get_cart(message.from_user.id, token)
+        text, is_empty = await format_cart_text(cart_data)
+        await message.answer(text, reply_markup=get_cart_keyboard(is_empty))
+        await state.clear()
+    else:
+        await message.answer("❌ Ошибка обновления. Возможно, нет связи с сервером.", reply_markup=get_main_menu_keyboard())
+        await state.clear()
 
 
 @dp.callback_query(F.data == "cart_clear")
@@ -977,7 +1241,7 @@ async def view_history(query: CallbackQuery, state: FSMContext):
 
 
 # ---
-# 8. ОБРАБОТЧИКИ ОТМЕНЫ (с "Назад")
+# 9. ОБРАБОТЧИКИ ОТМЕНЫ (с "Назад")
 # ---
 @dp.callback_query(F.data == "filter_cancel")
 async def filter_cancel(query: CallbackQuery, state: FSMContext):
@@ -1023,7 +1287,7 @@ async def command_cancel(message: Message, state: FSMContext):
     )
 
 # ---
-# 9. ЗАПУСК БОТА
+# 10. ЗАПУСК БОТА
 # ---
 
 
