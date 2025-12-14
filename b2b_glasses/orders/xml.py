@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
-# --- 1. ВОЗВРАЩАЕМ MINIDOM ---
+
 from xml.dom import minidom
-# ---
+
 from .models import Order
 from catalog.models import Frame, Lens
 from django.utils import timezone
@@ -22,12 +22,10 @@ def generate_order_xml(order: Order) -> str:
     order_date = now.strftime("%Y-%m-%d")
     order_time = now.strftime("%H:%M:%S")
 
-    # --- 1. <КоммерческаяИнформация> (Корень) ---
     root = ET.Element("КоммерческаяИнформация")
     root.set("ВерсияСхемы", "2.04")
     root.set("ДатаФормирования", now.isoformat(timespec='seconds'))
 
-    # --- 2. <Документ> ---
     doc = ET.SubElement(root, "Документ")
     ET.SubElement(doc, "Ид").text = str(order.pk)
     ET.SubElement(doc, "Номер").text = f"Т{order.pk:05d}"
@@ -41,7 +39,6 @@ def generate_order_xml(order: Order) -> str:
     ET.SubElement(
         doc, "Комментарий").text = f"Заказ #{order.pk} от {order.user.username}"
 
-    # --- 3. <Контрагенты> (Пользователь) ---
     kontragenty = ET.SubElement(doc, "Контрагенты")
     kontragent = ET.SubElement(kontragenty, "Контрагент")
     ET.SubElement(kontragent, "Ид").text = str(order.user.pk)
@@ -57,7 +54,6 @@ def generate_order_xml(order: Order) -> str:
         ET.SubElement(kontakt, "Тип").text = "Телефон"
         ET.SubElement(kontakt, "Значение").text = order.user.phone_number
 
-    # --- 4. <Товары> ---
     tovary = ET.SubElement(doc, "Товары")
 
     for item in order.items.all():
@@ -93,7 +89,6 @@ def generate_order_xml(order: Order) -> str:
         ET.SubElement(rek_tip, "Наименование").text = "ТипНоменклатуры"
         ET.SubElement(rek_tip, "Значение").text = "Товар"
 
-    # --- 5. <ЗначенияРеквизитов> (Документа) ---
     doc_rekvizity = ET.SubElement(doc, "ЗначенияРеквизитов")
     rek_nomer = ET.SubElement(doc_rekvizity, "ЗначениеРеквизита")
     ET.SubElement(rek_nomer, "Наименование").text = "НомерЗаказаНаСайте"
@@ -109,14 +104,10 @@ def generate_order_xml(order: Order) -> str:
     ET.SubElement(rek_pr, "Наименование").text = "Проведен"
     ET.SubElement(rek_pr, "Значение").text = "true"
 
-    # --- 6. Преобразуем в "сырую" строку (не байты) ---
     xml_str = ET.tostring(root, encoding='unicode', method='xml')
 
-    # --- 7. Используем minidom для "красоты" (отступов) ---
-    # (Это больше не "сломает" кодировку, т.к. мы работаем со строками)
     pretty_xml_str = minidom.parseString(xml_str).toprettyxml(indent="  ")
 
     logger.info(f"XML (красивый) для Заказа #{order.pk} успешно сгенерирован.")
 
-    # Возвращаем "красивую" СТРОКУ
     return pretty_xml_str

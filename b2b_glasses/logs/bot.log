@@ -1789,3 +1789,41 @@ django.core.exceptions.SynchronousOnlyOperation: You cannot call this from an as
 2025-11-29 15:25:09,092 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
 2025-11-29 15:25:09,120 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7975130787)
 2025-11-29 19:14:30,908 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7975130787)
+2025-12-14 13:28:24,148 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-14 13:28:24,151 - __main__ - INFO - --- Запуск бота ---
+2025-12-14 13:28:24,545 - aiogram.dispatcher - INFO - Start polling
+2025-12-14 13:28:24,991 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-14 13:28:29,201 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 13:28:29,202 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8578961673)
+2025-12-14 13:28:34,852 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 13:28:34,852 - aiogram.dispatcher - WARNING - Sleep for 1.318891 seconds and try again... (tryings = 1, bot id = 8578961673)
+2025-12-14 13:28:41,184 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 13:28:41,185 - aiogram.dispatcher - WARNING - Sleep for 1.836524 seconds and try again... (tryings = 2, bot id = 8578961673)
+2025-12-14 13:28:48,616 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 13:28:48,617 - aiogram.dispatcher - WARNING - Sleep for 2.426114 seconds and try again... (tryings = 3, bot id = 8578961673)
+2025-12-14 13:28:54,208 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 13:28:54,208 - aiogram.dispatcher - WARNING - Sleep for 3.225310 seconds and try again... (tryings = 4, bot id = 8578961673)
+2025-12-14 13:28:56,509 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-14 13:28:56,511 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-14 13:28:56,515 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-14 13:29:02,442 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-14 13:29:02,445 - __main__ - INFO - --- Запуск бота ---
+2025-12-14 13:29:03,182 - aiogram.dispatcher - INFO - Start polling
+2025-12-14 13:29:03,310 - aiogram.dispatcher - INFO - Run polling for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 15:01:33,754 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-14 15:01:33,770 - aiogram.dispatcher - INFO - Polling stopped for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 15:01:33,771 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-14 20:59:35,639 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-14 20:59:35,661 - __main__ - INFO - --- Запуск бота ---
+2025-12-14 20:59:35,999 - aiogram.dispatcher - INFO - Start polling
+2025-12-14 20:59:36,103 - aiogram.dispatcher - INFO - Run polling for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 21:32:56,471 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-14 21:32:56,480 - aiogram.dispatcher - INFO - Polling stopped for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 21:32:56,485 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-14 21:33:00,843 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-14 21:33:00,847 - __main__ - INFO - --- Запуск бота ---
+2025-12-14 21:33:01,224 - aiogram.dispatcher - INFO - Start polling
+2025-12-14 21:33:01,329 - aiogram.dispatcher - INFO - Run polling for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 21:40:42,570 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-14 21:40:42,572 - aiogram.dispatcher - INFO - Polling stopped for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 21:40:42,585 - aiogram.dispatcher - INFO - Polling stopped

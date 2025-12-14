@@ -9,21 +9,24 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# --- Quick-start development settings ---
+
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=[
                          '127.0.0.1', 'localhost'])
 
-# --- Application definition ---
+
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'modeltranslation',
+    'solo',
+    'ckeditor',
+    'ckeditor_uploader',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
@@ -31,15 +34,20 @@ INSTALLED_APPS = [
     'django_apscheduler',
     'corsheaders',
 
+    'django.contrib.admin',
+
     'users.apps.UsersConfig',
     'api.apps.ApiConfig',
     'catalog.apps.CatalogConfig',
     'orders.apps.OrdersConfig',
+    'content.apps.ContentConfig',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -75,8 +83,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'b2b_glasses.wsgi.application'
 
 
-# --- ИЗМЕНЕНИЕ: Database ---
-# (Мы убираем SQLite и подключаем Postgres из .env)
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('SQL_ENGINE'),
@@ -87,29 +93,26 @@ DATABASES = {
         'PORT': os.environ.get('SQL_PORT'),
     }
 }
-# ---
 
-# (AUTH_PASSWORD_VALIDATORS закомментирован)
 
-# --- Internationalization ---
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Asia/Tashkent'
 USE_I1N = True
 USE_TZ = True
 
-# --- Static files ---
+
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = '/app/staticfiles'
 
-# --- Кастомные настройки ---
+
 AUTH_USER_MODEL = 'users.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'api.auth.TelegramWebAppDataAuth',
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -120,13 +123,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'catalog.pagination.StandardResultsSetPagination',
 }
 
-# --- Настройки FTP ---
+
 FTP_HOST = env('FTP_HOST')
 FTP_PORT = env.int('FTP_PORT', default=21)
 FTP_USER = env('FTP_USER')
 FTP_PASS = env('FTP_PASS')
 
-# --- Настройки Бота и API ---
+
 TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')
 TELEGRAM_BOT_USERNAME = env('TELEGRAM_BOT_USERNAME')
 BOT_API_SECRET = env('BOT_API_SECRET')
@@ -138,11 +141,37 @@ CHECK_STATUS_URL = env('CHECK_STATUS_URL')
 LENS_OPTIONS_URL = env('LENS_OPTIONS_URL')
 LENS_LIST_URL = env('LENS_LIST_URL')
 
-# --- Настройки APScheduler ---
+
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
-# --- Конфиг Логирования (без изменений) ---
+
+def gettext(s): return s
+
+
+LANGUAGES = (
+    ('ru', 'Russian'),
+    ('en', 'English'),
+    ('uz', 'Uzbek'),
+)
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
+MODELTRANSLATION_LANGUAGES = ('ru', 'en', 'uz')
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}
+
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -164,7 +193,7 @@ LOGGING = {
         "file_django": {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": BASE_DIR / "logs/django.log",
-            "maxBytes": 1024 * 1024 * 25,  # 25 MB
+            "maxBytes": 1024 * 1024 * 25,
             "backupCount": 3,
             "formatter": "verbose",
             "encoding": "utf-8",

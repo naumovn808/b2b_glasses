@@ -4890,3 +4890,237 @@ INFO 2025-11-29 15:18:38,154 import_1c_xml 1 125580032861888 Очистка за
 INFO 2025-11-29 15:18:38,160 import_1c_xml 1 125580032861888 Очистка завершена. Удалено 0 старых Линз.
 INFO 2025-11-29 15:18:38,161 import_1c_xml 1 125580032861888 --- Импорт (RUN ID: 680068fb-2303-4708-8f5c-b46524f078d0) успешно завершен! ---
 INFO 2025-11-29 15:18:38,171 scheduler 1 125580032861888 [Smart Import] Импорт завершен успешно.
+INFO 2025-12-14 13:28:23,799 run_scheduler 1 135743989894016 Планировщик запущен. Проверка импорта каждые 5 минут.
+INFO 2025-12-14 13:29:01,365 run_scheduler 1 132729108675456 Планировщик запущен. Проверка импорта каждые 5 минут.
+INFO 2025-12-14 13:34:01,353 scheduler 1 132729023751872 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 13:34:01,397 import_1c_xml 1 132729023751872 --- [RUN ID: e23eef66-1e4a-48b3-943e-e98a8d6dde21] ---
+INFO 2025-12-14 13:34:01,399 import_1c_xml 1 132729023751872 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 13:34:01,400 import_1c_xml 1 132729023751872 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 13:34:01,435 import_1c_xml 1 132729023751872 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 13:34:01,436 import_1c_xml 1 132729023751872 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 13:34:01,441 import_1c_xml 1 132729023751872 Скачиваю 4 файла...
+INFO 2025-12-14 13:34:32,556 import_1c_xml 1 132729023751872 Успешно скачано 4 файла.
+INFO 2025-12-14 13:34:32,562 import_1c_xml 1 132729023751872 Запуск "Pre-flight" проверки скачанных XML-файлов...
+INFO 2025-12-14 13:34:37,174 import_1c_xml 1 132729023751872 ...[OK] Все XML-файлы корректны и готовы к импорту.
+INFO 2025-12-14 13:34:37,175 import_1c_xml 1 132729023751872 --- Начало импорта каталога 1C ---
+INFO 2025-12-14 13:34:37,181 import_1c_xml 1 132729023751872 Шаг 1: Импорт Оправ (import0_1.xml)...
+INFO 2025-12-14 13:34:37,253 import_1c_xml 1 132729023751872   ...Классификатор Оправ загружен (Найдено 11 свойств).
+INFO 2025-12-14 13:34:37,253 import_1c_xml 1 132729023751872   ...Кеширование справочников...
+INFO 2025-12-14 13:34:37,265 import_1c_xml 1 132729023751872   ...Кеширование завершено.
+INFO 2025-12-14 13:34:37,265 import_1c_xml 1 132729023751872   Найдено 780 товаров (Оправ). Начинаю обработку...
+INFO 2025-12-14 13:34:38,291 import_1c_xml 1 132729023751872 Обработано 780 Оправ.
+INFO 2025-12-14 13:34:38,292 import_1c_xml 1 132729023751872 Шаг 2: Импорт Линз (import1_1.xml)...
+INFO 2025-12-14 13:34:40,500 import_1c_xml 1 132729023751872   ...Кеширование Серий Линз...
+INFO 2025-12-14 13:34:40,505 import_1c_xml 1 132729023751872   ...Кеширование завершено.
+INFO 2025-12-14 13:34:40,511 import_1c_xml 1 132729023751872   Найдено 44332 товаров (Линз). Начинаю обработку...
+INFO 2025-12-14 13:35:38,551 import_1c_xml 1 132729023751872 Обработано 44332 Линз.
+INFO 2025-12-14 13:35:38,552 import_1c_xml 1 132729023751872 Шаг 3: Обновление Цен/Остатков Оправ (offers0_1.xml)...
+INFO 2025-12-14 13:35:38,681 import_1c_xml 1 132729023751872   Найдено 780 предложений. Начинаю Python-обработку...
+INFO 2025-12-14 13:35:38,702 import_1c_xml 1 132729023751872   ...[OK] Python-обработка 780 предложений завершена.
+WARNING 2025-12-14 13:35:38,703 import_1c_xml 1 132729023751872   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (8 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-12-14 13:35:38,940 import_1c_xml 1 132729023751872   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-12-14 13:35:38,942 import_1c_xml 1 132729023751872 Обновлено 780 Оправ.
+INFO 2025-12-14 13:35:38,943 import_1c_xml 1 132729023751872 Шаг 4: Обновление Цен/Остатков Линз (offers1_1.xml)...
+INFO 2025-12-14 13:35:40,674 import_1c_xml 1 132729023751872   Найдено 44332 предложений. Начинаю Python-обработку...
+INFO 2025-12-14 13:35:41,613 import_1c_xml 1 132729023751872   ...[OK] Python-обработка 44332 предложений завершена.
+WARNING 2025-12-14 13:35:41,614 import_1c_xml 1 132729023751872   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (444 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-12-14 13:35:50,975 import_1c_xml 1 132729023751872   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-12-14 13:35:51,041 import_1c_xml 1 132729023751872 Обновлено 44332 Линз.
+INFO 2025-12-14 13:35:51,042 import_1c_xml 1 132729023751872 --- Шаг 5: Атомарная очистка (Удаление старых товаров) ---
+WARNING 2025-12-14 13:35:51,043 import_1c_xml 1 132729023751872   ...[!] Начинаю УДАЛЕНИЕ старых записей... ОЖИДАЙТЕ...
+INFO 2025-12-14 13:35:51,162 import_1c_xml 1 132729023751872   ...[OK] УДАЛЕНИЕ старых записей завершено.
+INFO 2025-12-14 13:35:51,504 import_1c_xml 1 132729023751872 Очистка завершена. Удалено 0 старых Оправ.
+INFO 2025-12-14 13:35:51,506 import_1c_xml 1 132729023751872 Очистка завершена. Удалено 0 старых Линз.
+INFO 2025-12-14 13:35:51,508 import_1c_xml 1 132729023751872 --- Импорт (RUN ID: e23eef66-1e4a-48b3-943e-e98a8d6dde21) успешно завершен! ---
+INFO 2025-12-14 13:35:51,525 scheduler 1 132729023751872 [Smart Import] Импорт завершен успешно.
+INFO 2025-12-14 14:04:01,356 scheduler 1 132729023751872 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 14:04:01,363 import_1c_xml 1 132729023751872 --- [RUN ID: d339aa21-60ba-4396-bc9a-696327b575cd] ---
+INFO 2025-12-14 14:04:01,365 import_1c_xml 1 132729023751872 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 14:04:01,365 import_1c_xml 1 132729023751872 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 14:04:01,385 import_1c_xml 1 132729023751872 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 14:04:01,385 import_1c_xml 1 132729023751872 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 14:04:01,389 import_1c_xml 1 132729023751872 Скачиваю 4 файла...
+INFO 2025-12-14 14:04:26,328 import_1c_xml 1 132729023751872 Успешно скачано 4 файла.
+INFO 2025-12-14 14:04:26,332 import_1c_xml 1 132729023751872 Запуск "Pre-flight" проверки скачанных XML-файлов...
+INFO 2025-12-14 14:04:30,984 import_1c_xml 1 132729023751872 ...[OK] Все XML-файлы корректны и готовы к импорту.
+INFO 2025-12-14 14:04:30,985 import_1c_xml 1 132729023751872 --- Начало импорта каталога 1C ---
+INFO 2025-12-14 14:04:30,986 import_1c_xml 1 132729023751872 Шаг 1: Импорт Оправ (import0_1.xml)...
+INFO 2025-12-14 14:04:31,061 import_1c_xml 1 132729023751872   ...Классификатор Оправ загружен (Найдено 11 свойств).
+INFO 2025-12-14 14:04:31,061 import_1c_xml 1 132729023751872   ...Кеширование справочников...
+INFO 2025-12-14 14:04:31,064 import_1c_xml 1 132729023751872   ...Кеширование завершено.
+INFO 2025-12-14 14:04:31,065 import_1c_xml 1 132729023751872   Найдено 780 товаров (Оправ). Начинаю обработку...
+INFO 2025-12-14 14:04:32,063 import_1c_xml 1 132729023751872 Обработано 780 Оправ.
+INFO 2025-12-14 14:04:32,067 import_1c_xml 1 132729023751872 Шаг 2: Импорт Линз (import1_1.xml)...
+INFO 2025-12-14 14:04:34,114 import_1c_xml 1 132729023751872   ...Кеширование Серий Линз...
+INFO 2025-12-14 14:04:34,116 import_1c_xml 1 132729023751872   ...Кеширование завершено.
+INFO 2025-12-14 14:04:34,122 import_1c_xml 1 132729023751872   Найдено 44332 товаров (Линз). Начинаю обработку...
+INFO 2025-12-14 14:05:19,714 import_1c_xml 1 132729023751872 Обработано 44332 Линз.
+INFO 2025-12-14 14:05:19,715 import_1c_xml 1 132729023751872 Шаг 3: Обновление Цен/Остатков Оправ (offers0_1.xml)...
+INFO 2025-12-14 14:05:19,735 import_1c_xml 1 132729023751872   Найдено 780 предложений. Начинаю Python-обработку...
+INFO 2025-12-14 14:05:19,752 import_1c_xml 1 132729023751872   ...[OK] Python-обработка 780 предложений завершена.
+WARNING 2025-12-14 14:05:19,753 import_1c_xml 1 132729023751872   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (8 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-12-14 14:05:19,892 import_1c_xml 1 132729023751872   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-12-14 14:05:19,894 import_1c_xml 1 132729023751872 Обновлено 780 Оправ.
+INFO 2025-12-14 14:05:19,894 import_1c_xml 1 132729023751872 Шаг 4: Обновление Цен/Остатков Линз (offers1_1.xml)...
+INFO 2025-12-14 14:05:20,879 import_1c_xml 1 132729023751872   Найдено 44332 предложений. Начинаю Python-обработку...
+INFO 2025-12-14 14:05:21,693 import_1c_xml 1 132729023751872   ...[OK] Python-обработка 44332 предложений завершена.
+WARNING 2025-12-14 14:05:21,694 import_1c_xml 1 132729023751872   ...[!] Начинаю BATCH-ЗАПИСЬ в БД (444 партий по 100 шт.). ОЖИДАЙТЕ...
+INFO 2025-12-14 14:05:29,312 import_1c_xml 1 132729023751872   ...[OK] BATCH-ЗАПИСЬ в БД завершена.
+INFO 2025-12-14 14:05:29,379 import_1c_xml 1 132729023751872 Обновлено 44332 Линз.
+INFO 2025-12-14 14:05:29,379 import_1c_xml 1 132729023751872 --- Шаг 5: Атомарная очистка (Удаление старых товаров) ---
+WARNING 2025-12-14 14:05:29,380 import_1c_xml 1 132729023751872   ...[!] Начинаю УДАЛЕНИЕ старых записей... ОЖИДАЙТЕ...
+INFO 2025-12-14 14:05:29,438 import_1c_xml 1 132729023751872   ...[OK] УДАЛЕНИЕ старых записей завершено.
+INFO 2025-12-14 14:05:29,709 import_1c_xml 1 132729023751872 Очистка завершена. Удалено 0 старых Оправ.
+INFO 2025-12-14 14:05:29,711 import_1c_xml 1 132729023751872 Очистка завершена. Удалено 0 старых Линз.
+INFO 2025-12-14 14:05:29,711 import_1c_xml 1 132729023751872 --- Импорт (RUN ID: d339aa21-60ba-4396-bc9a-696327b575cd) успешно завершен! ---
+INFO 2025-12-14 14:05:29,726 scheduler 1 132729023751872 [Smart Import] Импорт завершен успешно.
+INFO 2025-12-14 20:59:34,332 run_scheduler 1 132671161899904 Планировщик запущен. Проверка импорта каждые 5 минут.
+ERROR 2025-12-14 21:00:49,963 log 9 129635637611392 Internal Server Error: /admin/content/aboutus/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "content_aboutus" does not exist
+LINE 1: ...utus"."text_en", "content_aboutus"."text_uz" FROM "content_a...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/solo/admin.py", line 76, in change_view
+    self.model.objects.get_or_create(pk=self.singleton_instance_id)
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/modeltranslation/manager.py", line 420, in get_or_create
+    return super().get_or_create(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 946, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "content_aboutus" does not exist
+LINE 1: ...utus"."text_en", "content_aboutus"."text_uz" FROM "content_a...
+                                                             ^
+
+INFO 2025-12-14 21:04:34,295 scheduler 1 132671002900160 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:04:34,336 import_1c_xml 1 132671002900160 --- [RUN ID: af23a7f3-6b4a-4787-9457-15405463510a] ---
+INFO 2025-12-14 21:04:34,340 import_1c_xml 1 132671002900160 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:04:34,340 import_1c_xml 1 132671002900160 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:04:34,369 import_1c_xml 1 132671002900160 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:04:34,369 import_1c_xml 1 132671002900160 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:04:34,375 import_1c_xml 1 132671002900160 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:04:35,110 import_1c_xml 1 132671002900160   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать offers0_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:04:35,110 import_1c_xml 1 132671002900160 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:04:35,115 scheduler 1 132671002900160 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+INFO 2025-12-14 21:09:34,302 scheduler 1 132671002900160 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:09:34,304 import_1c_xml 1 132671002900160 --- [RUN ID: 8ce198bd-0572-46b9-b992-d777b4198c22] ---
+INFO 2025-12-14 21:09:34,306 import_1c_xml 1 132671002900160 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:09:34,307 import_1c_xml 1 132671002900160 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:09:34,333 import_1c_xml 1 132671002900160 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:09:34,334 import_1c_xml 1 132671002900160 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:09:34,338 import_1c_xml 1 132671002900160 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:09:35,137 import_1c_xml 1 132671002900160   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать offers0_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:09:35,137 import_1c_xml 1 132671002900160 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:09:35,142 scheduler 1 132671002900160 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+INFO 2025-12-14 21:14:34,299 scheduler 1 132671002900160 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:14:34,301 import_1c_xml 1 132671002900160 --- [RUN ID: 2def1e46-98ac-4fb7-9f4f-589d92bdf262] ---
+INFO 2025-12-14 21:14:34,303 import_1c_xml 1 132671002900160 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:14:34,303 import_1c_xml 1 132671002900160 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:14:34,324 import_1c_xml 1 132671002900160 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:14:34,325 import_1c_xml 1 132671002900160 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:14:34,329 import_1c_xml 1 132671002900160 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:14:35,080 import_1c_xml 1 132671002900160   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать offers0_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:14:35,087 import_1c_xml 1 132671002900160 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:14:35,098 scheduler 1 132671002900160 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+INFO 2025-12-14 21:19:34,300 scheduler 1 132671002900160 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:19:34,302 import_1c_xml 1 132671002900160 --- [RUN ID: e1870ebb-a3da-4e39-a6f2-f756b2e98ac0] ---
+INFO 2025-12-14 21:19:34,307 import_1c_xml 1 132671002900160 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:19:34,307 import_1c_xml 1 132671002900160 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:19:34,340 import_1c_xml 1 132671002900160 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:19:34,340 import_1c_xml 1 132671002900160 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:19:34,347 import_1c_xml 1 132671002900160 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:19:35,374 import_1c_xml 1 132671002900160   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать import1_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:19:35,375 import_1c_xml 1 132671002900160 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:19:35,382 scheduler 1 132671002900160 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+INFO 2025-12-14 21:24:34,297 scheduler 1 132671002900160 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:24:34,298 import_1c_xml 1 132671002900160 --- [RUN ID: 984e18b7-ef29-4068-905b-4f231befac11] ---
+INFO 2025-12-14 21:24:34,302 import_1c_xml 1 132671002900160 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:24:34,302 import_1c_xml 1 132671002900160 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:24:34,324 import_1c_xml 1 132671002900160 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:24:34,325 import_1c_xml 1 132671002900160 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:24:34,330 import_1c_xml 1 132671002900160 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:24:53,999 import_1c_xml 1 132671002900160   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать offers1_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:24:54,000 import_1c_xml 1 132671002900160 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:24:54,010 scheduler 1 132671002900160 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+WARNING 2025-12-14 21:27:09,734 log 8 129635637611392 Not Found: /api/swagger/index.html
+WARNING 2025-12-14 21:27:13,329 log 9 129635637611392 Not Found: /api/swagger
+WARNING 2025-12-14 21:27:17,053 log 10 129635637611392 Not Found: /api/
+WARNING 2025-12-14 21:27:45,645 log 9 129635637611392 Not Found: /api/v1/
+INFO 2025-12-14 21:29:34,294 scheduler 1 132671002900160 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:29:34,295 import_1c_xml 1 132671002900160 --- [RUN ID: 40492956-6d67-4aec-a82e-4f12b99ae6cd] ---
+INFO 2025-12-14 21:29:34,298 import_1c_xml 1 132671002900160 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:29:34,298 import_1c_xml 1 132671002900160 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:29:34,319 import_1c_xml 1 132671002900160 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:29:34,320 import_1c_xml 1 132671002900160 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:29:34,324 import_1c_xml 1 132671002900160 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:29:54,154 import_1c_xml 1 132671002900160   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать offers1_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:29:54,155 import_1c_xml 1 132671002900160 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:29:54,161 scheduler 1 132671002900160 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+INFO 2025-12-14 21:32:59,614 run_scheduler 1 125176902785920 Планировщик запущен. Проверка импорта каждые 5 минут.
+INFO 2025-12-14 21:37:59,585 scheduler 1 125176812398272 [Smart Import] Запуск команды импорта...
+INFO 2025-12-14 21:37:59,608 import_1c_xml 1 125176812398272 --- [RUN ID: bf82d87f-a25a-4a47-a575-db2868a76916] ---
+INFO 2025-12-14 21:37:59,612 import_1c_xml 1 125176812398272 Создана временная папка: /app/b2b_glasses/temp_xml
+INFO 2025-12-14 21:37:59,612 import_1c_xml 1 125176812398272 Подключаюсь к FTP: 89.232.185.143:21 (encoding=utf-8)...
+INFO 2025-12-14 21:37:59,637 import_1c_xml 1 125176812398272 Успешно подключен к FTP (UTF-8).
+INFO 2025-12-14 21:37:59,637 import_1c_xml 1 125176812398272 Перехожу в папку: /Выгрузка/webdata
+INFO 2025-12-14 21:37:59,642 import_1c_xml 1 125176812398272 Скачиваю 4 файла...
+CRITICAL 2025-12-14 21:38:22,775 import_1c_xml 1 125176812398272   [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать offers1_1.xml: 550 The system cannot find the file specified. 
+CRITICAL 2025-12-14 21:38:22,778 import_1c_xml 1 125176812398272 Процесс импорта будет остановлен. База данных НЕ будет затронута.
+ERROR 2025-12-14 21:38:22,797 scheduler 1 125176812398272 [Smart Import] Ошибка при импорте: Ошибка скачивания файла: 550 The system cannot find the file specified. 
+INFO 2025-12-14 21:42:39,811 run_scheduler 1 133897867692928 Планировщик запущен. Проверка импорта каждые 5 минут.
