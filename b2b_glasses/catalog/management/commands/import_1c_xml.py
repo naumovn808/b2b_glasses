@@ -26,8 +26,8 @@ FILES_TO_DOWNLOAD = [
 ]
 REMOTE_PATH = "/Выгрузка/webdata"
 LENS_SERIES_RE = re.compile(r'^(.*?)\s*\(')
-LENS_SPH_RE = re.compile(r'\(\s*([+-]\d+\.\d+)')
-LENS_CYL_RE = re.compile(r'cyl\s*([+-]\d+\.\d+)')
+LENS_SPH_RE = re.compile(r'\(\s*([+-]?\d+\.\d+)')
+LENS_CYL_RE = re.compile(r'cyl\s*([+-]?\d+\.\d+)')
 LENS_DIA_RE = re.compile(r'D\.(\d+)')
 
 
