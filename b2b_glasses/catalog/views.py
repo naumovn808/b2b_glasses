@@ -178,7 +178,7 @@ class LensOptionsView(APIView):
     @swagger_auto_schema(
         tags=['Catalog (Каталог)'],
         operation_summary="4. Получить опции фильтров для ЛИНЗ",
-        operation_description="Возвращает ВСЕ доступные Серии, SPH, CYL и DIA."
+        operation_description="Возвращает доступные Серии, SPH, CYL и DIA, отфильтрованные по переданным параметрам."
     )
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -191,13 +191,39 @@ class LensOptionsView(APIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
 
-        series_data = LensSeriesSerializer(
-            LensSeries.objects.all(), many=True).data
-        sph_values = Lens.objects.values_list(
+        # 1. Начинаем с базового набора: Линзы, которые есть в наличии
+        queryset = Lens.objects.filter(stock__gt=0)
+
+        # 2. Получаем параметры из запроса
+        sph = request.query_params.get('sph')
+        cyl = request.query_params.get('cyl')
+        dia = request.query_params.get('dia')
+
+        # 3. Применяем фильтрацию, если параметры переданы
+        if sph:
+            queryset = queryset.filter(sph=sph)
+        if cyl:
+            queryset = queryset.filter(cyl=cyl)
+        if dia:
+            queryset = queryset.filter(dia=dia)
+
+        # 4. Формируем списки доступных опций на основе ОТФИЛЬТРОВАННОГО набора
+
+        # Для Серий (Material): Берем только те серии, которые есть в оставшихся линзах
+        available_series_ids = queryset.values_list(
+            'series', flat=True).distinct()
+        available_series = LensSeries.objects.filter(
+            id__in=available_series_ids).order_by('name')
+
+        series_data = LensSeriesSerializer(available_series, many=True).data
+
+        # Для SPH, CYL, DIA: Берем значения из оставшихся линз
+        # Это полезно: если выбрали SPH, список CYL сократится до реальных комбинаций
+        sph_values = queryset.values_list(
             'sph', flat=True).distinct().order_by('sph')
-        cyl_values = Lens.objects.values_list(
+        cyl_values = queryset.values_list(
             'cyl', flat=True).distinct().order_by('cyl')
-        dia_values = Lens.objects.values_list(
+        dia_values = queryset.values_list(
             'dia', flat=True).distinct().order_by('dia')
 
         data = {

@@ -1827,3 +1827,132 @@ django.core.exceptions.SynchronousOnlyOperation: You cannot call this from an as
 2025-12-14 21:40:42,570 - aiogram.dispatcher - WARNING - Received SIGTERM signal
 2025-12-14 21:40:42,572 - aiogram.dispatcher - INFO - Polling stopped for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
 2025-12-14 21:40:42,585 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-14 21:42:40,705 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-14 21:42:40,708 - __main__ - INFO - --- Запуск бота ---
+2025-12-14 21:42:41,078 - aiogram.dispatcher - INFO - Start polling
+2025-12-14 21:42:41,185 - aiogram.dispatcher - INFO - Run polling for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 22:03:02,468 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:02,470 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7975130787)
+2025-12-14 22:03:07,746 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:07,747 - aiogram.dispatcher - WARNING - Sleep for 1.261588 seconds and try again... (tryings = 1, bot id = 7975130787)
+2025-12-14 22:03:13,560 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:13,561 - aiogram.dispatcher - WARNING - Sleep for 1.692361 seconds and try again... (tryings = 2, bot id = 7975130787)
+2025-12-14 22:03:20,320 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:20,321 - aiogram.dispatcher - WARNING - Sleep for 2.171358 seconds and try again... (tryings = 3, bot id = 7975130787)
+2025-12-14 22:03:28,151 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:28,152 - aiogram.dispatcher - WARNING - Sleep for 2.839619 seconds and try again... (tryings = 4, bot id = 7975130787)
+2025-12-14 22:03:37,445 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:37,445 - aiogram.dispatcher - WARNING - Sleep for 3.831683 seconds and try again... (tryings = 5, bot id = 7975130787)
+2025-12-14 22:03:47,221 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:47,222 - aiogram.dispatcher - WARNING - Sleep for 4.984764 seconds and try again... (tryings = 6, bot id = 7975130787)
+2025-12-14 22:03:56,500 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:03:56,501 - aiogram.dispatcher - WARNING - Sleep for 5.031533 seconds and try again... (tryings = 7, bot id = 7975130787)
+2025-12-14 22:04:06,058 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:04:06,058 - aiogram.dispatcher - WARNING - Sleep for 4.904786 seconds and try again... (tryings = 8, bot id = 7975130787)
+2025-12-14 22:04:15,563 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:04:15,563 - aiogram.dispatcher - WARNING - Sleep for 5.005154 seconds and try again... (tryings = 9, bot id = 7975130787)
+2025-12-14 22:04:25,726 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:04:25,727 - aiogram.dispatcher - WARNING - Sleep for 5.151907 seconds and try again... (tryings = 10, bot id = 7975130787)
+2025-12-14 22:04:36,676 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:04:36,677 - aiogram.dispatcher - WARNING - Sleep for 5.097301 seconds and try again... (tryings = 11, bot id = 7975130787)
+2025-12-14 22:04:45,324 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:04:45,326 - aiogram.dispatcher - WARNING - Sleep for 5.022046 seconds and try again... (tryings = 12, bot id = 7975130787)
+2025-12-14 22:04:54,839 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:04:54,840 - aiogram.dispatcher - WARNING - Sleep for 4.945982 seconds and try again... (tryings = 13, bot id = 7975130787)
+2025-12-14 22:05:05,277 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:05:05,277 - aiogram.dispatcher - WARNING - Sleep for 5.075354 seconds and try again... (tryings = 14, bot id = 7975130787)
+2025-12-14 22:05:15,552 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:05:15,552 - aiogram.dispatcher - WARNING - Sleep for 4.896545 seconds and try again... (tryings = 15, bot id = 7975130787)
+2025-12-14 22:05:25,606 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:05:25,606 - aiogram.dispatcher - WARNING - Sleep for 4.973916 seconds and try again... (tryings = 16, bot id = 7975130787)
+2025-12-14 22:05:35,848 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:05:35,848 - aiogram.dispatcher - WARNING - Sleep for 4.948297 seconds and try again... (tryings = 17, bot id = 7975130787)
+2025-12-14 22:05:46,098 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:05:46,098 - aiogram.dispatcher - WARNING - Sleep for 4.939694 seconds and try again... (tryings = 18, bot id = 7975130787)
+2025-12-14 22:05:56,222 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-12-14 22:05:56,223 - aiogram.dispatcher - WARNING - Sleep for 5.058652 seconds and try again... (tryings = 19, bot id = 7975130787)
+2025-12-14 22:06:06,350 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-14 22:06:06,353 - aiogram.dispatcher - INFO - Polling stopped for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
+2025-12-14 22:06:06,354 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-31 17:24:40,143 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-31 17:24:40,149 - __main__ - INFO - --- Запуск бота ---
+2025-12-31 17:24:40,523 - aiogram.dispatcher - INFO - Start polling
+2025-12-31 17:24:40,642 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:26:03,493 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-12-31 17:26:03,654 - __main__ - INFO - Успешная регистрация для TG ID: 6804147668
+2025-12-31 17:31:15,956 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-31 17:31:15,957 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:31:15,958 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-31 17:31:22,849 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-31 17:31:22,851 - __main__ - INFO - --- Запуск бота ---
+2025-12-31 17:31:23,198 - aiogram.dispatcher - INFO - Start polling
+2025-12-31 17:31:23,303 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:32:02,339 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-12-31 17:32:02,495 - __main__ - INFO - Успешная регистрация для TG ID: 6804147668
+2025-12-31 17:33:51,944 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-31 17:33:51,949 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:33:51,950 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-31 17:33:55,597 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-31 17:33:55,600 - __main__ - INFO - --- Запуск бота ---
+2025-12-31 17:33:55,953 - aiogram.dispatcher - INFO - Start polling
+2025-12-31 17:33:56,059 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:37:06,570 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-31 17:37:06,571 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:37:06,572 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-31 17:37:10,029 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-31 17:37:10,032 - __main__ - INFO - --- Запуск бота ---
+2025-12-31 17:37:10,380 - aiogram.dispatcher - INFO - Start polling
+2025-12-31 17:37:10,480 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:37:16,656 - __main__ - INFO - Пользователь 6804147668 нажал /start
+2025-12-31 17:45:11,471 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-31 17:45:11,473 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:45:11,473 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-31 17:45:15,633 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-31 17:45:15,636 - __main__ - INFO - --- Запуск бота ---
+2025-12-31 17:45:16,057 - aiogram.dispatcher - INFO - Start polling
+2025-12-31 17:45:16,158 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 17:45:19,212 - __main__ - INFO - Пользователь 6804147668 нажал /start
+2025-12-31 17:53:55,459 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-12-31 17:53:55,460 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8578961673)
+2025-12-31 17:54:17,528 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [Connect call failed ('149.154.167.220', 443)]
+2025-12-31 17:54:17,529 - aiogram.dispatcher - WARNING - Sleep for 1.330732 seconds and try again... (tryings = 1, bot id = 8578961673)
+2025-12-31 17:54:36,762 - aiogram.dispatcher - INFO - Connection established (tryings = 2, bot id = 8578961673)
+2025-12-31 18:26:45,768 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-31 18:26:45,771 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 18:26:45,771 - aiogram.dispatcher - INFO - Polling stopped
+2025-12-31 18:26:50,451 - INFO - 🤖 Бот запущен и готов к работе!
+2025-12-31 18:26:50,452 - INFO - Start polling
+2025-12-31 18:26:50,554 - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 18:27:16,107 - WARNING - API Error [GET http://web:8000/api/v1/internal/check-status/]: 404
+2025-12-31 19:35:54,971 - WARNING - Received SIGTERM signal
+2025-12-31 19:35:54,982 - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:35:54,982 - INFO - Polling stopped
+2025-12-31 19:35:59,765 - INFO - 🤖 Бот запущен и готов к работе!
+2025-12-31 19:35:59,767 - INFO - Start polling
+2025-12-31 19:35:59,951 - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:36:22,088 - WARNING - API Error [GET http://web:8000/api/v1/internal/check-status/]: 404
+2025-12-31 19:36:50,851 - WARNING - Received SIGTERM signal
+2025-12-31 19:36:50,856 - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:36:50,857 - INFO - Polling stopped
+2025-12-31 19:36:55,247 - INFO - 🤖 Бот запущен (v5.0 Smart UI)!
+2025-12-31 19:36:55,248 - INFO - Start polling
+2025-12-31 19:36:55,375 - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:37:18,816 - WARNING - API Error [GET http://web:8000/api/v1/internal/check-status/]: 404
+2025-12-31 19:40:16,890 - WARNING - Received SIGTERM signal
+2025-12-31 19:40:16,892 - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:40:16,892 - INFO - Polling stopped
+2025-12-31 19:40:21,378 - INFO - 🤖 Бот запущен (v5.0 Smart UI)!
+2025-12-31 19:40:21,380 - INFO - Start polling
+2025-12-31 19:40:21,585 - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:42:11,625 - WARNING - Received SIGTERM signal
+2025-12-31 19:42:11,626 - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:42:11,627 - INFO - Polling stopped
+2025-12-31 19:42:15,602 - root - INFO - --- Логгирование бота успешно настроено ---
+2025-12-31 19:42:15,605 - __main__ - INFO - --- Запуск бота ---
+2025-12-31 19:42:16,018 - aiogram.dispatcher - INFO - Start polling
+2025-12-31 19:42:16,129 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:42:34,422 - __main__ - INFO - Попытка регистрации для TG ID: 6804147668
+2025-12-31 19:42:34,577 - __main__ - INFO - Успешная регистрация для TG ID: 6804147668
+2025-12-31 19:46:07,602 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-12-31 19:46:07,607 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2025-12-31 19:46:07,607 - aiogram.dispatcher - INFO - Polling stopped

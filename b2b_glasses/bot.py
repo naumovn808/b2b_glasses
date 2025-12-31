@@ -26,7 +26,7 @@ import logging
 import logging.handlers
 from pathlib import Path
 
-print("[DEBUG] bot_loader.py (v4.4): Запускаю настройку Django...")
+print("[DEBUG] bot_loader.py (v4.7): Запускаю настройку Django...")
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.append(str(PROJECT_ROOT))
 sys.path.append(str(PROJECT_ROOT.parent))
@@ -34,10 +34,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'b2b_glasses.settings')
 
 try:
     django.setup()
-    print("[DEBUG] bot_loader.py (v4.4): Настройка Django завершена.")
+    print("[DEBUG] bot_loader.py (v4.7): Настройка Django завершена.")
 except Exception as e:
     print(
-        f"[DEBUG] bot_loader.py (v4.4): КРИТИЧЕСКАЯ ОШИБКА. Не удалось настроить Django: {e}")
+        f"[DEBUG] bot_loader.py (v4.7): КРИТИЧЕСКАЯ ОШИБКА. Не удалось настроить Django: {e}")
     raise
 
 
@@ -77,13 +77,16 @@ class RegistrationFSM(StatesGroup):
 
 
 class LensFilterFSM(StatesGroup):
-    waiting_for_series = State()
+    # ПОРЯДОК: SPH -> CYL -> DIA -> Material (Series)
     waiting_for_sph = State()
     waiting_for_cyl = State()
     waiting_for_dia = State()
+    waiting_for_material = State()  # Бывшая Series
+
     waiting_for_search_query = State()
     # Состояния для добавления в корзину по ID
     waiting_for_add_id = State()
+    # ВНИМАНИЕ: waiting_for_add_qty теперь используется только для ручного ввода
     waiting_for_add_qty = State()
 
 
@@ -101,7 +104,6 @@ class CartEditFSM(StatesGroup):
 BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
 WEBSITE_URL = settings.WEBSITE_URL
 LENS_PAGE_SIZE = settings.REST_FRAMEWORK.get('PAGE_SIZE', 5)
-# ЗАМЕНИТЬ на реальный юзернейм менеджера (без @)
 MANAGER_USERNAME = settings.MANAGER_USERNAME
 
 # URL'ы
@@ -119,8 +121,6 @@ CART_ADD_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/add/"
 CART_CLEAR_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/clear/"
 CART_CHECKOUT_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/checkout/"
 CUSTOM_ORDER_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/custom/create/"
-# Предполагаемые URL для редактирования (Нужно реализовать в Django!)
-# + {id}/
 CART_ITEM_UPDATE_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/cart/items/"
 HISTORY_URL = f"{settings.DJANGO_BASE_URL}/api/v1/orders/history/"
 
@@ -171,8 +171,12 @@ async def register_user(payload: dict) -> Tuple[bool, str]:
         return False, "Ошибка: не удалось подключиться к серверу."
 
 
-async def get_lens_filter_options(telegram_id: int) -> dict | None:
+# ИЗМЕНЕНИЕ: Добавлена возможность передавать дополнительные фильтры (extra_params)
+async def get_lens_filter_options(telegram_id: int, extra_params: dict = None) -> dict | None:
     params = {"telegram_id": telegram_id}
+    if extra_params:
+        params.update(extra_params)
+
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(LENS_OPTIONS_URL, headers=BOT_AUTH_HEADER, params=params) as response:
@@ -246,15 +250,11 @@ async def create_custom_order_api(auth_token: str, payload: dict) -> bool:
 
 
 async def update_cart_item(auth_token: str, item_id: int, quantity: int) -> bool:
-    """Обновляет количество товара в корзине.
-       Требует реализации PATCH/PUT на стороне Django: /api/v1/orders/cart/items/{id}/
-    """
     headers = {"Authorization": f"Token {auth_token}"}
     url = f"{CART_ITEM_UPDATE_URL}{item_id}/update/"
     payload = {"quantity": quantity}
     try:
         async with aiohttp.ClientSession() as session:
-            # Используем patch или put в зависимости от реализации бэкенда
             async with session.patch(url, headers=headers, json=payload) as response:
                 return response.status in [200, 204]
     except Exception as e:
@@ -263,9 +263,6 @@ async def update_cart_item(auth_token: str, item_id: int, quantity: int) -> bool
 
 
 async def delete_cart_item(auth_token: str, item_id: int) -> bool:
-    """Удаляет позицию из корзины.
-       Требует реализации DELETE на стороне Django: /api/v1/orders/cart/items/{id}/
-    """
     headers = {"Authorization": f"Token {auth_token}"}
     url = f"{CART_ITEM_UPDATE_URL}{item_id}/"
     try:
@@ -347,7 +344,7 @@ def get_phone_keyboard():
     )
 
 
-def build_filter_buttons(items: list, prefix: str, page: int = 1, show_back_button: bool = False) -> InlineKeyboardBuilder:
+def build_filter_buttons(items: list, prefix: str, page: int = 1, show_back_button: bool = False, back_callback: str = "filter_cancel") -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
     total_items = len(items)
     total_pages = (total_items + BUTTONS_PER_PAGE - 1) // BUTTONS_PER_PAGE
@@ -373,12 +370,15 @@ def build_filter_buttons(items: list, prefix: str, page: int = 1, show_back_butt
             row.append(InlineKeyboardButton(
                 text=">", callback_data=f"{prefix}_page_{page + 1}"))
         builder.row(*row)
-    back_button = []
+
+    # Кнопки навигации (Назад / Отмена)
+    nav_row = []
     if show_back_button:
-        pass
-    back_button.append(InlineKeyboardButton(
+        nav_row.append(InlineKeyboardButton(
+            text="↩️ Назад", callback_data=back_callback))
+    nav_row.append(InlineKeyboardButton(
         text="❌ Отмена", callback_data="filter_cancel"))
-    builder.row(*back_button)
+    builder.row(*nav_row)
     return builder
 
 
@@ -535,48 +535,69 @@ async def handler_start_simple(message: Message, state: FSMContext):
             "Ваш аккаунт неактивен или еще не привязан."
         )
 
-# --- Логика Фильтра (Чистый UI) ---
+# --- Логика Фильтра (НОВЫЙ ПОРЯДОК) ---
 
 
 async def update_filter_message(bot: Bot, chat_id: int, message_id: int, state: FSMContext, page: int = 1):
     data = await state.get_data()
     options = data.get('options', {})
+
+    # Новый порядок отображения в шапке
     text = "<b>--- Фильтр Линз ---</b>\n"
-    text += f"1. Серия: {html.quote(data.get('series_name', '...'))}\n"
-    text += f"2. SPH: {html.quote(data.get('sph', '...'))}\n"
-    text += f"3. CYL: {html.quote(data.get('cyl', '...'))}\n"
-    text += f"4. DIA: {html.quote(data.get('dia', '...'))}\n"
+    text += f"1. SPH: {html.quote(data.get('sph', '...'))}\n"
+    text += f"2. CYL: {html.quote(data.get('cyl', '...'))}\n"
+    text += f"3. DIA: {html.quote(data.get('dia', '...'))}\n"
+    # "Материал" вместо "Серия"
+    text += f"4. Материал: {html.quote(data.get('series_name', '...'))}\n"
     text += "--------------------\n"
+
     current_fsm_state = await state.get_state()
     keyboard_builder = InlineKeyboardBuilder()
-    if current_fsm_state == LensFilterFSM.waiting_for_series:
-        text += f"<b>Шаг 1 из 4: Выберите серию линз (Стр. {page})</b>"
-        keyboard_builder.attach(
-            build_filter_buttons(options.get('series', []),
-                                 "filter_series", page, show_back_button=False)
-        )
-    elif current_fsm_state == LensFilterFSM.waiting_for_sph:
-        text += "<b>Шаг 2 из 4: Введите Сферу (SPH)</b>\n\n<i>(Например: <b>-2.5</b>)</i>"
+
+    # ШАГ 1: SPH
+    if current_fsm_state == LensFilterFSM.waiting_for_sph:
+        text += "<b>Шаг 1 из 4: Введите Сферу (SPH)</b>\n\n<i>(Например: <b>-2.5</b>)</i>"
         keyboard_builder.row(
-            InlineKeyboardButton(
-                text="↩️ Назад", callback_data="filter_back_to_series"),
             InlineKeyboardButton(
                 text="❌ Отмена", callback_data="filter_cancel")
         )
+
+    # ШАГ 2: CYL
     elif current_fsm_state == LensFilterFSM.waiting_for_cyl:
-        text += "<b>Шаг 3 из 4: Введите Цилиндр (CYL)</b>\n\n<i>(Например: <b>-0.75</b> или <b>0</b>)</i>"
+        text += "<b>Шаг 2 из 4: Введите Цилиндр (CYL)</b>\n\n<i>(Например: <b>-0.75</b> или <b>0</b>)</i>"
         keyboard_builder.row(
             InlineKeyboardButton(
                 text="↩️ Назад", callback_data="filter_back_to_sph"),
             InlineKeyboardButton(
                 text="❌ Отмена", callback_data="filter_cancel")
         )
+
+    # ШАГ 3: DIA
     elif current_fsm_state == LensFilterFSM.waiting_for_dia:
-        text += f"<b>Шаг 4 из 4: Выберите Диаметр (DIA) (Стр. {page})</b>"
+        text += f"<b>Шаг 3 из 4: Выберите Диаметр (DIA) (Стр. {page})</b>"
         keyboard_builder.attach(
-            build_filter_buttons(options.get('dia', []),
-                                 "filter_dia", page, show_back_button=True)
+            build_filter_buttons(
+                options.get('dia', []),
+                "filter_dia",
+                page,
+                show_back_button=True,
+                back_callback="filter_back_to_cyl"
+            )
         )
+
+    # ШАГ 4: Material (Series)
+    elif current_fsm_state == LensFilterFSM.waiting_for_material:
+        text += f"<b>Шаг 4 из 4: Выберите Материал (Стр. {page})</b>"
+        keyboard_builder.attach(
+            build_filter_buttons(
+                options.get('series', []),
+                "filter_series",
+                page,
+                show_back_button=True,
+                back_callback="filter_back_to_dia"
+            )
+        )
+
     try:
         await bot.edit_message_text(
             text=text, chat_id=chat_id, message_id=message_id,
@@ -590,8 +611,9 @@ async def update_filter_message(bot: Bot, chat_id: int, message_id: int, state: 
         await state.update_data(active_message_id=new_msg.message_id)
 
 
+# 1. Запуск: Загружаем опции, но сразу просим SPH
 @dp.callback_query(F.data == "start_lens_filter")
-async def filter_step_1_series(query: CallbackQuery, state: FSMContext):
+async def filter_start(query: CallbackQuery, state: FSMContext):
     await state.clear()
     await query.message.edit_text("Загружаю опции фильтра...")
     options = await get_lens_filter_options(query.from_user.id)
@@ -604,27 +626,12 @@ async def filter_step_1_series(query: CallbackQuery, state: FSMContext):
         chat_id=query.message.chat.id,
         telegram_id=query.from_user.id
     )
-    await state.set_state(LensFilterFSM.waiting_for_series)
-    await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
-
-
-@dp.callback_query(LensFilterFSM.waiting_for_series, F.data.startswith("filter_series_page_"))
-async def filter_step_1_paging(query: CallbackQuery, state: FSMContext):
-    page = int(query.data.split('_')[-1])
-    await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=page)
-
-
-@dp.callback_query(LensFilterFSM.waiting_for_series, F.data.startswith("filter_series_select_"))
-async def filter_step_2_sph(query: CallbackQuery, state: FSMContext):
-    series_id = query.data.split('_')[-1]
-    data = await state.get_data()
-    series_name = next((s['name'] for s in data.get('options', {}).get(
-        'series', []) if str(s['id']) == series_id), "???")
-    await state.update_data(series_id=series_id, series_name=series_name)
+    # Сразу идем на SPH
     await state.set_state(LensFilterFSM.waiting_for_sph)
     await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
 
 
+# 2. Обработка SPH
 @dp.message(LensFilterFSM.waiting_for_sph, F.text, ~F.text.startswith('/'))
 async def handler_sph_input(message: Message, state: FSMContext):
     try:
@@ -634,6 +641,7 @@ async def handler_sph_input(message: Message, state: FSMContext):
         await message.answer("❌ Неверный формат. Пожалуйста, введите число (напр. -1.25 или 3.0)")
         return
     await state.update_data(sph=sph_str)
+    # Следующий шаг: CYL
     await state.set_state(LensFilterFSM.waiting_for_cyl)
     try:
         await message.delete()
@@ -650,6 +658,7 @@ async def handler_sph_input(message: Message, state: FSMContext):
         await update_filter_message(new_msg.bot, new_msg.chat.id, new_msg.message_id, state)
 
 
+# 3. Обработка CYL
 @dp.message(LensFilterFSM.waiting_for_cyl, F.text, ~F.text.startswith('/'))
 async def handler_cyl_input(message: Message, state: FSMContext):
     try:
@@ -659,6 +668,7 @@ async def handler_cyl_input(message: Message, state: FSMContext):
         await message.answer("❌ Неверный формат. Пожалуйста, введите число (напр. -0.75 или 0)")
         return
     await state.update_data(cyl=cyl_str)
+    # Следующий шаг: DIA
     await state.set_state(LensFilterFSM.waiting_for_dia)
     try:
         await message.delete()
@@ -675,19 +685,75 @@ async def handler_cyl_input(message: Message, state: FSMContext):
         await update_filter_message(new_msg.bot, new_msg.chat.id, new_msg.message_id, state, page=1)
 
 
+# Пагинация для DIA
 @dp.callback_query(LensFilterFSM.waiting_for_dia, F.data.startswith("filter_dia_page_"))
-async def filter_step_4_paging(query: CallbackQuery, state: FSMContext):
+async def filter_step_dia_paging(query: CallbackQuery, state: FSMContext):
     page = int(query.data.split('_')[-1])
     await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=page)
 
 
+# 4. Обработка DIA -> ЗАПРОС НА СЕРВЕР ЗА МАТЕРИАЛАМИ (SERIES) -> переход к Материалу
 @dp.callback_query(LensFilterFSM.waiting_for_dia, F.data.startswith("filter_dia_select_"))
-async def filter_final_result(query: CallbackQuery, state: FSMContext):
-    await query.message.edit_text("Ищу линзы по вашим параметрам...")
+async def filter_dia_selected(query: CallbackQuery, state: FSMContext):
     dia_value = query.data.split('_')[-1]
     await state.update_data(dia=dia_value)
+
+    # ИЗМЕНЕНИЕ: Перед показом материалов, мы должны отфильтровать их через API
+    await query.message.edit_text("Подбираю доступные материалы...")
+
     data = await state.get_data()
+    filters = {
+        'sph': data.get('sph'),
+        'cyl': data.get('cyl'),
+        'dia': dia_value,
+        'stock__gt': 0  # Только те, что есть в наличии
+    }
+
+    # Запрашиваем "отфильтрованные опции"
+    new_options = await get_lens_filter_options(query.from_user.id, extra_params=filters)
+
+    if new_options and new_options.get('series'):
+        # Обновляем список серий (материалов) в состоянии
+        current_options = data.get('options', {})
+        current_options['series'] = new_options['series']
+        await state.update_data(options=current_options)
+
+        # Следующий шаг: Material (Series)
+        await state.set_state(LensFilterFSM.waiting_for_material)
+        await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
+    else:
+        # Если ничего не найдено по этим параметрам
+        await query.message.edit_text(
+            "😕 <b>Нет линз с такими параметрами (SPH/CYL/DIA).</b>\n"
+            "Попробуйте изменить параметры или сделайте индивидуальный заказ.",
+            reply_markup=get_no_results_keyboard()
+        )
+
+
+# Пагинация для Материала (Series)
+@dp.callback_query(LensFilterFSM.waiting_for_material, F.data.startswith("filter_series_page_"))
+async def filter_step_material_paging(query: CallbackQuery, state: FSMContext):
+    page = int(query.data.split('_')[-1])
+    await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=page)
+
+
+# 5. Обработка Материала (Series) -> ФИНАЛ
+@dp.callback_query(LensFilterFSM.waiting_for_material, F.data.startswith("filter_series_select_"))
+async def filter_final_result(query: CallbackQuery, state: FSMContext):
+    await query.message.edit_text("Ищу линзы по вашим параметрам...")
+
+    series_id = query.data.split('_')[-1]
+    data = await state.get_data()
+    # Ищем имя для красивого отображения
+    series_name = next((s['name'] for s in data.get('options', {}).get(
+        'series', []) if str(s['id']) == series_id), "???")
+
+    await state.update_data(series_id=series_id, series_name=series_name)
+
+    # Обновляем данные перед отправкой
+    data = await state.get_data()  # refresh
     params = {
+        # API ждет 'series', даже если мы зовем его "Материал"
         'series': data.get('series_id'),
         'sph': data.get('sph'),
         'cyl': data.get('cyl'),
@@ -701,8 +767,6 @@ async def filter_final_result(query: CallbackQuery, state: FSMContext):
 
     if keyboard:
         builder = InlineKeyboardBuilder.from_markup(keyboard)
-        # Если это стандартная клавиатура пагинации, добавляем кнопку добавления в корзину
-        # Но если товаров 0, там уже другая клавиатура (custom_order)
         if "custom_order_start" not in [b.callback_data for row in builder.as_markup().inline_keyboard for b in row]:
             builder.row(
                 InlineKeyboardButton(
@@ -713,6 +777,7 @@ async def filter_final_result(query: CallbackQuery, state: FSMContext):
         keyboard = builder.as_markup()
 
     await query.message.edit_text(text, reply_markup=keyboard)
+
 
 # --- Логика Пагинации и Поиска ---
 
@@ -738,6 +803,7 @@ async def show_lens_results(params: dict) -> Tuple[str, InlineKeyboardBuilder]:
     current_page = params.get('page', 1)
     text_result = f"✅ Найдено товаров: {count} (Стр. {current_page} из {total_pages})\n\n"
     for lens in results:
+        # Тут тоже можно поменять отображение Series на Material, если нужно
         text_result += (
             f"<b>{lens['series']}</b>\n"
             f"  SPH: {lens['sph']}, CYL: {lens['cyl']}, DIA: {lens['dia']}\n"
@@ -765,7 +831,6 @@ async def handle_pagination(query: CallbackQuery, state: FSMContext):
 
     if keyboard:
         builder = InlineKeyboardBuilder.from_markup(keyboard)
-        # Проверяем, не является ли это клавиатурой "ничего не найдено"
         all_callbacks = [
             b.callback_data for row in builder.as_markup().inline_keyboard for b in row]
         if "custom_order_start" not in all_callbacks:
@@ -922,7 +987,7 @@ async def custom_order_finish(message: Message, state: FSMContext):
 
 
 # ---
-# 8. ЛОГИКА КОРЗИНЫ
+# 8. ЛОГИКА КОРЗИНЫ (С ВЫБОРОМ ПАР)
 # ---
 
 
@@ -940,37 +1005,79 @@ async def add_to_cart_step_1_id(query: CallbackQuery, state: FSMContext):
 
 
 @dp.message(LensFilterFSM.waiting_for_add_id, F.text, ~F.text.startswith('/'))
-async def add_to_cart_step_2_qty(message: Message, state: FSMContext):
+async def add_to_cart_step_2_qty_selection(message: Message, state: FSMContext):
+    """
+    Вместо того чтобы сразу просить число, даем выбор:
+    1 шт (линза), 2 шт (пара), или ввод вручную.
+    """
     product_id_1c = message.text.strip()
     await state.update_data(product_id_1c=product_id_1c)
-    await state.set_state(LensFilterFSM.waiting_for_add_qty)
-    await message.answer(f"Товар (ID: <code>{html.quote(product_id_1c)}</code>). \nСколько штук (напр. '2')?")
+
+    # Мы не ставим state, а просто даем кнопки.
+    # Хэндлеры ниже перехватят нажатия.
+    # Если нажмет "Ввести вручную" -> перейдем в waiting_for_add_qty
+
+    builder = InlineKeyboardBuilder()
+    builder.row(InlineKeyboardButton(
+        text="👁 1 шт. (На один глаз)", callback_data="qty_set_1"))
+    builder.row(InlineKeyboardButton(
+        text="👓 2 шт. (1 Пара)", callback_data="qty_set_2"))
+    builder.row(InlineKeyboardButton(
+        text="🔢 Ввести число вручную", callback_data="qty_manual"))
+    builder.row(InlineKeyboardButton(text="❌ Отмена",
+                callback_data="add_to_cart_cancel"))
+
+    await message.answer(
+        f"Товар (ID: <code>{html.quote(product_id_1c)}</code>).\n\n"
+        "Выберите количество для <b>этих</b> параметров (SPH/CYL...):",
+        reply_markup=builder.as_markup()
+    )
     try:
         await message.delete()
     except Exception:
         pass
 
 
+@dp.callback_query(F.data.startswith("qty_set_"))
+async def process_qty_button(query: CallbackQuery, state: FSMContext):
+    """Быстрый выбор количества (1 или 2)"""
+    qty = int(query.data.split('_')[-1])
+    await process_add_to_cart_logic(query.message, state, qty, query.from_user.id)
+
+
+@dp.callback_query(F.data == "qty_manual")
+async def process_qty_manual_start(query: CallbackQuery, state: FSMContext):
+    """Переход к ручному вводу"""
+    await state.set_state(LensFilterFSM.waiting_for_add_qty)
+    await query.message.edit_text("Введите количество (число):")
+
+
 @dp.message(LensFilterFSM.waiting_for_add_qty, F.text, ~F.text.startswith('/'))
-async def add_to_cart_final(message: Message, state: FSMContext):
+async def process_qty_manual_input(message: Message, state: FSMContext):
+    """Обработка ручного ввода"""
     try:
-        quantity = int(message.text)
-        if quantity <= 0:
+        qty = int(message.text)
+        if qty <= 0:
             raise ValueError
     except (ValueError, TypeError):
-        await message.answer("❌ Неверный формат. Пожалуйста, введите число (напр. 2).")
+        await message.answer("❌ Неверный формат. Введите число (напр. 4).")
         return
+    await process_add_to_cart_logic(message, state, qty, message.from_user.id)
 
-    await message.answer("Добавляю в корзину...")
+
+async def process_add_to_cart_logic(message: Message, state: FSMContext, quantity: int, telegram_id: int):
+    """Общая логика добавления (вызывается из кнопок и из ввода)"""
+    if isinstance(message, Message):
+        await message.answer(f"Добавляю в корзину ({quantity} шт)...")
+    else:
+        # Если message это на самом деле часть callback'а (Message object внутри)
+        # но в aiogram 3.x message.answer работает нормально
+        pass
 
     data = await state.get_data()
     product_id_1c = data.get('product_id_1c')
-    telegram_id = data.get('telegram_id')
 
-    if not telegram_id:
-        telegram_id = message.from_user.id
-        await state.update_data(telegram_id=telegram_id)
-
+    # Получаем токен
     from users.models import User
     from rest_framework.authtoken.models import Token
     try:
@@ -978,7 +1085,8 @@ async def add_to_cart_final(message: Message, state: FSMContext):
         token, _ = await Token.objects.aget_or_create(user=user)
         auth_token = token.key
     except User.DoesNotExist:
-        await message.answer("❌ Ошибка: Ваш пользователь не найден в БД.")
+        if isinstance(message, Message):
+            await message.answer("❌ Ошибка: Ваш пользователь не найден в БД.")
         return
 
     from catalog.models import Lens
@@ -986,42 +1094,64 @@ async def add_to_cart_final(message: Message, state: FSMContext):
         product = await Lens.objects.select_related('series').aget(id_1c=product_id_1c)
         product_db_id = product.pk
     except Lens.DoesNotExist:
-        await message.answer(f"❌ Ошибка: Товар с ID <code>{html.quote(product_id_1c)}</code> не найден в каталоге.")
+        msg = f"❌ Ошибка: Товар с ID <code>{html.quote(product_id_1c)}</code> не найден."
+        if isinstance(message, Message):
+            await message.answer(msg)
         return
 
     success = await add_to_cart(auth_token, 'lens', product_db_id, quantity)
 
     if success:
-        await message.answer(
-            f"✅ <b>{product.series.name} (x{quantity} шт)</b> добавлен в корзину.",
-            reply_markup=get_main_menu_keyboard()
-        )
+        # Формируем красивый текст подтверждения
+        qty_text = f"{quantity} шт."
+        if quantity % 2 == 0:
+            pairs = quantity // 2
+            qty_text += f" ({pairs} пара(ы))"
+
+        text = f"✅ <b>{product.series.name}</b> добавлен в корзину.\nКол-во: {qty_text}"
+
+        # Если сообщение пришло от кнопки (редактируем старое) или от текста (новое)
+        # Проще всегда слать новое сообщение с клавиатурой меню
+        if isinstance(message, Message):
+            await message.answer(text, reply_markup=get_main_menu_keyboard())
     else:
-        await message.answer(
-            "❌ Ошибка: не удалось добавить товар в корзину.",
-            reply_markup=get_main_menu_keyboard()
-        )
+        if isinstance(message, Message):
+            await message.answer(
+                "❌ Ошибка: не удалось добавить товар в корзину.",
+                reply_markup=get_main_menu_keyboard()
+            )
 
     try:
-        await message.delete()
+        if isinstance(message, Message):
+            await message.delete()
     except Exception:
         pass
     await state.clear()
 
 
-# --- Хэндлеры Корзины и Истории ---
+# --- Хэндлеры Корзины и Истории (ОБНОВЛЕНО ОТОБРАЖЕНИЕ ПАР) ---
 async def format_cart_text(cart_data: dict) -> Tuple[str, bool]:
     text = "<b>🛒 Ваша Корзина</b>\n\n"
     items = cart_data.get('items', [])
     if not items:
         text += "<i>(Пусто)</i>"
         return text, True
+
     for idx, item in enumerate(items, 1):
+        qty = item['quantity']
+        # Логика отображения пар
+        if qty % 2 == 0:
+            pairs = qty // 2
+            qty_display = f"{qty} шт. ({pairs} пара(ы))"
+        else:
+            qty_display = f"{qty} шт."
+
         text += f"<b>{idx}. {item['product']}</b>\n"
-        text += f"  Кол-во: {item['quantity']} шт.\n"
+        text += f"  Кол-во: {qty_display}\n"
         text += f"  Цена: {item['price_at_order']} UZS\n"
         text += f"  <b>Итого: {item['total_price']} UZS</b>\n"
         text += "--------------------\n"
+
     text += f"\n<b>Общий Итог: {cart_data.get('total_price', 0)} UZS</b>"
     return text, False
 
@@ -1241,7 +1371,7 @@ async def view_history(query: CallbackQuery, state: FSMContext):
 
 
 # ---
-# 9. ОБРАБОТЧИКИ ОТМЕНЫ (с "Назад")
+# 9. ОБРАБОТЧИКИ ОТМЕНЫ (с "Назад") - ОБНОВЛЕНЫ ПОД НОВЫЙ ПОРЯДОК
 # ---
 @dp.callback_query(F.data == "filter_cancel")
 async def filter_cancel(query: CallbackQuery, state: FSMContext):
@@ -1252,15 +1382,21 @@ async def filter_cancel(query: CallbackQuery, state: FSMContext):
     )
 
 
-@dp.callback_query(F.data == "filter_back_to_series")
-async def filter_back_to_series(query: CallbackQuery, state: FSMContext):
-    await state.set_state(LensFilterFSM.waiting_for_series)
-    await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
-
-
 @dp.callback_query(F.data == "filter_back_to_sph")
 async def filter_back_to_sph(query: CallbackQuery, state: FSMContext):
     await state.set_state(LensFilterFSM.waiting_for_sph)
+    await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
+
+
+@dp.callback_query(F.data == "filter_back_to_cyl")
+async def filter_back_to_cyl(query: CallbackQuery, state: FSMContext):
+    await state.set_state(LensFilterFSM.waiting_for_cyl)
+    await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
+
+
+@dp.callback_query(F.data == "filter_back_to_dia")
+async def filter_back_to_dia(query: CallbackQuery, state: FSMContext):
+    await state.set_state(LensFilterFSM.waiting_for_dia)
     await update_filter_message(query.bot, query.message.chat.id, query.message.message_id, state, page=1)
 
 
