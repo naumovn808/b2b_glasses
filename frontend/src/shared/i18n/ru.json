@@ -1,0 +1,83 @@
+{
+  "auth": {
+    "title": "Авторизация",
+    "loginLabel": "Логин",
+    "loginPlaceholder": "Введите логин",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Введите пароль",
+    "submit": "Войти",
+    "loading": "Вход...",
+    "agreement": "Нажимая на кнопку, вы подтверждаете согласие с условиями обработки данных."
+  },
+  "common": {
+    "add": "Добавить",
+    "remove": "Убрать",
+    "quantity": "Количество",
+    "decreaseQuantity": "Уменьшить количество",
+    "increaseQuantity": "Увеличить количество",
+    "color": "Цвет",
+    "size": "Размер",
+    "soldOut": "Sold out",
+    "inStock": "В наличии",
+    "inStockCount": "В наличии 4 шт",
+    "rating": "Рейтинг {{rating}} из 5",
+    "favorite": "В избранное",
+    "address": "Ташкент, Мирободский район, улица Эски Саракул, 83",
+    "viewMore": "Посмотреть еще"
+  },
+  "nav": {
+    "catalog": "Каталог",
+    "news": "Новости",
+    "education": "Обучение",
+    "about": "О нас",
+    "contacts": "Контакты",
+    "shop": "Магазин",
+    "menu": "Меню"
+  },
+  "hero": {
+    "titleLine1": "Профессиональный каталог",
+    "titleLine2": "оправ, линз и контактных линз",
+    "cta": "Перейти в каталог"
+  },
+  "catalog": {
+    "title": "Каталог",
+    "filters": "Фильтры",
+    "sortByPrice": "По цене",
+    "orderPrescriptionLenses": "Заказать рецептурные линзы",
+    "emptyTitle": "По вашему запросу ничего не найдено",
+    "emptySuggestion": "Возможно, подойдут эти варианты:",
+    "addToCart": "Добавить в корзину",
+    "categoriesAria": "Категории каталога",
+    "category": {
+      "frames": "Оправы",
+      "lenses": "Линзы",
+      "contacts": "Контактные линзы",
+      "accessories": "Аксессуары"
+    }
+  },
+  "cart": {
+    "title": "В корзине",
+    "item": "товар",
+    "delivery": "Бесплатная доставка",
+    "deliveryFrom": "от 1000Р",
+    "empty": "Корзина пуста",
+    "total": "Итог:",
+    "checkout": "Оформить заказ"
+  },
+  "productDetail": {
+    "discountLabel": "скидка {{percent}}%",
+    "category": {
+      "default": "Товар"
+    },
+    "stockText": {
+      "discountPeriod": "Скидка действует в рамках:"
+    },
+    "frameNotice": {
+      "onlyFourLeft": "В наличии только 4 позиции!"
+    },
+    "viewers": {
+      "productNow": "24 смотрят товар сейчас",
+      "accessoryNow": "9 смотрят аксессуар сейчас"
+    }
+  }
+}

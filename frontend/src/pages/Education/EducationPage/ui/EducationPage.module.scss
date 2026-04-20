@@ -1,0 +1,58 @@
+.surface {
+  background: #ffffff;
+}
+
+.section {
+  padding-bottom: 0;
+}
+
+.sectionInner {
+  gap: 1.5rem;
+}
+
+.heading {
+  color: #1f2328;
+  font-size: clamp(2.2rem, 1.8rem + 1vw, 3.2rem);
+  line-height: 1;
+  font-weight: 700;
+  padding-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr;
+  gap: 0.6rem;
+}
+
+// .grid > * {
+//   min-width: 0;
+// }
+
+// .grid > :first-child {
+//   flex: 0.9 1 0;
+// }
+
+// .grid > :last-child {
+//   flex: 1 1 0;
+// }
+
+@media (max-width: 900px) {
+  .section {
+    padding-bottom: 2rem;
+  }
+
+  .sectionInner {
+    gap: 1rem;
+    padding: 1rem 0.6rem 1.2rem;
+  }
+
+  .heading {
+    font-weight: 200;
+    font-size: 1.9rem;
+    line-height: 1.1;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

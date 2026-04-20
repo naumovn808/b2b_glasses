@@ -1,0 +1,86 @@
+.page {
+  padding: 3rem 0 4rem;
+  background: #f3f3f3;
+  color: #111111;
+}
+
+.hero {
+  display: flex;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.hero > * {
+  min-width: 0;
+}
+
+.hero > :first-child {
+  flex: 1.02 1 0;
+}
+
+.hero > :last-child {
+  flex: 0.98 1 22rem;
+}
+
+.relatedSection {
+  margin-top: 3rem;
+}
+
+.relatedSection h2 {
+  margin: 0 0 1.8rem;
+  color: #3d4045;
+  font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2.1rem);
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.relatedGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+
+.relatedGrid > * {
+  flex: 0 1 calc((100% - 4.2rem) / 4);
+  min-width: 0;
+}
+
+@media (max-width: 1050px) {
+  .hero {
+    flex-direction: column;
+  }
+
+  .hero > * {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .relatedGrid > * {
+    flex-basis: calc((100% - 1.4rem) / 2);
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 7.5rem 0 3rem;
+  }
+
+  .relatedSection {
+    margin-top: 2.2rem;
+  }
+
+  .relatedSection h2 {
+    margin-bottom: 1rem;
+    font-size: 1.45rem;
+  }
+
+  .relatedGrid {
+    gap: 1.25rem 0.9rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .relatedGrid {
+    gap: 1rem 0.75rem;
+  }
+}

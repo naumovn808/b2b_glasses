@@ -1,0 +1,176 @@
+.formCard {
+  overflow: visible;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  padding: 0.8rem 1.35rem 1.6rem;
+}
+
+.actionsTop {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid #e4e4e4;
+  padding-bottom: 1rem;
+}
+
+.actionsTop button,
+.submitButton {
+  min-width: 8.4rem;
+  border-radius: 0.25rem;
+  background: #1976d5;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.actionsTop button:hover,
+.submitButton:hover {
+  background: #0f63be;
+  transform: translateY(-1px);
+}
+
+.tagsPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6rem 5rem;
+  padding: 1rem 0 1.4rem;
+}
+
+.fieldsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.4rem;
+}
+
+.fieldsGrid > :last-child {
+  margin-right: auto;
+}
+
+.fieldsGrid > * {
+  flex: 0 1 calc((100% - 4.2rem) / 4);
+  min-width: 0;
+}
+
+.resultArea {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  border-top: 1px solid #e4e4e4;
+  margin-top: 1.65rem;
+  padding-top: 1.4rem;
+}
+
+.resultArea label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: #8c8c8c;
+  font-size: 0.85rem;
+}
+
+.resultArea textarea,
+.resultArea input {
+  width: 100%;
+  border: 1px solid #1976d5;
+  border-radius: 0.42rem;
+  background: #ffffff;
+  color: #111111;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.25;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.resultArea textarea {
+  min-height: 4.2rem;
+  resize: vertical;
+}
+
+.resultArea textarea:focus,
+.resultArea input:focus {
+  border-color: #0f63be;
+  box-shadow: 0 0 0 0.16rem rgba(25, 118, 213, 0.12);
+}
+
+.actionsBottom {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.cancelButton {
+  min-width: 8.4rem;
+  border: 1px solid #c8c8c8;
+  border-radius: 0.25rem;
+  color: #8c8c8c;
+  padding: 0.58rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .formCard {
+    border-radius: 0.65rem;
+    padding: 0.45rem 0.55rem 0.9rem;
+  }
+
+  .actionsTop {
+    padding-bottom: 0.45rem;
+  }
+
+  .actionsTop button,
+  .submitButton,
+  .cancelButton {
+    min-width: 4.7rem;
+    padding: 0.28rem 0.55rem;
+    font-size: 0.58rem;
+  }
+
+  .tagsPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.6rem 0 0.75rem;
+  }
+
+  .fieldsGrid {
+    gap: 0.45rem;
+  }
+
+  .fieldsGrid > * {
+    flex-basis: calc((100% - 0.45rem) / 2);
+  }
+
+  .resultArea {
+    gap: 0.65rem;
+    margin-top: 0.9rem;
+    padding-top: 0.85rem;
+  }
+
+  .resultArea label {
+    gap: 0.25rem;
+    font-size: 0.62rem;
+  }
+
+  .resultArea textarea,
+  .resultArea input {
+    border-radius: 0.32rem;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.62rem;
+  }
+
+  .resultArea textarea {
+    min-height: 3rem;
+  }
+
+  .actionsBottom {
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+  }
+}

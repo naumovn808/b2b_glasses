@@ -1,0 +1,28 @@
+.wrapper {
+  display: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 11rem;
+  align-self: center;
+  border-radius: 999px;
+  background: #ffc516;
+  color: #111111;
+  padding: 1rem 1.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 0.6rem;
+  }
+}

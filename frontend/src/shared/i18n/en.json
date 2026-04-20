@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "title": "Sign In",
+    "loginLabel": "Login",
+    "loginPlaceholder": "Enter your login",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Sign In",
+    "loading": "Signing in...",
+    "agreement": "By clicking the button, you agree to the terms of data processing."
+  },
+  "common": {
+    "add": "Add",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "color": "Color",
+    "size": "Size",
+    "soldOut": "Sold out",
+    "inStock": "In stock",
+    "inStockCount": "In stock: 4 pcs",
+    "viewMore": "View more"
+  },
+  "nav": {
+    "catalog": "Catalog",
+    "news": "News",
+    "education": "Education",
+    "about": "About us",
+    "contacts": "Contacts",
+    "menu": "Menu"
+  },
+  "hero": {
+    "titleLine1": "Professional catalog",
+    "titleLine2": "frames, lenses and contacts",
+    "cta": "Go to catalog"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "filters": "Filters",
+    "sortByPrice": "By price",
+    "addToCart": "Add to cart"
+  },
+  "cart": {
+    "title": "In cart",
+    "empty": "Cart is empty",
+    "total": "Total:",
+    "checkout": "Checkout"
+  },
+  "productDetail": {
+    "discountLabel": "{{percent}}% off",
+    "category": {
+      "default": "Product"
+    },
+    "stockText": {
+      "discountPeriod": "Discount is valid for:"
+    },
+    "frameNotice": {
+      "onlyFourLeft": "Only 4 items left in stock!"
+    },
+    "viewers": {
+      "productNow": "24 people are viewing this item now",
+      "accessoryNow": "9 people are viewing this accessory now"
+    }
+  }
+}

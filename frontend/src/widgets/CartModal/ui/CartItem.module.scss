@@ -1,0 +1,161 @@
+.item {
+  display: flex;
+  min-width: 0;
+  max-height: 125px;
+  padding-right: 11px;
+  border: 0.3px solid #cbcbcb;
+}
+
+.itemImage {
+  width: 50%;
+  object-fit: cover;
+}
+
+.itemInfo {
+  min-width: 0;
+  flex: 1 1 0;
+  height: 100%;
+  padding: 9px 0 14px 11px;
+}
+
+.itemTopLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.itemTopLine h3 {
+  margin: 0;
+  color: #111111;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.removeButton {
+  color: #565656;
+  font-size: 0.92rem;
+  line-height: 1;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.4rem;
+  color: #a4a4a4;
+  font-size: 0.62rem;
+  line-height: 1.2;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-top: 0.55rem;
+}
+
+.price {
+  font-size: 0.86rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.oldPrice {
+  color: #9a9a9a;
+  text-decoration: line-through;
+  font-size: 0.8rem;
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+
+  gap: 0.8rem;
+  margin-top: 0.75rem;
+}
+
+.quantity {
+  display: flex;
+  width: 4.7rem;
+  height: 1.45rem;
+  background: #1976d5;
+  color: #ffffff;
+}
+
+.quantity button,
+.quantity span {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.quantity button:disabled {
+  opacity: 0.45;
+}
+.stock {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+.stockText {
+  font-weight: 400;
+  font-size: 8px;
+  color: #666;
+}
+.stockBar {
+  display: block;
+  border-radius: 2px;
+  width: 100%;
+  min-width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #ff4d4d 0 7%, #dcdcdc 7% 100%);
+}
+
+@media (max-width: 900px) {
+  .itemImage {
+    width: 43%;
+    flex-basis: 43%;
+  }
+
+  .itemInfo {
+    padding-left: 0.75rem;
+  }
+
+  .itemTopLine h3 {
+    font-size: 0.82rem;
+  }
+
+  .price {
+    font-size: 0.78rem;
+  }
+
+  .oldPrice {
+    font-size: 0.72rem;
+  }
+
+  .itemActions {
+    gap: 0.6rem;
+  }
+
+  .quantity {
+    width: 4.1rem;
+    height: 1.35rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .itemImage {
+    width: 42%;
+    flex-basis: 42%;
+  }
+
+  .meta {
+    gap: 0.35rem;
+    font-size: 0.54rem;
+  }
+}

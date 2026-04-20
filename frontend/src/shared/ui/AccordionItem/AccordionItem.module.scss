@@ -1,0 +1,33 @@
+.accordionItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.trigger {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon {
+  width: 0.55rem;
+  height: 0.55rem;
+  transform: rotate(45deg);
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transition: transform 0.2s ease;
+}
+
+.iconOpen {
+  transform: rotate(225deg);
+}
+
+.body {
+  overflow: hidden;
+}
+
+.content {
+  padding-top: 0.72rem;
+}

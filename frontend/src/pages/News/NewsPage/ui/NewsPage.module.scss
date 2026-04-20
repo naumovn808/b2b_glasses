@@ -1,0 +1,39 @@
+.sectionInner {
+  gap: 2rem;
+}
+
+.heading {
+  font-size: clamp(1.7rem, 1.15rem + 1vw, 2.25rem);
+  font-weight: 200;
+  letter-spacing: 0.03em;
+  color: #171717;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.grid > :first-child {
+  flex-basis: 100%;
+}
+
+.grid > * {
+  flex: 0 1 calc((100% - 4rem) / 3);
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .sectionInner {
+    gap: 1.25rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  .grid > * {
+    flex-basis: 100%;
+  }
+}

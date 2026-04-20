@@ -1,0 +1,192 @@
+.card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.8rem;
+  color: #111111;
+}
+
+.imageWrap {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #e8e8e8;
+  aspect-ratio: 1.42 / 1;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.28s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.025);
+}
+
+.soldOutBadge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 3.6rem;
+  height: 3.6rem;
+  transform: translate(-50%, -50%);
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  line-height: 1.05;
+  font-weight: 800;
+}
+
+.body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.42rem;
+}
+
+.productLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.body h3 {
+  margin: 0;
+  color: #111111;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.priceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  color: #111111;
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+.priceRow span:last-child:not(:first-child) {
+  color: #8c8c8c;
+  text-decoration: line-through;
+}
+
+.swatches {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  align-items: center;
+}
+
+.swatch {
+  position: relative;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1px solid rgba(17, 17, 17, 0.35);
+  border-radius: 999px;
+  background-color: var(--swatch-color, #ffffff);
+  background-image: var(--swatch-image);
+  background-position: center;
+  background-size: cover;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.swatchPattern {
+  background-image: var(--swatch-image);
+}
+
+.swatchActive {
+  border: 2px solid #000000;
+  background: transparent;
+}
+
+.swatchActive::before {
+  position: absolute;
+  inset: 0.2rem;
+  border-radius: inherit;
+  background-color: var(--swatch-color, #ffffff);
+  background-image: var(--swatch-image);
+  background-position: center;
+  background-size: cover;
+  content: '';
+}
+
+.swatch:hover {
+  transform: scale(1.08);
+}
+
+.cartRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.quantity {
+  display: flex;
+  min-width: 4.8rem;
+  height: 1.8rem;
+  align-items: center;
+  background: #ffffff;
+  color: #111111;
+}
+
+.quantity button,
+.quantity span {
+  display: flex;
+  flex: 1 1 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.quantity button:disabled {
+  cursor: not-allowed;
+  color: #b8b8b8;
+  opacity: 0.55;
+}
+
+.cartButton {
+  display: inline-flex;
+  min-height: 1.8rem;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #111111;
+  border-radius: 5px;
+  color: #111111;
+  padding: 0 0.8rem;
+  text-align: center;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.cartButton:hover:not(:disabled) {
+  background: #111111;
+  color: #ffffff;
+}
+
+.cartButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}

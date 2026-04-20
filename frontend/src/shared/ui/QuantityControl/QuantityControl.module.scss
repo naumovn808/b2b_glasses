@@ -1,0 +1,30 @@
+.quantity {
+  display: flex;
+  min-width: 4.8rem;
+  height: 1.8rem;
+  align-items: center;
+  background: #ffffff;
+  color: #111111;
+}
+
+.quantity button,
+.quantity span {
+  display: flex;
+  flex: 1 1 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.quantity button {
+  color: inherit;
+}
+
+.quantity button:disabled {
+  cursor: not-allowed;
+  color: #b8b8b8;
+  opacity: 0.55;
+}

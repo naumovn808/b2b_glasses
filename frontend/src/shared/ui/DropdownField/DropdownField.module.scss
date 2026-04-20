@@ -1,0 +1,122 @@
+.field {
+  position: relative;
+  min-width: 0;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #8c8c8c;
+  font-size: 0.92rem;
+  line-height: 1.2;
+}
+
+.trigger {
+  display: flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #1976d5;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #111111;
+  padding: 0 1rem;
+  font-size: 1rem;
+  line-height: 1.2;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.trigger:hover,
+.triggerOpen {
+  border-color: #0f63be;
+  box-shadow: 0 0 0 0.16rem rgba(25, 118, 213, 0.12);
+}
+
+.icon {
+  position: relative;
+  flex-shrink: 0;
+  transition: transform ease 0.3s;
+}
+
+.triggerOpen .icon {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 0.65rem;
+  background: #ffffff;
+  box-shadow: 0 1rem 2.2rem rgba(17, 17, 17, 0.12);
+}
+
+.option {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  color: #111111;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.option:hover,
+.optionActive {
+  background: #edf5ff;
+  color: #1976d5;
+}
+
+@media (max-width: 900px) {
+  .label {
+    margin-bottom: 0.25rem;
+    font-size: 0.72rem;
+  }
+
+  .trigger {
+    min-height: 2rem;
+    border-radius: 0.32rem;
+    padding: 0 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .icon {
+    width: 0.7rem;
+    height: 0.7rem;
+  }
+
+  .icon::before {
+    width: 0.7rem;
+  }
+
+  .icon::after {
+    height: 0.7rem;
+  }
+
+  .triggerChevron .icon {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+
+  .triggerChevron .icon::before,
+  .triggerChevron .icon::after {
+    width: 0.55rem;
+    height: 1px;
+  }
+
+  .option {
+    padding: 0.62rem 0.7rem;
+    font-size: 0.72rem;
+  }
+}

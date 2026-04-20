@@ -1,0 +1,70 @@
+.card {
+  overflow: visible;
+  border-radius: 1.4rem;
+  background: #ffffff;
+}
+
+.header {
+  border-bottom: 1px solid #cfcfcf;
+  padding: 1.6rem 1.8rem;
+  color: #111111;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.body {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  padding: 2.2rem 1.8rem 3.8rem;
+}
+
+.body > :not(.copyButton) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.copyButton {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid #1976d5;
+  border-radius: 0.42rem;
+  color: #111111;
+  font-size: 1.2rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.copyButton:hover {
+  background: #1976d5;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .card {
+    border-radius: 0.7rem;
+  }
+
+  .header {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  .body {
+    gap: 0.3rem;
+    padding: 0.75rem 0.65rem 1.2rem;
+  }
+
+  .copyButton {
+    width: 1.6rem;
+    height: 2rem;
+    border-radius: 0.28rem;
+    font-size: 0.75rem;
+  }
+}

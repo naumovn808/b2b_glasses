@@ -1,0 +1,237 @@
+.page {
+  padding: 4rem 0 4.5rem;
+  background: #f3f3f3;
+  color: #111111;
+}
+
+.title {
+  margin: 0 0 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: clamp(2.2rem, 1.55rem + 1.8vw, 4rem);
+  line-height: 1;
+  font-weight: 700;
+}
+
+.catalogShell {
+  display: flex;
+  gap: clamp(2rem, 3.5vw, 4rem);
+  margin-top: 3rem;
+  align-items: start;
+}
+
+.desktopFilters {
+  flex: 0 0 min(17rem, 28%);
+}
+
+.productsArea {
+  flex: 1 1 0;
+  height: 100%;
+  min-width: 0;
+}
+
+.catalogToolbar {
+  min-height: 2.3rem;
+  margin-bottom: 1.6rem;
+}
+
+.sortAccordion {
+  margin-bottom: 0;
+}
+
+.sortButton {
+  width: max-content;
+  color: #111111;
+  font-size: 0.92rem;
+}
+
+.sortIcon {
+  width: 0.42rem;
+  height: 0.42rem;
+  transform: rotate(45deg);
+}
+
+.sortIconOpen {
+  transform: rotate(225deg);
+}
+
+.sortContent {
+  padding-top: 2.1rem;
+}
+
+.sortOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.sortOption {
+  color: #8c8c8c;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition: color 0.2s ease;
+}
+
+.sortOption:hover,
+.sortOptionActive {
+  color: #111111;
+}
+
+.mobileCatalogControls {
+  display: none;
+}
+
+.mobileControlButton {
+  display: inline-flex;
+  width: auto;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: flex-start;
+  color: #111111;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.mobileControlIcon {
+  width: 0.38rem;
+  height: 0.38rem;
+  transform: rotate(45deg);
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transition: transform 0.2s ease;
+}
+
+.mobileControlIconOpen {
+  transform: rotate(225deg);
+}
+
+.mobileControlPanel {
+  padding-top: 1.2rem;
+}
+
+.productGrid {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: clamp(46rem, 58vw, 55rem);
+  align-content: flex-start;
+  gap: 2.3rem 1.5rem;
+}
+
+.productGrid > * {
+  flex: 0 1 calc((100% - 3rem) / 3);
+  min-width: 0;
+}
+
+.emptyState {
+  padding-top: 0.5rem;
+}
+
+.emptyState h2 {
+  margin: 0;
+  color: #8c8c8c;
+  font-size: clamp(1.4rem, 1.05rem + 0.9vw, 2rem);
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+.emptyDivider {
+  height: 1px;
+  margin: 1.55rem 0 3.1rem;
+  background: rgba(17, 17, 17, 0.22);
+}
+
+.emptyState p {
+  margin: 0 0 2rem;
+  color: #a0a0a0;
+  font-size: clamp(1.15rem, 0.95rem + 0.55vw, 1.6rem);
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.pagination {
+  margin-top: 4rem;
+}
+
+@media (max-width: 1200px) {
+  .productGrid {
+    min-height: clamp(62rem, 112vw, 76rem);
+  }
+
+  .productGrid > * {
+    flex-basis: calc((100% - 1.5rem) / 2);
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding-top: 7.5rem;
+  }
+
+  .catalogShell {
+    flex-direction: column;
+    margin-top: 2rem;
+  }
+
+  .desktopFilters,
+  .productsArea {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .desktopFilters,
+  .catalogToolbar {
+    display: none;
+  }
+
+  .mobileCatalogControls {
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    border-top: 1px solid rgba(17, 17, 17, 0.1);
+    border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+    margin-bottom: 1.6rem;
+    padding: 1.05rem 0;
+  }
+
+  .mobileControlAccordion {
+    display: contents;
+  }
+
+  .mobileControlPanelBody {
+    order: 2;
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .mobileCatalogControls > .mobileControlButton {
+    order: 1;
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  .mobileControlPanel .sortOptions {
+    gap: 0.85rem 1.5rem;
+  }
+
+  .emptyState {
+    padding-top: 0.4rem;
+  }
+
+  .emptyDivider {
+    margin: 1.1rem 0 1.6rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .productGrid {
+    min-height: 0;
+  }
+
+  .productGrid > * {
+    flex-basis: 100%;
+  }
+}

@@ -1,0 +1,21 @@
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 48px;
+  max-height: 48px;
+
+  border-radius: 30px;
+  padding: 14px 16px;
+
+  background-color: white;
+  transition: scale ease 0.3s;
+
+  & svg {
+    fill: #1976d5;
+  }
+  &:hover {
+    scale: 1.05;
+  }
+}

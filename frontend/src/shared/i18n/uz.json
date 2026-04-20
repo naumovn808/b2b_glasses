@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "title": "Kirish",
+    "loginLabel": "Login",
+    "loginPlaceholder": "Loginni kiriting",
+    "passwordLabel": "Parol",
+    "passwordPlaceholder": "Parolni kiriting",
+    "submit": "Kirish",
+    "loading": "Kirish...",
+    "agreement": "Tugmani bosish orqali siz ma'lumotlarni qayta ishlash shartlariga rozilik bildirasiz."
+  },
+  "common": {
+    "add": "Qo‘shish",
+    "remove": "Olib tashlash",
+    "quantity": "Miqdor",
+    "color": "Rang",
+    "size": "O‘lcham",
+    "soldOut": "Sotilgan",
+    "inStock": "Mavjud",
+    "inStockCount": "4 ta mavjud",
+    "viewMore": "Yana ko‘rish"
+  },
+  "nav": {
+    "catalog": "Katalog",
+    "news": "Yangiliklar",
+    "education": "O‘qitish",
+    "about": "Biz haqimizda",
+    "contacts": "Kontaktlar",
+    "menu": "Menyu"
+  },
+  "hero": {
+    "titleLine1": "Professional katalog",
+    "titleLine2": "linzalar va ko‘zoynaklar",
+    "cta": "Katalogga o‘tish"
+  },
+  "catalog": {
+    "title": "Katalog",
+    "filters": "Filtrlar",
+    "sortByPrice": "Narx bo‘yicha",
+    "addToCart": "Savatga qo‘shish"
+  },
+  "cart": {
+    "title": "Savatda",
+    "empty": "Savat bo‘sh",
+    "total": "Jami:",
+    "checkout": "Buyurtma berish"
+  },
+  "productDetail": {
+    "discountLabel": "chegirma {{percent}}%",
+    "category": {
+      "default": "Mahsulot"
+    },
+    "stockText": {
+      "discountPeriod": "Chegirma muddati:"
+    },
+    "frameNotice": {
+      "onlyFourLeft": "Faqat 4 dona mavjud!"
+    },
+    "viewers": {
+      "productNow": "Hozir 24 kishi mahsulotni ko‘rmoqda",
+      "accessoryNow": "Hozir 9 kishi aksessuarni ko‘rmoqda"
+    }
+  }
+}

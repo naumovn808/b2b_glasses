@@ -1,0 +1,137 @@
+.title {
+  margin: 0;
+  color: #303030;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.title span {
+  color: #1976d5;
+}
+
+.cart {
+  height: 100%;
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.delivery {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 8px;
+  margin: 0 0 24px;
+  & p {
+    font-family: 'Montserrat';
+    color: #434343;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    & span {
+      color: #8a8a8a;
+    }
+  }
+}
+
+.items {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 0.9rem;
+  overflow-y: auto;
+}
+
+.empty {
+  display: flex;
+  min-height: 8rem;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+  color: #8a8a8a;
+  font-size: 1rem;
+}
+
+.divider {
+  height: 1px;
+  margin-top: 1rem;
+  background: #dcdcdc;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: auto;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  color: #4c4c4c;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.totalRow strong {
+  font-weight: 400;
+}
+
+.checkoutButton,
+.promoButton {
+  width: 100%;
+  min-height: 2.95rem;
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.checkoutButton {
+  background: #ffc516;
+  color: #111111;
+  font-weight: 600;
+}
+
+.promoButton {
+  border: 1px solid transparent;
+  background: #f0f0f0;
+  color: #777777;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.promoButton::placeholder {
+  color: #777777;
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .title {
+    font-size: 1.28rem;
+  }
+
+  .delivery {
+    margin: 0.6rem 0 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .cartModalShell {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+  }
+
+  .cartModalShell :global(.header) {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .cartModalShell :global(.body) {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}

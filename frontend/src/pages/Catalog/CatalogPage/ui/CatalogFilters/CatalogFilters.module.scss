@@ -1,0 +1,177 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1.45rem;
+}
+
+.actionSlot {
+  display: flex;
+  min-height: 0.5 rem;
+  align-items: flex-start;
+}
+
+.actionButton,
+.actionButtonPlaceholder {
+  display: inline-flex;
+  width: 100%;
+  min-height: 3.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+}
+
+.actionButton {
+  background: #1976d5;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.2;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.actionButton:hover {
+  background: #0f63be;
+  transform: translateY(-1px);
+}
+
+.filters h2 {
+  margin: 0 0 0.25rem;
+  color: #111111;
+  font-size: clamp(1.6rem, 1.2rem + 0.9vw, 2.2rem);
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.groupHeader {
+  margin: 0;
+  color: #111111;
+  font-size: 1rem;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.inlineOptions,
+.stackOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.35rem;
+}
+
+.stackOptions {
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.textOption {
+  color: #8c8c8c;
+  font-size: 0.86rem;
+  line-height: 1.25;
+  transition: color 0.2s ease;
+}
+
+.textOption:hover {
+  color: #111111;
+}
+
+.textOptionActive {
+  color: #111111;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex-wrap: wrap;
+  max-width: 13rem;
+  padding: 0.35rem;
+  gap: 0.5rem;
+}
+
+.colorOption {
+  width: 1.45rem;
+  height: 1.45rem;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  outline: 1px solid rgba(17, 17, 17, 0.1);
+  outline-offset: 0;
+  transition:
+    border-color 0.2s ease,
+    outline-color 0.2s ease,
+    outline-offset 0.2s ease,
+    transform 0.2s ease;
+}
+.colorOption:hover {
+  border-color: #ffffff;
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+.colorOptionActive {
+  border-color: #ffffff;
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+.sizeGrid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sizeOption {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  background: transparent;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition:
+    background ease 0.3s,
+    color ease 0.3s,
+    scale ease 0.3s;
+}
+.sizeOptionActive {
+  background: #111111;
+  color: #ffffff;
+}
+
+// .sizeButton {
+// }
+
+// .sizeActive {
+
+// }
+@media (max-width: 900px) {
+  .filters {
+    border-top: 1px solid rgba(17, 17, 17, 0.1);
+    border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+    padding: 1.25rem 0;
+  }
+
+  .filtersCompact {
+    border: 0;
+    padding: 0;
+  }
+
+  .actionSlot {
+    min-height: 4.4rem;
+  }
+
+  .actionButton,
+  .actionButtonPlaceholder {
+    min-height: 3rem;
+  }
+
+  .actionButton {
+    font-size: 0.95rem;
+  }
+
+  .colorGrid {
+    max-width: none;
+    gap: 0.85rem;
+  }
+}

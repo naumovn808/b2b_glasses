@@ -1,0 +1,148 @@
+.header {
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  background: #1976d5;
+  padding: 25px 0 28px 0;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  width: 100%;
+}
+
+.headerLogo img {
+  display: block;
+  width: clamp(92px, 14.9vw - 54px, 160px);
+}
+
+.headerLinks {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navList {
+  display: flex;
+  gap: 40px;
+}
+
+.navLink {
+  color: #ffffff;
+  font-size: clamp(14px, 1.9vw - 5.7px, 22px);
+  line-height: 1.2;
+  font-weight: 400;
+  position: relative;
+  padding-bottom: 4px;
+  transition: opacity 200ms ease;
+}
+.navLink::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #ffffff;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.navLinkActive::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #ffffff;
+  transform: scaleX(1);
+  transform-origin: bottom left;
+  transition: transform 0.3s ease-out;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw + 2px, 16px);
+}
+
+.actionBtn {
+  width: clamp(46px, 7.2vw - 27.7px, 76px);
+  height: clamp(46px, 7.2vw - 27.7px, 76px);
+  border-radius: 999px;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+}
+
+.activeAuth {
+  background: #ffc516;
+}
+
+.actionBtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cartBtn {
+  position: relative;
+}
+
+.cartBadge {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.2rem;
+  display: flex;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1976d5;
+  border-radius: 999px;
+  background: #ffc516;
+  color: #111111;
+  padding: 0 0.25rem;
+  font-size: 0.68rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.burger {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .header {
+    position: fixed;
+    background: transparent;
+    padding: 0;
+  }
+
+  .headerInner {
+    background: #1b6fd3;
+    border-radius: 20px;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .headerLinks {
+    display: none;
+  }
+  .headerActions {
+    flex-direction: row-reverse;
+  }
+  .burger {
+    display: grid;
+  }
+}

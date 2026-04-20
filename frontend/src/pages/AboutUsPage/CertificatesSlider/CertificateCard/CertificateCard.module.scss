@@ -1,0 +1,107 @@
+.certificateCard {
+  position: relative;
+  min-height: 30rem;
+  overflow: hidden;
+  background: #d8d8d8;
+}
+
+.certificateCard img {
+  width: 100%;
+  height: 100%;
+  min-height: 30rem;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.certificateCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.74) 100%
+  );
+  pointer-events: none;
+}
+
+.certificateOverlay {
+  position: absolute;
+  right: 1rem;
+  bottom: 1.45rem;
+  left: 1rem;
+  z-index: 1;
+  color: #ffffff;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.25;
+  transition: bottom 0.26s ease;
+}
+
+.certificateCard:hover img,
+.certificateCard:focus-within img {
+  transform: scale(1.02);
+}
+
+.certificateCard:hover .certificateOverlay,
+.certificateCard:focus-within .certificateOverlay {
+  bottom: 4.7rem;
+}
+
+.viewButton {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  transform: translateY(100%);
+  background: #ffc516;
+  color: #111111;
+  opacity: 0;
+  padding: 1.2rem 1.45rem;
+  font-size: 0.92rem;
+  line-height: 1.2;
+  font-weight: 500;
+  pointer-events: none;
+  transition:
+    transform 0.26s ease,
+    opacity 0.26s ease;
+  will-change: transform;
+}
+
+.certificateCard:hover .viewButton,
+.certificateCard:focus-within .viewButton {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.viewButton :global(svg) {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1200px) {
+  .certificateCard,
+  .certificateCard img {
+    min-height: 24rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .certificateCard,
+  .certificateCard img {
+    min-height: 27rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .certificateCard,
+  .certificateCard img {
+    min-height: 23rem;
+  }
+}
