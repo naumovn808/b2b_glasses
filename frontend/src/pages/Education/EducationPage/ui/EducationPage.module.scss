@@ -24,6 +24,33 @@
   gap: 0.6rem;
 }
 
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.moreButtonWrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.6rem;
+}
+
+.moreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 11rem;
+  border-radius: 999px;
+  background: #ffc516;
+  color: #111111;
+  padding: 1rem 1.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 // .grid > * {
 //   min-width: 0;
 // }

@@ -6,6 +6,9 @@ import uuid
 
 class Company(models.Model):
     name = models.CharField(max_length=255)
+    external_id = models.CharField(
+        max_length=255, blank=True, null=True, unique=True, verbose_name="Внешний ID"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -18,9 +21,9 @@ class Company(models.Model):
 
 class User(AbstractUser):
     username_validator = RegexValidator(
-        r'^[\w.@+-]+$',
-        'Введите правильное имя пользователя. Оно может содержать только буквы, цифры и знаки @/./+/-/_.',
-        'invalid'
+        r"^[\w.@+-]+$",
+        "Введите правильное имя пользователя. Оно может содержать только буквы, цифры и знаки @/./+/-/_.",
+        "invalid",
     )
     username = models.CharField(
         "Имя пользователя",
@@ -28,7 +31,7 @@ class User(AbstractUser):
         unique=True,
         help_text="Обязательное поле. 150 символов или меньше. Допускаются любые символы.",
         error_messages={
-            'unique': "Пользователь с таким именем уже существует.",
+            "unique": "Пользователь с таким именем уже существует.",
         },
     )
 
@@ -37,24 +40,28 @@ class User(AbstractUser):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        verbose_name="Компания"
+        verbose_name="Компания",
     )
 
     telegram_id = models.BigIntegerField(
-        unique=True, null=True, blank=True, verbose_name="Telegram ID")
+        unique=True, null=True, blank=True, verbose_name="Telegram ID"
+    )
     telegram_username = models.CharField(
-        max_length=150, blank=True, null=True, verbose_name="Telegram Username")
+        max_length=150, blank=True, null=True, verbose_name="Telegram Username"
+    )
     telegram_first_name = models.CharField(
-        max_length=150, blank=True, null=True, verbose_name="Telegram First Name")
+        max_length=150, blank=True, null=True, verbose_name="Telegram First Name"
+    )
     telegram_last_name = models.CharField(
-        max_length=150, blank=True, null=True, verbose_name="Telegram Last Name")
+        max_length=150, blank=True, null=True, verbose_name="Telegram Last Name"
+    )
     phone_number = models.CharField(
-        max_length=20, blank=True, null=True, verbose_name="Номер телефона")
+        max_length=20, blank=True, null=True, verbose_name="Номер телефона"
+    )
 
     email = models.EmailField("Email", blank=True, null=True)
     first_name = models.CharField("Имя", max_length=150, blank=True, null=True)
-    last_name = models.CharField(
-        "Фамилия", max_length=150, blank=True, null=True)
+    last_name = models.CharField("Фамилия", max_length=150, blank=True, null=True)
 
     def __str__(self):
         return self.username

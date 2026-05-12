@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
 import s from './ProductGallery.module.scss';
+import { useState } from 'react';
 
 type ProductGalleryProps = {
   images: string[];

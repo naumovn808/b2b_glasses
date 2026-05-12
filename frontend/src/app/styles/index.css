@@ -368,9 +368,21 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  min-height: 100dvh;
+}
+
 body {
   background-color: #f3f3f3;
   font-family: 'Inter', sans-serif;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* Fix mobile Safari increase font-size on landscape mode */

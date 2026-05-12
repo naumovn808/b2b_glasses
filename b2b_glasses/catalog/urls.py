@@ -4,6 +4,9 @@ from . import views
 app_name = "catalog"
 
 urlpatterns = [
+    path('products/<str:product_type>/<int:pk>/',
+         views.ProductDetailView.as_view(), name='product-detail'),
+
     # --- Пути для Оправ (уже были) ---
     path('frames/', views.FrameListView.as_view(), name='frame-list'),
     path('frames/filters/', views.FrameFilterOptionsView.as_view(),

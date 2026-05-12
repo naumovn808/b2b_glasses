@@ -156,7 +156,8 @@
 
 .sizeButton {
   display: grid;
-  width: 2.4rem;
+  // width: 2.4rem;
+  padding: 10px;
   height: 2.4rem;
   place-items: center;
   background: transparent;
@@ -212,11 +213,6 @@
   font-size: 0.86rem;
   line-height: 1.3;
   text-align: left;
-  transition: color 0.18s ease;
-}
-
-.lensOption:hover {
-  color: #111111;
 }
 
 .lensOptionActive {

@@ -1,0 +1,1193 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "B2B Glasses API (v1)",
+    "description": "Документация API v1 для проекта B2B Glasses",
+    "contact": { "email": "contact@example.com" },
+    "version": "v1"
+  },
+  "host": "localhost",
+  "schemes": ["http"],
+  "basePath": "/api/v1",
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": { "Basic": { "type": "basic" } },
+  "security": [{ "Basic": [] }],
+  "paths": {
+    "/auth/login/": {
+      "post": {
+        "operationId": "auth_login_create",
+        "description": "",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      },
+      "parameters": []
+    },
+    "/auth/register/": {
+      "post": {
+        "operationId": "auth_register_create",
+        "description": "",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      },
+      "parameters": []
+    },
+    "/auth/set-password/": {
+      "post": {
+        "operationId": "auth_set-password_create",
+        "description": "",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["auth"]
+      },
+      "parameters": []
+    },
+    "/catalog/frames/": {
+      "get": {
+        "operationId": "catalog_frames_list",
+        "summary": "1. Получить список ОПРАВ (с фильтрами)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "brand",
+            "in": "query",
+            "description": "ID Бренда или список ID (напр. ?brand=1 или ?brand=1,3,5)",
+            "type": "string"
+          },
+          {
+            "name": "material",
+            "in": "query",
+            "description": "ID Материала или список ID (напр. ?material=1,2)",
+            "type": "string"
+          },
+          {
+            "name": "shape",
+            "in": "query",
+            "description": "ID Формы или список ID",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "ID Типа или список ID",
+            "type": "string"
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "description": "ID Пола или список ID",
+            "type": "string"
+          },
+          {
+            "name": "age_group",
+            "in": "query",
+            "description": "ID Возрастной группы или список ID",
+            "type": "string"
+          },
+          {
+            "name": "price__gte",
+            "in": "query",
+            "description": "Цена 'больше или равна'",
+            "type": "number"
+          },
+          {
+            "name": "price__lte",
+            "in": "query",
+            "description": "Цена 'меньше или равна'",
+            "type": "number"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Поиск по Имени, Артикулу или Бренду",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Кол-во элементов на странице (по умолч: 5, макс: 100)",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/Frame" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Catalog (Каталог)"]
+      },
+      "parameters": []
+    },
+    "/catalog/frames/filters/": {
+      "get": {
+        "operationId": "catalog_frames_filters_list",
+        "summary": "2. Получить опции фильтров для ОПРАВ",
+        "description": "Возвращает ВСЕ доступные Бренды, Материалы, Формы и т.д.",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Catalog (Каталог)"]
+      },
+      "parameters": []
+    },
+    "/catalog/lenses/": {
+      "get": {
+        "operationId": "catalog_lenses_list",
+        "summary": "3. Получить список ЛИНЗ (с фильтрами)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "series",
+            "in": "query",
+            "description": "ID Серии или список ID (напр. ?series=1 или ?series=1,2)",
+            "type": "string"
+          },
+          {
+            "name": "sph",
+            "in": "query",
+            "description": "Значение Сферы или список (напр. ?sph=-1.25)",
+            "type": "string"
+          },
+          {
+            "name": "cyl",
+            "in": "query",
+            "description": "Значение Цилиндра или список (напр. ?cyl=0.50)",
+            "type": "string"
+          },
+          {
+            "name": "dia",
+            "in": "query",
+            "description": "Значение Диаметра или список (напр. ?dia=70)",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Поиск по Имени Серии или ID из 1С",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Кол-во элементов на странице (по умолч: 5, макс: 100)",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/Lens" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Catalog (Каталог)"]
+      },
+      "parameters": []
+    },
+    "/catalog/lenses/options/": {
+      "get": {
+        "operationId": "catalog_lenses_options_list",
+        "summary": "4. Получить опции фильтров для ЛИНЗ",
+        "description": "Возвращает доступные Серии, SPH, CYL и DIA, отфильтрованные по переданным параметрам.",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Catalog (Каталог)"]
+      },
+      "parameters": []
+    },
+    "/content/about/": {
+      "get": {
+        "operationId": "content_about_read",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/AboutUs" }
+          }
+        },
+        "tags": ["content"]
+      },
+      "parameters": []
+    },
+    "/content/contacts/": {
+      "get": {
+        "operationId": "content_contacts_read",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/Contacts" }
+          }
+        },
+        "tags": ["content"]
+      },
+      "parameters": []
+    },
+    "/content/faq/": {
+      "get": {
+        "operationId": "content_faq_list",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/FAQ" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["content"]
+      },
+      "parameters": []
+    },
+    "/content/news/": {
+      "get": {
+        "operationId": "content_news_list",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/News" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["content"]
+      },
+      "parameters": []
+    },
+    "/content/training/": {
+      "get": {
+        "operationId": "content_training_list",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/Training" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["content"]
+      },
+      "parameters": []
+    },
+    "/orders/cart/": {
+      "get": {
+        "operationId": "orders_cart_read",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/Order" }
+          }
+        },
+        "tags": ["orders"]
+      },
+      "parameters": []
+    },
+    "/orders/cart/add/": {
+      "post": {
+        "operationId": "orders_cart_add_create",
+        "summary": "2. Добавить/Обновить товар в корзине",
+        "description": "Добавляет товар в корзину. Если товар уже есть, обновляет его количество.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/AddCartItem" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/Order" }
+          },
+          "400": {
+            "description": "Ошибка валидации (напр. 'product_id не найден')"
+          }
+        },
+        "tags": ["Orders (Корзина)"]
+      },
+      "parameters": []
+    },
+    "/orders/cart/checkout/": {
+      "post": {
+        "operationId": "orders_cart_checkout_create",
+        "summary": "6. Оформить заказ (Checkout)",
+        "description": "Превращает 'Корзину' (status='cart') в 'Заказ' (status='pending').",
+        "parameters": [],
+        "responses": {
+          "200": { "description": "Заказ оформлен" },
+          "400": { "description": "Ошибка" }
+        },
+        "tags": ["Orders (Корзина)"]
+      },
+      "parameters": []
+    },
+    "/orders/cart/clear/": {
+      "delete": {
+        "operationId": "orders_cart_clear_delete",
+        "summary": "3. Очистить корзину (полностью)",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "description": "Корзина не найдена" }
+        },
+        "tags": ["Orders (Корзина)"]
+      },
+      "parameters": []
+    },
+    "/orders/cart/items/{id}/": {
+      "delete": {
+        "operationId": "orders_cart_items_delete",
+        "description": "",
+        "parameters": [],
+        "responses": { "204": { "description": "" } },
+        "tags": ["orders"]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this Позиция заказа.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/orders/cart/items/{id}/update/": {
+      "put": {
+        "operationId": "orders_cart_items_update_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/OrderItem" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/OrderItem" }
+          }
+        },
+        "tags": ["orders"]
+      },
+      "patch": {
+        "operationId": "orders_cart_items_update_partial_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/OrderItem" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/OrderItem" }
+          }
+        },
+        "tags": ["orders"]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this Позиция заказа.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/orders/custom/create/": {
+      "post": {
+        "operationId": "orders_custom_create_create",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/CustomOrder" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": { "$ref": "#/definitions/CustomOrder" }
+          }
+        },
+        "tags": ["orders"]
+      },
+      "parameters": []
+    },
+    "/orders/history/": {
+      "get": {
+        "operationId": "orders_history_list",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/Order" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["orders"]
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "Frame": {
+      "required": ["id_1c", "name", "sku"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "id_1c": {
+          "title": "Ид из 1С",
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "name": {
+          "title": "Наименование",
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 1
+        },
+        "sku": {
+          "title": "Артикул",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "brand": { "title": "Brand", "type": "string", "readOnly": true },
+        "material": { "title": "Material", "type": "string", "readOnly": true },
+        "shape": { "title": "Shape", "type": "string", "readOnly": true },
+        "type": { "title": "Type", "type": "string", "readOnly": true },
+        "gender": { "title": "Gender", "type": "string", "readOnly": true },
+        "age_group": {
+          "title": "Age group",
+          "type": "string",
+          "readOnly": true
+        },
+        "color_code": {
+          "title": "Код цвета",
+          "type": "string",
+          "maxLength": 100,
+          "x-nullable": true
+        },
+        "color_name": {
+          "title": "Название цвета",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "size_a": {
+          "title": "Размер А",
+          "type": "string",
+          "format": "decimal",
+          "x-nullable": true
+        },
+        "size_b": {
+          "title": "Размер B",
+          "type": "string",
+          "format": "decimal",
+          "x-nullable": true
+        },
+        "size_d": {
+          "title": "Размер D (Мост)",
+          "type": "string",
+          "format": "decimal",
+          "x-nullable": true
+        },
+        "size_temple": {
+          "title": "Размер Заушника",
+          "type": "string",
+          "format": "decimal",
+          "x-nullable": true
+        },
+        "price": { "title": "Цена", "type": "string", "format": "decimal" },
+        "stock": {
+          "title": "Остаток",
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        }
+      }
+    },
+    "Lens": {
+      "required": ["id_1c", "sph", "cyl", "dia"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "id_1c": {
+          "title": "Ид из 1С",
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "series": { "title": "Series", "type": "string", "readOnly": true },
+        "sph": {
+          "title": "Сфера (SPH)",
+          "type": "string",
+          "format": "decimal"
+        },
+        "cyl": {
+          "title": "Цилиндр (CYL)",
+          "type": "string",
+          "format": "decimal"
+        },
+        "dia": {
+          "title": "Диаметр (DIA)",
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": -2147483648
+        },
+        "price": { "title": "Цена", "type": "string", "format": "decimal" },
+        "stock": {
+          "title": "Остаток",
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        }
+      }
+    },
+    "Certificate": {
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "title": {
+          "title": "Название сертификата",
+          "type": "string",
+          "maxLength": 255
+        },
+        "image": {
+          "title": "Изображение",
+          "type": "string",
+          "readOnly": true,
+          "format": "uri"
+        }
+      }
+    },
+    "Partner": {
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "name": {
+          "title": "Название партнера",
+          "type": "string",
+          "maxLength": 255
+        },
+        "image": {
+          "title": "Логотип",
+          "type": "string",
+          "readOnly": true,
+          "format": "uri"
+        },
+        "link": {
+          "title": "Ссылка",
+          "type": "string",
+          "format": "uri",
+          "maxLength": 200,
+          "x-nullable": true
+        }
+      }
+    },
+    "AboutUs": {
+      "required": ["text"],
+      "type": "object",
+      "properties": {
+        "text": { "title": "Текст 'О нас'", "type": "string", "minLength": 1 },
+        "certificates": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Certificate" },
+          "readOnly": true
+        },
+        "partners": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Partner" },
+          "readOnly": true
+        }
+      }
+    },
+    "Contacts": {
+      "required": ["phone", "email", "address_label", "work_hours"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "phone": {
+          "title": "Телефон",
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "format": "email",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        "address_label": {
+          "title": "Адрес (название)",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "address_label_ru": {
+          "title": "Адрес (название) [ru]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "address_label_en": {
+          "title": "Адрес (название) [en]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "address_label_uz": {
+          "title": "Адрес (название) [uz]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "address_link": {
+          "title": "Ссылка на карту",
+          "type": "string",
+          "format": "uri",
+          "maxLength": 200,
+          "x-nullable": true
+        },
+        "work_hours": {
+          "title": "Время работы",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "work_hours_ru": {
+          "title": "Время работы [ru]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "work_hours_en": {
+          "title": "Время работы [en]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "work_hours_uz": {
+          "title": "Время работы [uz]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        }
+      }
+    },
+    "FAQ": {
+      "required": ["question", "answer"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "question": {
+          "title": "Вопрос",
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 1
+        },
+        "question_ru": {
+          "title": "Вопрос [ru]",
+          "type": "string",
+          "maxLength": 500,
+          "x-nullable": true
+        },
+        "question_en": {
+          "title": "Вопрос [en]",
+          "type": "string",
+          "maxLength": 500,
+          "x-nullable": true
+        },
+        "question_uz": {
+          "title": "Вопрос [uz]",
+          "type": "string",
+          "maxLength": 500,
+          "x-nullable": true
+        },
+        "answer": { "title": "Ответ", "type": "string", "minLength": 1 },
+        "answer_ru": {
+          "title": "Ответ [ru]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "answer_en": {
+          "title": "Ответ [en]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "answer_uz": {
+          "title": "Ответ [uz]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "order": {
+          "title": "Порядок",
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        }
+      }
+    },
+    "News": {
+      "required": ["title", "text"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "title": {
+          "title": "Заголовок",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "title_ru": {
+          "title": "Заголовок [ru]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "title_en": {
+          "title": "Заголовок [en]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "title_uz": {
+          "title": "Заголовок [uz]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "image": {
+          "title": "Изображение",
+          "type": "string",
+          "readOnly": true,
+          "format": "uri"
+        },
+        "text": { "title": "Текст новости", "type": "string", "minLength": 1 },
+        "text_ru": {
+          "title": "Текст новости [ru]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "text_en": {
+          "title": "Текст новости [en]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "text_uz": {
+          "title": "Текст новости [uz]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "created_at": {
+          "title": "Дата публикации",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Training": {
+      "required": ["title", "description"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "title": {
+          "title": "Заголовок",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "title_ru": {
+          "title": "Заголовок [ru]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "title_en": {
+          "title": "Заголовок [en]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "title_uz": {
+          "title": "Заголовок [uz]",
+          "type": "string",
+          "maxLength": 255,
+          "x-nullable": true
+        },
+        "image": {
+          "title": "Изображение",
+          "type": "string",
+          "readOnly": true,
+          "format": "uri"
+        },
+        "description": {
+          "title": "Описание",
+          "type": "string",
+          "minLength": 1
+        },
+        "description_ru": {
+          "title": "Описание [ru]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "description_en": {
+          "title": "Описание [en]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "description_uz": {
+          "title": "Описание [uz]",
+          "type": "string",
+          "x-nullable": true
+        },
+        "order": {
+          "title": "Порядок отображения",
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        }
+      }
+    },
+    "OrderItem": {
+      "required": ["price_at_order"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "product": { "title": "Product", "type": "string", "readOnly": true },
+        "quantity": {
+          "title": "Количество",
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        },
+        "price_at_order": {
+          "title": "Цена (на момент заказа)",
+          "type": "string",
+          "format": "decimal"
+        },
+        "total_price": {
+          "title": "Total price",
+          "type": "string",
+          "format": "decimal",
+          "readOnly": true
+        }
+      }
+    },
+    "Order": {
+      "required": ["user"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "user": { "title": "Пользователь", "type": "integer" },
+        "status": {
+          "title": "Статус",
+          "type": "string",
+          "enum": ["cart", "pending", "completed", "cancelled"]
+        },
+        "total_price": {
+          "title": "Итоговая цена",
+          "type": "string",
+          "format": "decimal"
+        },
+        "created_at": {
+          "title": "Дата создания",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/OrderItem" },
+          "readOnly": true
+        }
+      }
+    },
+    "AddCartItem": {
+      "required": ["product_type", "product_id"],
+      "type": "object",
+      "properties": {
+        "product_type": {
+          "title": "Product type",
+          "type": "string",
+          "enum": ["frame", "lens"]
+        },
+        "product_id": { "title": "Product id", "type": "integer" },
+        "quantity": {
+          "title": "Quantity",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
+        }
+      }
+    },
+    "CustomOrder": {
+      "required": ["series", "sph", "cyl", "design", "photochrom"],
+      "type": "object",
+      "properties": {
+        "id": { "title": "ID", "type": "integer", "readOnly": true },
+        "series": {
+          "title": "Серия (желаемая)",
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "sph": {
+          "title": "SPH",
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "cyl": {
+          "title": "CYL",
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "dia": {
+          "title": "DIA",
+          "type": "string",
+          "maxLength": 50,
+          "x-nullable": true
+        },
+        "design": {
+          "title": "Дизайн",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "photochrom": {
+          "title": "Фотохром",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "status": {
+          "title": "Статус",
+          "type": "string",
+          "enum": ["new", "processing", "completed", "cancelled"],
+          "readOnly": true
+        },
+        "created_at": {
+          "title": "Дата создания",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}

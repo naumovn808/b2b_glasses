@@ -1,0 +1,1 @@
+export { getLocalizedField } from './getLocalizedField';

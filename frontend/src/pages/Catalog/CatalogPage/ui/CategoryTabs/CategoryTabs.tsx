@@ -6,6 +6,7 @@ type CategoryTab = {
   id: string;
   title: string;
   image: string;
+  disabled?: boolean;
 };
 
 type CategoryTabsProps = {
@@ -23,18 +24,28 @@ export function CategoryTabs({
 
   return (
     <div className={s.tabs} aria-label={t('catalog.categoriesAria')}>
-      {categories.map((category) => (
-        <button
-          className={clsx(s.tab, activeCategoryId === category.id && s.tabActive)}
-          key={category.id}
-          type="button"
-          aria-pressed={activeCategoryId === category.id}
-          onClick={() => onCategoryChange(category.id)}
-        >
-          <img src={category.image} alt="" aria-hidden="true" />
-          <span>{t(`catalog.category.${category.id}`, category.title)}</span>
-        </button>
-      ))}
+      {categories.map((category) => {
+        const isActive = activeCategoryId === category.id;
+
+        return (
+          <button
+            className={clsx(
+              s.tab,
+              isActive && s.tabActive,
+              category.disabled && s.tabDisabled,
+            )}
+            key={category.id}
+            type="button"
+            aria-disabled={category.disabled}
+            aria-pressed={isActive}
+            disabled={category.disabled}
+            onClick={() => onCategoryChange(category.id)}
+          >
+            <img src={category.image} alt="" aria-hidden="true" />
+            <span>{t(`catalog.category.${category.id}`, category.title)}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

@@ -1,10 +1,15 @@
+import {
+  selectUserInited,
+  selectUserIsAuth,
+  userActions,
+} from '@/entities/user';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { AuthModal } from '@/widgets/AuthModal/ui/AuthModal';
 import { Footer } from '../../footer/ui/Footer';
 import { Header } from '../../header/ui/Header';
 import { Outlet } from 'react-router';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUserInited, selectUserIsAuth, userActions } from '@/entities/user';
-import { AuthModal } from '@/widgets/AuthModal/ui/AuthModal';
 
 export function Layout() {
   const dispatch = useDispatch();
@@ -22,9 +27,7 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
-      {inited && !isAuth && (
-        <AuthModal isOpen={!isAuth} />
-      )}
+      {inited && !isAuth && <AuthModal isOpen={!isAuth} />}
     </>
   );
 }

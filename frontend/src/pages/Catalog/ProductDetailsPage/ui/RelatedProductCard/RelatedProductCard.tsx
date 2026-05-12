@@ -1,21 +1,14 @@
 import { useState, type CSSProperties } from 'react';
 
-import {
-  addCartItem,
-  type CartRootState,
-  makeCartItemId,
-  selectCartItemById,
-} from '@/entities/cart';
-import { CartQuantityControl } from '@/features/cart-quantity-control';
 import { Link } from 'react-router';
 import clsx from 'clsx';
-import type { Product, ProductColor } from '@/entities/product';
-import { useDispatch, useSelector } from 'react-redux';
+import type { ProductCardColor, ProductCardProduct } from '@/features/product-card';
 import s from './RelatedProductCard.module.scss';
+import { useAddCartItemMutation } from '@/entities/cart';
 import { useTranslation } from 'react-i18next';
 
 type RelatedProductCardProps = {
-  product: Product;
+  product: ProductCardProduct;
 };
 
 type SwatchStyle = CSSProperties & {
@@ -23,7 +16,7 @@ type SwatchStyle = CSSProperties & {
   '--swatch-image'?: string;
 };
 
-function getSwatchStyle(color: ProductColor): SwatchStyle {
+function getSwatchStyle(color: ProductCardColor): SwatchStyle {
   return {
     '--swatch-color': color.value,
     '--swatch-image': color.backgroundImage,
@@ -32,37 +25,22 @@ function getSwatchStyle(color: ProductColor): SwatchStyle {
 
 export function RelatedProductCard({ product }: RelatedProductCardProps) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const [addCartItem, { isLoading: isAddingToCart }] =
+    useAddCartItemMutation();
   const [selectedColorId, setSelectedColorId] = useState(
     product.colors[0]?.id ?? '',
   );
-  const selectedColor =
-    product.colors.find((color) => color.id === selectedColorId) ??
-    product.colors[0];
-  const cartItemPayload = selectedColor
-    ? {
-        productId: product.id,
-        title: product.title,
-        image: product.image,
-        price: product.price,
-        oldPrice: product.oldPrice,
-        color: t(`catalog.option.${selectedColor.id}`, selectedColor.name),
-        colorId: selectedColor.id,
-        size: '—',
-        stockText: t('common.inStock'),
-        quantity: 1,
-      }
-    : null;
-  const cartItemId = cartItemPayload ? makeCartItemId(cartItemPayload) : '';
-  const cartItem = useSelector((state: CartRootState) =>
-    selectCartItemById(state, cartItemId),
-  );
-  const quantityInCart = cartItem?.quantity ?? 0;
+  const canAddToCart =
+    !product.isSoldOut && !!product.apiProductId && !!product.apiProductType;
 
-  const addProductToCart = () => {
-    if (product.isSoldOut || !cartItemPayload) return;
+  const addProductToCart = async () => {
+    if (!canAddToCart) return;
 
-    dispatch(addCartItem(cartItemPayload));
+    await addCartItem({
+      product_id: product.apiProductId!,
+      product_type: product.apiProductType!,
+      quantity: 1,
+    }).unwrap();
   };
 
   return (
@@ -104,21 +82,10 @@ export function RelatedProductCard({ product }: RelatedProductCardProps) {
         </div>
 
         <div className={s.cartRow}>
-          {quantityInCart > 0 ? (
-            cartItem ? (
-              <CartQuantityControl
-                className={s.quantity}
-                disabled={product.isSoldOut}
-                itemId={cartItem.id}
-                quantity={quantityInCart}
-              />
-            ) : null
-          ) : null}
-
           <button
             className={s.cartButton}
             type="button"
-            disabled={product.isSoldOut}
+            disabled={!canAddToCart || isAddingToCart}
             onClick={addProductToCart}
           >
             {t('catalog.addToCart')}

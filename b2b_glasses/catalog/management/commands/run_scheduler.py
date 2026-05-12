@@ -20,11 +20,12 @@ class Command(BaseCommand):
         # Запускаем нашу функцию каждые 5 минут
         scheduler.add_job(
             smart_import_job,
-            trigger='interval',
+            trigger="interval",
             minutes=5,
             id=JOB_ID,
             replace_existing=True,
-            misfire_grace_time=300
+            misfire_grace_time=300,
+            max_instances=2,
         )
 
         scheduler.start()

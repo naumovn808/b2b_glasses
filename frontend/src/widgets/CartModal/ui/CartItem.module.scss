@@ -1,7 +1,6 @@
 .item {
   display: flex;
   min-width: 0;
-  max-height: 125px;
   padding-right: 11px;
   border: 0.3px solid #cbcbcb;
 }
@@ -12,10 +11,12 @@
 }
 
 .itemInfo {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   flex: 1 1 0;
   height: 100%;
-  padding: 9px 0 14px 11px;
+  padding: 12px 0 14px 11px;
 }
 
 .itemTopLine {
@@ -68,11 +69,12 @@
 }
 
 .itemActions {
+  margin-top: auto;
   display: flex;
   align-items: center;
 
   gap: 0.8rem;
-  margin-top: 0.75rem;
+  // margin-top: 0.75rem;
 }
 
 .quantity {

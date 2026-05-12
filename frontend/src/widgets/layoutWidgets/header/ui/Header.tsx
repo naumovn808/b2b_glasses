@@ -1,5 +1,12 @@
 import { Container, IconButton } from '@/shared/ui';
 import { Link, NavLink } from 'react-router';
+import { selectCartTotalQuantity, useGetCartQuery } from '@/entities/cart';
+import {
+  selectUserIsAuth,
+  selectUserToken,
+  userActions,
+} from '@/entities/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 import BurgerIcon from '@/shared/assets/icons/header/burger-menu.svg?react';
 import BurgerModal from '@/widgets/BurgerModal/ui/BurgerModal';
@@ -11,18 +18,25 @@ import LogoUrl from '@/shared/assets/icons/header/logo.svg';
 import ProfileIcon from '@/shared/assets/icons/header/profile.svg?react';
 import clsx from 'clsx';
 import s from './Header.module.scss';
-import { selectCartTotalQuantity } from '@/entities/cart';
-import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { selectUserIsAuth, userActions } from '@/entities/user';
 
 export function Header() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const token = useSelector(selectUserToken);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const cartTotalQuantity = useSelector(selectCartTotalQuantity);
+  const localCartTotalQuantity = useSelector(selectCartTotalQuantity);
+  const { data: cart } = useGetCartQuery(undefined, {
+    skip: !token,
+  });
+  const serverCartTotalQuantity =
+    cart?.items.reduce((total, item) => total + (item.quantity ?? 1), 0) ?? 0;
+  const cartTotalQuantity = Math.max(
+    localCartTotalQuantity,
+    serverCartTotalQuantity,
+  );
   const isAuth = useSelector(selectUserIsAuth);
 
   const handleAccountClick = () => {

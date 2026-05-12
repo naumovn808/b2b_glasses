@@ -1,0 +1,28 @@
+.root {
+  overflow-wrap: anywhere;
+}
+
+.root :global(p) {
+  margin: 0 0 1em;
+}
+
+.root :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.root :global(a) {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.root :global(img) {
+  max-width: 100%;
+  height: auto;
+}
+
+.root :global(ul),
+.root :global(ol) {
+  margin: 0 0 1em;
+  padding-left: 1.4em;
+}

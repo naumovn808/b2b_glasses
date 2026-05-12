@@ -31,6 +31,12 @@ class TrainingListView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
 
+class TrainingDetailView(generics.RetrieveAPIView):
+    queryset = Training.objects.all()
+    serializer_class = TrainingSerializer
+    permission_classes = [AllowAny]
+
+
 class FAQListView(generics.ListAPIView):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer
@@ -38,6 +44,12 @@ class FAQListView(generics.ListAPIView):
 
 
 class NewsListView(generics.ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = [AllowAny]
+
+
+class NewsDetailView(generics.RetrieveAPIView):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = [AllowAny]

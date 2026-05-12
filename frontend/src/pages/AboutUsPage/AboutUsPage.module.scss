@@ -37,16 +37,39 @@
 
 .introContent {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 2.4rem;
+  gap: 1.2rem;
+}
+
+.introTitle {
+  margin: 0;
+  color: #1f2328;
+  font-size: clamp(1.3rem, 1.32rem + 0.46vw, 1.7rem);
+  line-height: 1.18;
+  font-weight: 500;
 }
 
 .lead {
+  min-width: 0;
   max-width: 16.5em;
   margin: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
   font-size: clamp(1.85rem, 1.1rem + 1.45vw, 3.15rem);
   line-height: 1.12;
   font-weight: 700;
+}
+
+.lead :global(p) {
+  margin: 0 0 0.7em;
+  overflow-wrap: anywhere;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
 }
 
 .storyList {
@@ -257,6 +280,13 @@
 .partnerGrid > * {
   flex: 0 1 calc((100% - 16rem) / 6);
   min-width: 0;
+}
+
+.partnerGrid a,
+.partnerGrid span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .partnerGrid img {

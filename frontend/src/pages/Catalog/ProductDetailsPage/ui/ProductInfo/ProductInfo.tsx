@@ -1,42 +1,38 @@
-import { useEffect, useState } from 'react';
-
 import Chosen from '@/shared/assets/icons/chosen.svg?react';
-import NotFillStarIcon from '@/shared/assets/icons/not-fill_star.svg?react';
-import type { ProductDetails } from '../../model/productDetailsContent';
 import ProductEye from '@/shared/assets/icons/product_eye.svg';
-import { QuantityControl } from '@/shared/ui';
-import StarIcon from '@/shared/assets/icons/star.svg?react';
-import { addCartItem } from '@/entities/cart';
+import {
+  addCartItem as addLocalCartItem,
+  type CartRootState,
+  makeCartItemId,
+  selectCartItemById,
+  useAddCartItemMutation,
+} from '@/entities/cart';
+import { CartQuantityControl } from '@/features/cart-quantity-control';
+import { QuantityControl, Spinner } from '@/shared/ui';
 import clsx from 'clsx';
 import s from './ProductInfo.module.scss';
-import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import type { ProductCardProduct } from '@/features/product-card';
 
-const TIMER_INITIAL_SECONDS = 5 * 24 * 60 * 60 + 59 * 60 + 47;
-const SECONDS_IN_DAY = 24 * 60 * 60;
-const SECONDS_IN_HOUR = 60 * 60;
-const SECONDS_IN_MINUTE = 60;
+export type ProductDetailsOptionGroup = {
+  id: string;
+  title: string;
+  options: Array<{
+    id: string;
+    isSelected: boolean;
+    label: string;
+  }>;
+};
 
-function formatTimePart(value: number) {
-  return String(value).padStart(2, '0');
-}
-
-function formatCountdown(totalSeconds: number) {
-  const safeSeconds = Math.max(0, totalSeconds);
-  const days = Math.floor(safeSeconds / SECONDS_IN_DAY);
-  const hours = Math.floor((safeSeconds % SECONDS_IN_DAY) / SECONDS_IN_HOUR);
-  const minutes = Math.floor(
-    (safeSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE,
-  );
-  const seconds = safeSeconds % SECONDS_IN_MINUTE;
-
-  return [
-    formatTimePart(days),
-    formatTimePart(hours),
-    formatTimePart(minutes),
-    formatTimePart(seconds),
-  ].join(' : ');
-}
+export type ProductDetails = ProductCardProduct & {
+  categoryKey: string;
+  discountPercent: number;
+  gallery: string[];
+  selectedSize: string;
+  optionGroups?: ProductDetailsOptionGroup[];
+};
 
 type ProductInfoProps = {
   product: ProductDetails;
@@ -45,18 +41,10 @@ type ProductInfoProps = {
 export function ProductInfo({ product }: ProductInfoProps) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const [addCartItem, { isLoading: isAddingToCart }] = useAddCartItemMutation();
   const [quantity, setQuantity] = useState(1);
-  const [timerSeconds, setTimerSeconds] = useState(TIMER_INITIAL_SECONDS);
   const [isChosen, setIsChosen] = useState(false);
   const [selectedSize, setSelectedSize] = useState(product.selectedSize);
-  const [selectedLensOptions, setSelectedLensOptions] = useState(() =>
-    Object.fromEntries(
-      product.optionGroups?.map((group) => [
-        group.id,
-        group.selectedOptionId,
-      ]) ?? [],
-    ),
-  );
   const [selectedColorId, setSelectedColorId] = useState(
     product.colors[0]?.id ?? '',
   );
@@ -64,20 +52,11 @@ export function ProductInfo({ product }: ProductInfoProps) {
     product.colors.find((color) => color.id === selectedColorId) ??
     product.colors[0];
   const hasProductOptionGroups = Boolean(product.optionGroups?.length);
-
-  useEffect(() => {
-    const timerId = window.setInterval(() => {
-      setTimerSeconds((currentSeconds) => Math.max(0, currentSeconds - 1));
-    }, 1000);
-
-    return () => window.clearInterval(timerId);
-  }, []);
-
-  const addProductToCart = () => {
-    if (!selectedColor) return;
-
-    dispatch(
-      addCartItem({
+  const hasSizes = product.sizes.length > 0;
+  const canAddToCart =
+    !product.isSoldOut && !!product.apiProductId && !!product.apiProductType;
+  const cartItemPayload = selectedColor
+    ? {
         productId: product.id,
         title: product.title,
         image: product.image,
@@ -85,11 +64,41 @@ export function ProductInfo({ product }: ProductInfoProps) {
         oldPrice: product.oldPrice,
         color: t(`catalog.option.${selectedColor.id}`, selectedColor.name),
         colorId: selectedColor.id,
-        size: selectedSize,
-        stockText: t(product.frameNoticeKey),
+        size: selectedSize || '-',
+        stockText: t('common.inStock'),
         quantity,
-      }),
-    );
+      }
+    : null;
+  const cartItemId = cartItemPayload ? makeCartItemId(cartItemPayload) : '';
+  const cartItem = useSelector((state: CartRootState) =>
+    selectCartItemById(state, cartItemId),
+  );
+  const quantityInCart = cartItem?.quantity ?? 0;
+  const hasStockLimit = typeof product.stock === 'number';
+  const isInitialQuantityStockReached = hasStockLimit && quantity >= product.stock!;
+  const isCartQuantityStockReached =
+    hasStockLimit && quantityInCart >= product.stock!;
+
+  const addProductToCart = async () => {
+    if (
+      !canAddToCart ||
+      !cartItemPayload ||
+      (hasStockLimit && quantityInCart + quantity > product.stock!)
+    ) {
+      return;
+    }
+
+    try {
+      await addCartItem({
+        product_id: product.apiProductId!,
+        product_type: product.apiProductType!,
+        quantity,
+      }).unwrap();
+    } catch {
+      return;
+    }
+
+    dispatch(addLocalCartItem(cartItemPayload));
   };
   return (
     <section className={s.info}>
@@ -108,47 +117,23 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
       <h1>{product.title}</h1>
 
-      <div className={s.ratingRow}>
-        <span
-          className={s.stars}
-          aria-label={t('common.rating', { rating: product.rating })}
-        >
-          {Array.from({ length: 5 }, (_, index) =>
-            index >= product.rating ? (
-              <NotFillStarIcon key={index} aria-hidden="true" />
-            ) : (
-              <StarIcon key={index} aria-hidden="true" />
-            ),
-          )}
-        </span>
-        <span>({product.reviewCount})</span>
-      </div>
-
       <div className={s.priceRow}>
         <span className={s.price}>{product.price}</span>
         {product.oldPrice ? (
           <span className={s.oldPrice}>{product.oldPrice}</span>
         ) : null}
-        <span className={s.discount}>
-          {t('productDetail.discountLabel', {
-            percent: product.discountPercent,
-          })}
-        </span>
+        {product.discountPercent > 0 ? (
+          <span className={s.discount}>
+            {t('productDetail.discountLabel', {
+              percent: product.discountPercent,
+            })}
+          </span>
+        ) : null}
       </div>
 
       <div className={s.viewers}>
-        <img src={ProductEye} alt="" aria-hidden="true" />{' '}
-        {t(product.viewersTextKey)}
-      </div>
-
-      <div className={s.timer}>
-        <span>{t(product.stockTextKey)}</span>
-        <strong>{formatCountdown(timerSeconds)}</strong>
-      </div>
-
-      <div className={s.notice}>
-        <span>{t(product.frameNoticeKey)}</span>
-        <span className={s.noticeBar} />
+        <img src={ProductEye} alt="" aria-hidden="true" />
+        {t('productDetail.viewers.productNow', { quantity: 24 })}
       </div>
 
       {hasProductOptionGroups && product.optionGroups ? (
@@ -158,24 +143,15 @@ export function ProductInfo({ product }: ProductInfoProps) {
               <h2>{t(`catalog.filter.${group.id}`, group.title)}:</h2>
               <div className={s.lensOptionList}>
                 {group.options.map((option) => (
-                  <button
+                  <span
                     className={clsx(
                       s.lensOption,
-                      option.id === selectedLensOptions[group.id] &&
-                        s.lensOptionActive,
+                      option.isSelected && s.lensOptionActive,
                     )}
                     key={option.id}
-                    type="button"
-                    aria-pressed={option.id === selectedLensOptions[group.id]}
-                    onClick={() =>
-                      setSelectedLensOptions((currentOptions) => ({
-                        ...currentOptions,
-                        [group.id]: option.id,
-                      }))
-                    }
                   >
                     {t(`catalog.option.${option.id}`, option.label)}
-                  </button>
+                  </span>
                 ))}
               </div>
             </div>
@@ -183,26 +159,28 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </div>
       ) : (
         <>
-          <div className={s.optionGroup}>
-            <h2>
-              {t('common.size')}: {selectedSize}
-            </h2>
-            <div className={s.sizes}>
-              {product.sizes.map((size) => (
-                <button
-                  className={clsx(
-                    s.sizeButton,
-                    selectedSize === size && s.sizeActive,
-                  )}
-                  key={size}
-                  type="button"
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
+          {hasSizes ? (
+            <div className={s.optionGroup}>
+              <h2>
+                {t('common.size')}: {selectedSize}
+              </h2>
+              <div className={s.sizes}>
+                {product.sizes.map((size) => (
+                  <button
+                    className={clsx(
+                      s.sizeButton,
+                      selectedSize === size && s.sizeActive,
+                    )}
+                    key={size}
+                    type="button"
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <div className={s.optionGroup}>
             <h2>
@@ -233,25 +211,45 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </>
       )}
 
-      {/* {!hasProductOptionGroups ? ( */}
       <div className={s.cartRow}>
-        <QuantityControl
-          className={s.quantity}
-          decreaseDisabled={quantity <= 1}
-          quantity={quantity}
-          onDecrease={() => setQuantity((current) => Math.max(1, current - 1))}
-          onIncrease={() => setQuantity((current) => current + 1)}
-        />
+        {cartItem && quantityInCart > 0 ? (
+          <CartQuantityControl
+            className={s.quantity}
+            disabled={product.isSoldOut}
+            increaseDisabled={isCartQuantityStockReached}
+            itemId={cartItem.id}
+            quantity={quantityInCart}
+          />
+        ) : (
+          <QuantityControl
+            className={s.quantity}
+            decreaseDisabled={quantity <= 1}
+            increaseDisabled={isInitialQuantityStockReached}
+            quantity={quantity}
+            onDecrease={() =>
+              setQuantity((current) => Math.max(1, current - 1))
+            }
+            onIncrease={() =>
+              setQuantity((current) =>
+                hasStockLimit ? Math.min(current + 1, product.stock!) : current + 1,
+              )
+            }
+          />
+        )}
 
         <button
           className={s.cartButton}
+          disabled={
+            !canAddToCart ||
+            isAddingToCart ||
+            (hasStockLimit && quantityInCart + quantity > product.stock!)
+          }
           onClick={addProductToCart}
           type="button"
         >
-          {t('catalog.addToCart')}
+          {isAddingToCart ? <Spinner size="sm" /> : t('catalog.addToCart')}
         </button>
       </div>
-      {/* ) : null} */}
     </section>
   );
 }

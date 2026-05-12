@@ -1,40 +1,25 @@
-import logging
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from api.permissions import IsBot
-from .models import Frame, Lens, LensSeries
-from .serializers import FrameSerializer, LensSerializer, LensSeriesSerializer
+from rest_framework.permissions import AllowAny
+from .models import Frame, Lens, LensSeries, Color, ColorGroup, Brand, FrameMaterial, FrameShape, FrameType, FrameGender, FrameAgeGroup, ProductColor
+from .serializers import (
+    FrameSerializer, LensSerializer, LensSeriesSerializer, ColorSerializer, ColorGroupSerializer,
+    BrandSerializer, FrameMaterialSerializer, FrameShapeSerializer,
+    FrameTypeSerializer, FrameGenderSerializer, FrameAgeGroupSerializer,
+    ProductColorSerializer
+)
 from .filters import FrameFilter, LensFilter
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from users.models import User
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .models import Brand, FrameMaterial, FrameShape, FrameType, FrameGender, FrameAgeGroup
-from .serializers import (
-    BrandSerializer, FrameMaterialSerializer, FrameShapeSerializer,
-    FrameTypeSerializer, FrameGenderSerializer, FrameAgeGroupSerializer
-)
-
-logger = logging.getLogger(__name__)
-
-
-def check_user_status_sync(telegram_id: str) -> bool:
-    if not telegram_id:
-        return False
-    return User.objects.filter(telegram_id=telegram_id, is_active=True).exists()
-
 # ---
-# Views для ОПРАВ (ДЛЯ САЙТА И TWA)
+# Параметры Swagger для Оправ
 # ---
-
-
-# --- ИЗМЕНЕНИЕ: Добавлена 'page_size' в Swagger ---
 frame_params = [
     openapi.Parameter('brand', openapi.IN_QUERY,
                       description="ID Бренда или список ID (напр. ?brand=1 или ?brand=1,3,5)", type=openapi.TYPE_STRING),
@@ -48,6 +33,8 @@ frame_params = [
                       description="ID Пола или список ID", type=openapi.TYPE_STRING),
     openapi.Parameter('age_group', openapi.IN_QUERY,
                       description="ID Возрастной группы или список ID", type=openapi.TYPE_STRING),
+    openapi.Parameter('colors', openapi.IN_QUERY,
+                      description="Название цвета или список (напр. ?colors=Черный,Золотой)", type=openapi.TYPE_STRING),
     openapi.Parameter('price__gte', openapi.IN_QUERY,
                       description="Цена 'больше или равна'", type=openapi.TYPE_NUMBER),
     openapi.Parameter('price__lte', openapi.IN_QUERY,
@@ -60,70 +47,10 @@ frame_params = [
         type=openapi.TYPE_INTEGER
     )
 ]
-# ---
-
-
-class FrameListView(generics.ListAPIView):
-    queryset = Frame.objects.filter(stock__gt=0)
-    serializer_class = FrameSerializer
-    filterset_class = FrameFilter
-    permission_classes = [IsAuthenticated | IsBot]
-    filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ('name', 'sku', 'brand__name')
-
-    @swagger_auto_schema(
-        tags=['Catalog (Каталог)'],
-        operation_summary="1. Получить список ОПРАВ (с фильтрами)",
-        # --- ИЗМЕНЕНО: Возвращаем manual_parameters ---
-        manual_parameters=frame_params
-    )
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            telegram_id = request.query_params.get('telegram_id')
-            if not check_user_status_sync(telegram_id):
-                logger.warning(
-                    f"Доступ к FrameListView ЗАПРЕЩЕН (IsBot, но плохой telegram_id: {telegram_id})")
-                return Response(
-                    {"error": "Доступ запрещен. Пользователь не найден или неактивен."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-        return super().get(request, *args, **kwargs)
-
-
-class FrameFilterOptionsView(APIView):
-    permission_classes = [IsAuthenticated | IsBot]
-
-    @swagger_auto_schema(
-        tags=['Catalog (Каталог)'],
-        operation_summary="2. Получить опции фильтров для ОПРАВ",
-        operation_description="Возвращает ВСЕ доступные Бренды, Материалы, Формы и т.д."
-    )
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            telegram_id = request.query_params.get('telegram_id')
-            if not check_user_status_sync(telegram_id):
-                logger.warning(
-                    f"Доступ к FrameFilterOptionsView ЗАПРЕЩЕН (IsBot, но плохой telegram_id: {telegram_id})")
-                return Response(
-                    {"error": "Доступ запрещен. Пользователь не найден или неактивен."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-        data = {
-            'brands': BrandSerializer(Brand.objects.all(), many=True).data,
-            'materials': FrameMaterialSerializer(FrameMaterial.objects.all(), many=True).data,
-            'shapes': FrameShapeSerializer(FrameShape.objects.all(), many=True).data,
-            'types': FrameTypeSerializer(FrameType.objects.all(), many=True).data,
-            'genders': FrameGenderSerializer(FrameGender.objects.all(), many=True).data,
-            'age_groups': FrameAgeGroupSerializer(FrameAgeGroup.objects.all(), many=True).data
-        }
-        return Response(data)
 
 # ---
-# Views для ЛИНЗ (ДЛЯ САЙТА И БОТА)
+# Параметры Swagger для Линз
 # ---
-
-
-# --- ИЗМЕНЕНИЕ: Добавлена 'page_size' в Swagger ---
 lens_params = [
     openapi.Parameter('series', openapi.IN_QUERY,
                       description="ID Серии или список ID (напр. ?series=1 или ?series=1,2)", type=openapi.TYPE_STRING),
@@ -141,39 +68,68 @@ lens_params = [
         type=openapi.TYPE_INTEGER
     )
 ]
-# ---
+
+
+class FrameListView(generics.ListAPIView):
+    queryset = Frame.objects.filter(stock__gt=0).distinct()
+    serializer_class = FrameSerializer
+    filterset_class = FrameFilter
+    permission_classes = [AllowAny]
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name', 'sku', 'brand__name')
+
+    @swagger_auto_schema(
+        tags=['Catalog (Каталог)'],
+        operation_summary="1. Получить список ОПРАВ (с фильтрами)",
+        manual_parameters=frame_params
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
+class FrameFilterOptionsView(APIView):
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        tags=['Catalog (Каталог)'],
+        operation_summary="2. Получить опции фильтров для ОПРАВ",
+        operation_description="Возвращает ВСЕ доступные Бренды, Материалы, Формы и т.д."
+    )
+    def get(self, request, *args, **kwargs):
+        # Получаем список групп цветов для фильтра
+        groups = ColorGroup.objects.all().order_by('order', 'name')
+
+        data = {
+            'brands': BrandSerializer(Brand.objects.all(), many=True).data,
+            'materials': FrameMaterialSerializer(FrameMaterial.objects.all(), many=True).data,
+            'shapes': FrameShapeSerializer(FrameShape.objects.all(), many=True).data,
+            'types': FrameTypeSerializer(FrameType.objects.all(), many=True).data,
+            'genders': FrameGenderSerializer(FrameGender.objects.all(), many=True).data,
+            'age_groups': FrameAgeGroupSerializer(FrameAgeGroup.objects.all(), many=True).data,
+            'colors': ColorGroupSerializer(groups, many=True).data
+        }
+        return Response(data)
 
 
 class LensListView(generics.ListAPIView):
     queryset = Lens.objects.filter(stock__gt=0).select_related('series')
     serializer_class = LensSerializer
     filterset_class = LensFilter
-    permission_classes = [IsAuthenticated | IsBot]
+    permission_classes = [AllowAny]
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ('series__name', 'id_1c')
 
-    # --- ИЗМЕНЕНО: @swagger_auto_schema (добавлен manual_parameters) ---
     @swagger_auto_schema(
         tags=['Catalog (Каталог)'],
         operation_summary="3. Получить список ЛИНЗ (с фильтрами)",
         manual_parameters=lens_params
     )
-    # ---
     def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            telegram_id = request.query_params.get('telegram_id')
-            if not check_user_status_sync(telegram_id):
-                logger.warning(
-                    f"Доступ к LensListView ЗАПРЕЩЕН (IsBot, но плохой telegram_id: {telegram_id})")
-                return Response(
-                    {"error": "Доступ запрещен. Пользователь не найден или неактивен."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
         return super().get(request, *args, **kwargs)
 
 
 class LensOptionsView(APIView):
-    permission_classes = [IsAuthenticated | IsBot]
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         tags=['Catalog (Каталог)'],
@@ -181,25 +137,11 @@ class LensOptionsView(APIView):
         operation_description="Возвращает доступные Серии, SPH, CYL и DIA, отфильтрованные по переданным параметрам."
     )
     def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            telegram_id = request.query_params.get('telegram_id')
-            if not check_user_status_sync(telegram_id):
-                logger.warning(
-                    f"Доступ к LensOptionsView ЗАПРЕЩЕН (IsBot, но плохой telegram_id: {telegram_id})")
-                return Response(
-                    {"error": "Доступ запрещен. Пользователь не найден или неактивен."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-
-        # 1. Начинаем с базового набора: Линзы, которые есть в наличии
         queryset = Lens.objects.filter(stock__gt=0)
-
-        # 2. Получаем параметры из запроса
         sph = request.query_params.get('sph')
         cyl = request.query_params.get('cyl')
         dia = request.query_params.get('dia')
 
-        # 3. Применяем фильтрацию, если параметры переданы
         if sph:
             queryset = queryset.filter(sph=sph)
         if cyl:
@@ -207,24 +149,13 @@ class LensOptionsView(APIView):
         if dia:
             queryset = queryset.filter(dia=dia)
 
-        # 4. Формируем списки доступных опций на основе ОТФИЛЬТРОВАННОГО набора
-
-        # Для Серий (Material): Берем только те серии, которые есть в оставшихся линзах
-        available_series_ids = queryset.values_list(
-            'series', flat=True).distinct()
-        available_series = LensSeries.objects.filter(
-            id__in=available_series_ids).order_by('name')
+        available_series_ids = queryset.values_list('series', flat=True).distinct()
+        available_series = LensSeries.objects.filter(id__in=available_series_ids).order_by('name')
 
         series_data = LensSeriesSerializer(available_series, many=True).data
-
-        # Для SPH, CYL, DIA: Берем значения из оставшихся линз
-        # Это полезно: если выбрали SPH, список CYL сократится до реальных комбинаций
-        sph_values = queryset.values_list(
-            'sph', flat=True).distinct().order_by('sph')
-        cyl_values = queryset.values_list(
-            'cyl', flat=True).distinct().order_by('cyl')
-        dia_values = queryset.values_list(
-            'dia', flat=True).distinct().order_by('dia')
+        sph_values = queryset.values_list('sph', flat=True).distinct().order_by('sph')
+        cyl_values = queryset.values_list('cyl', flat=True).distinct().order_by('cyl')
+        dia_values = queryset.values_list('dia', flat=True).distinct().order_by('dia')
 
         data = {
             'series': series_data,
@@ -233,3 +164,37 @@ class LensOptionsView(APIView):
             'dia': list(dia_values)
         }
         return Response(data)
+
+
+class ProductDetailView(APIView):
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        tags=['Catalog (Каталог)'],
+        operation_summary="5. Получить продукт по типу и ID",
+        operation_description="product_type: frame или lens",
+    )
+    def get(self, request, product_type, pk, *args, **kwargs):
+        if product_type == 'frame':
+            try:
+                product = Frame.objects.filter(stock__gt=0).get(pk=pk)
+            except Frame.DoesNotExist:
+                return Response({"detail": "Продукт не найден."}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response({
+                "type": "frame",
+                "item": FrameSerializer(product, context={"request": request}).data,
+            })
+
+        if product_type == 'lens':
+            try:
+                product = Lens.objects.filter(stock__gt=0).select_related('series').get(pk=pk)
+            except Lens.DoesNotExist:
+                return Response({"detail": "Продукт не найден."}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response({
+                "type": "lens",
+                "item": LensSerializer(product, context={"request": request}).data,
+            })
+
+        return Response({"detail": "Неверный тип продукта."}, status=status.HTTP_404_NOT_FOUND)

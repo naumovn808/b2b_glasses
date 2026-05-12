@@ -13,6 +13,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram import Bot, Dispatcher, html, F
+from aiogram.client.session.aiohttp import AiohttpSession
 from django.conf import settings
 from decimal import Decimal, InvalidOperation
 import math
@@ -1287,8 +1288,15 @@ async def set_main_commands(bot: Bot):
 
 
 async def main() -> None:
-    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(
-        parse_mode=ParseMode.HTML))
+    # Отключаем проверку SSL для работы в корпоративных сетях / через прокси
+    session = AiohttpSession(
+        connector=aiohttp.TCPConnector(ssl=False)
+    )
+    bot = Bot(
+        token=BOT_TOKEN, 
+        session=session,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    )
     await set_main_commands(bot)
     await dp.start_polling(bot)
 

@@ -17,6 +17,7 @@ def upload_order_to_ftp(order_id: int):
     """
     # Закрываем старое соединение с БД для корректной работы в потоке
     from django.db import connection
+
     connection.close()
 
     try:
@@ -27,13 +28,13 @@ def upload_order_to_ftp(order_id: int):
 
     try:
         xml_string = generate_order_xml(order)
-        xml_bytes = xml_string.encode('utf-8-sig')
+
+        xml_bytes = xml_string.encode("utf-8-sig")
     except Exception as e:
         logger.error(f"[FTP Worker] Ошибка генерации XML: {e}")
         return
 
     file_name = f"order_{order_id}.xml"
-
     try:
         with ftplib.FTP() as ftp:
             ftp.connect(settings.FTP_HOST, settings.FTP_PORT, timeout=30)
@@ -49,12 +50,12 @@ def upload_order_to_ftp(order_id: int):
                 ftp.cwd(REMOTE_ORDER_PATH)
 
             with BytesIO(xml_bytes) as file_buffer:
-                ftp.storbinary(f'STOR {file_name}', file_buffer)
+                ftp.storbinary(f"STOR {file_name}", file_buffer)
 
-            logger.info(f"[FTP Worker] УСПЕХ: Файл {file_name} загружен.")
+            print(f"[FTP Worker] УСПЕХ: Файл {file_name} загружен.")
 
     except Exception as e:
-        logger.error(f"[FTP Worker] Ошибка FTP: {e}")
+        print(f"[FTP Worker] Ошибка FTP: {e}")
 
 
 def schedule_ftp_upload(order: Order):
@@ -64,6 +65,6 @@ def schedule_ftp_upload(order: Order):
     try:
         thread = threading.Thread(target=upload_order_to_ftp, args=(order.pk,))
         thread.start()
-        logger.info(f"[Checkout] Запущена выгрузка Заказа #{order.pk}")
+        print(f"[Checkout] Запущена выгрузка Заказа #{order.pk}")
     except Exception as e:
-        logger.error(f"[Checkout] Не удалось запустить поток: {e}")
+        print(f"[Checkout] Не удалось запустить поток: {e}")

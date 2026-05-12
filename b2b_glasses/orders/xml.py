@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def generate_order_xml(order: Order) -> str:
     """
-    Генерирует XML-строку (в формате CommerceML 2.04) 
+    Генерирует XML-строку (в формате CommerceML 2.04)
     для одного Заказа.
     (v12 - Возвращаем minidom для "красоты")
     """
@@ -24,7 +24,7 @@ def generate_order_xml(order: Order) -> str:
 
     root = ET.Element("КоммерческаяИнформация")
     root.set("ВерсияСхемы", "2.04")
-    root.set("ДатаФормирования", now.isoformat(timespec='seconds'))
+    root.set("ДатаФормирования", now.isoformat(timespec="seconds"))
 
     doc = ET.SubElement(root, "Документ")
     ET.SubElement(doc, "Ид").text = str(order.pk)
@@ -36,23 +36,32 @@ def generate_order_xml(order: Order) -> str:
     ET.SubElement(doc, "Курс").text = "1.0000"
     ET.SubElement(doc, "Сумма").text = f"{order.total_price:.2f}"
     ET.SubElement(doc, "Время").text = order_time
-    ET.SubElement(
-        doc, "Комментарий").text = f"Заказ #{order.pk} от {order.user.username}"
-
+    ET.SubElement(doc, "Комментарий").text = (
+        f"Заказ #{order.pk} от {order.user.username}"
+    )
     kontragenty = ET.SubElement(doc, "Контрагенты")
     kontragent = ET.SubElement(kontragenty, "Контрагент")
     ET.SubElement(kontragent, "Ид").text = str(order.user.pk)
-    ET.SubElement(kontragent, "Наименование").text = order.user.username
+    ET.SubElement(kontragent, "Наименование").text = (
+        order.user.company.name if order.user.company else "LUX OPTIC"
+    )
     ET.SubElement(kontragent, "Роль").text = "Покупатель"
     full_name = f"{order.user.first_name or ''} {order.user.last_name or ''}".strip()
     if not full_name:
         full_name = order.user.username
     ET.SubElement(kontragent, "ПолноеНаименование").text = full_name
+
+    kontakty = ET.SubElement(doc, "Контакты")
+    if order.user.email:
+        kontakt_email = ET.SubElement(kontakty, "Контакт")
+        ET.SubElement(kontakt_email, "Имя").text = order.user.first_name
+        ET.SubElement(kontakt_email, "Тип").text = "Почта"
+        ET.SubElement(kontakt_email, "Значение").text = order.user.email
     if order.user.phone_number:
-        kontakty = ET.SubElement(kontragent, "Контакты")
-        kontakt = ET.SubElement(kontakty, "Контакт")
-        ET.SubElement(kontakt, "Тип").text = "Телефон"
-        ET.SubElement(kontakt, "Значение").text = order.user.phone_number
+        kontakt_phone = ET.SubElement(kontakty, "Контакт")
+        ET.SubElement(kontakt_phone, "Имя").text = order.user.first_name
+        ET.SubElement(kontakt_phone, "Тип").text = "Телефон"
+        ET.SubElement(kontakt_phone, "Значение").text = order.user.phone_number
 
     tovary = ET.SubElement(doc, "Товары")
 
@@ -69,15 +78,14 @@ def generate_order_xml(order: Order) -> str:
             vid_nomenklatury = "Товар"
 
         ET.SubElement(tovar, "Ид").text = product.id_1c
-        ET.SubElement(tovar, "Артикул").text = getattr(product, 'sku', '')
+        ET.SubElement(tovar, "Артикул").text = getattr(product, "sku", "")
         ET.SubElement(tovar, "Наименование").text = getattr(
-            product, 'name', str(product))
+            product, "name", str(product)
+        )
         ET.SubElement(
-            tovar, "БазоваяЕдиница",
-            Код="796", НаименованиеПолное="Штука"
+            tovar, "БазоваяЕдиница", Код="796", НаименованиеПолное="Штука"
         ).text = "шт"
-        ET.SubElement(
-            tovar, "ЦенаЗаЕдиницу").text = f"{item.price_at_order:.2f}"
+        ET.SubElement(tovar, "ЦенаЗаЕдиницу").text = f"{item.price_at_order:.2f}"
         ET.SubElement(tovar, "Количество").text = str(item.quantity)
         ET.SubElement(tovar, "Сумма").text = f"{item.total_price:.2f}"
 
@@ -95,8 +103,7 @@ def generate_order_xml(order: Order) -> str:
     ET.SubElement(rek_nomer, "Значение").text = f"Т{order.pk:05d}"
     rek_data = ET.SubElement(doc_rekvizity, "ЗначениеРеквизита")
     ET.SubElement(rek_data, "Наименование").text = "ДатаЗаказаНаСайте"
-    ET.SubElement(rek_data, "Значение").text = now.isoformat(
-        timespec='seconds')
+    ET.SubElement(rek_data, "Значение").text = now.isoformat(timespec="seconds")
     rek_ud = ET.SubElement(doc_rekvizity, "ЗначениеРеквизита")
     ET.SubElement(rek_ud, "Наименование").text = "ПометкаУдаления"
     ET.SubElement(rek_ud, "Значение").text = "false"
@@ -104,7 +111,7 @@ def generate_order_xml(order: Order) -> str:
     ET.SubElement(rek_pr, "Наименование").text = "Проведен"
     ET.SubElement(rek_pr, "Значение").text = "true"
 
-    xml_str = ET.tostring(root, encoding='unicode', method='xml')
+    xml_str = ET.tostring(root, encoding="unicode", method="xml")
 
     pretty_xml_str = minidom.parseString(xml_str).toprettyxml(indent="  ")
 

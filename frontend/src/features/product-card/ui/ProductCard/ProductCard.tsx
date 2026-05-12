@@ -1,24 +1,22 @@
 import { useState, type CSSProperties } from 'react';
 
-import {
-  addCartItem,
-  type CartRootState,
-  makeCartItemId,
-  selectCartItemById,
-} from '@/entities/cart';
-import { CartQuantityControl } from '@/features/cart-quantity-control';
+import { addCartItem } from '@/entities/cart';
+import { QuantityControl, Spinner } from '@/shared/ui';
 import clsx from 'clsx';
 import { Link } from 'react-router';
-import type { Product, ProductColor } from '@/entities/product';
-import { useDispatch, useSelector } from 'react-redux';
+import type { ProductCardColor, ProductCardProduct } from '../../model/types';
+import { useDispatch } from 'react-redux';
 import s from './ProductCard.module.scss';
 import { useTranslation } from 'react-i18next';
 
 type ProductCardProps = {
-  product: Product;
+  product: ProductCardProduct;
   className?: string;
   initialQuantity?: number;
-  onAddToCart?: (product: Product, quantity: number) => void;
+  onAddToCart?: (
+    product: ProductCardProduct,
+    quantity: number,
+  ) => Promise<void> | void;
 };
 
 type SwatchStyle = CSSProperties & {
@@ -26,7 +24,7 @@ type SwatchStyle = CSSProperties & {
   '--swatch-image'?: string;
 };
 
-function getSwatchStyle(color: ProductColor): SwatchStyle {
+function getSwatchStyle(color: ProductCardColor): SwatchStyle {
   return {
     '--swatch-color': color.value,
     '--swatch-image': color.backgroundImage,
@@ -41,6 +39,8 @@ export function ProductCard({
 }: ProductCardProps) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState(initialQuantity);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [selectedColorId, setSelectedColorId] = useState(
     product.colors[0]?.id ?? '',
   );
@@ -58,19 +58,30 @@ export function ProductCard({
         colorId: selectedColor.id,
         size: '-',
         stockText: t('common.inStock'),
-        quantity: initialQuantity,
+        quantity,
       }
     : null;
-  const cartItemId = cartItemPayload ? makeCartItemId(cartItemPayload) : '';
-  const cartItem = useSelector((state: CartRootState) =>
-    selectCartItemById(state, cartItemId),
-  );
-  const quantityInCart = cartItem?.quantity ?? 0;
+  const hasStockLimit = typeof product.stock === 'number';
+  const isQuantityStockReached = hasStockLimit && quantity >= product.stock!;
 
-  const addProductToCart = () => {
-    if (product.isSoldOut || !cartItemPayload) return;
+  const addProductToCart = async () => {
+    if (
+      product.isSoldOut ||
+      !cartItemPayload ||
+      (hasStockLimit && quantity > product.stock!)
+    ) {
+      return;
+    }
 
-    onAddToCart?.(product, initialQuantity);
+    setIsAddingToCart(true);
+
+    try {
+      await onAddToCart?.(product, quantity);
+    } catch {
+      return;
+    } finally {
+      setIsAddingToCart(false);
+    }
 
     dispatch(addCartItem(cartItemPayload));
   };
@@ -97,16 +108,25 @@ export function ProductCard({
               ) : null}
             </div>
           </Link>
-          {cartItem && quantityInCart > 0 ? (
-            <div className={s.infoAction}>
-              <CartQuantityControl
-                className={s.quantity}
-                disabled={product.isSoldOut}
-                itemId={cartItem.id}
-                quantity={quantityInCart}
-              />
-            </div>
-          ) : null}
+          <div className={s.infoAction}>
+            <QuantityControl
+              className={s.quantity}
+              decreaseDisabled={quantity <= 1}
+              disabled={product.isSoldOut}
+              increaseDisabled={isQuantityStockReached}
+              quantity={quantity}
+              onDecrease={() =>
+                setQuantity((current) => Math.max(1, current - 1))
+              }
+              onIncrease={() =>
+                setQuantity((current) =>
+                  hasStockLimit
+                    ? Math.min(current + 1, product.stock!)
+                    : current + 1,
+                )
+              }
+            />
+          </div>
         </div>
 
         <div className={s.bodyBottom}>
@@ -130,10 +150,14 @@ export function ProductCard({
           <button
             className={s.cartButton}
             type="button"
-            disabled={product.isSoldOut}
+            disabled={
+              product.isSoldOut ||
+              isAddingToCart ||
+              (hasStockLimit && quantity > product.stock!)
+            }
             onClick={addProductToCart}
           >
-            {t('catalog.addToCart')}
+            {isAddingToCart ? <Spinner size="sm" /> : t('catalog.addToCart')}
           </button>
         </div>
       </div>

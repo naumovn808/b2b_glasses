@@ -11,10 +11,11 @@ from tqdm import tqdm
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 from catalog.models import (
     Brand, FrameMaterial, FrameShape, FrameType, FrameGender,
-    FrameAgeGroup, Frame, LensSeries, Lens
+    FrameAgeGroup, Frame, LensSeries, Lens, ProductColor, Color, ColorGroup
 )
 
 logger = logging.getLogger(__name__)
@@ -74,28 +75,22 @@ class Command(BaseCommand):
 
                         downloaded_count += 1
                     except Exception as e:
-                        # --- ИЗМЕНЕНИЕ: Критическая ошибка ---
-                        # Если ОДИН файл не скачался (не найден, нет прав),
-                        # нет смысла продолжать.
-                        logger.critical(
-                            f'  [КРИТИЧЕСКАЯ ОШИБКА] Не удалось скачать {filename}: {e}')
-                        logger.critical(
-                            'Процесс импорта будет остановлен. База данных НЕ будет затронута.')
-                        # Вызываем CommandError, чтобы остановить выполнение handle()
-                        raise CommandError(f'Ошибка скачивания файла: {e}')
+                        # --- ИЗМЕНЕНИЕ: Теперь ошибка не критическая для всех файлов ---
+                        logger.warning(
+                            f'  [ПРЕДУПРЕЖДЕНИЕ] Не удалось скачать {filename}: {e}')
+                        if os.path.exists(local_path):
+                            os.remove(local_path)
                         # --- КОНЕЦ ИЗМЕНЕНИЯ ---
 
                 # --- ИЗМЕНЕНИЕ: Более строгая проверка ---
                 # Эта проверка гарантирует, что скачаны ВСЕ файлы.
                 # (Хотя 'except' выше уже должен был поймать 550 'No such file')
-                if downloaded_count < len(FILES_TO_DOWNLOAD):
+                if downloaded_count == 0:
                     logger.critical(
-                        f'ОШИБКА: Скачано {downloaded_count} из {len(FILES_TO_DOWNLOAD)} необходимых файлов.')
-                    logger.critical(
-                        'Процесс импорта будет остановлен. База данных НЕ будет затронута.')
-                    raise CommandError('Не все файлы были успешно скачаны.')
+                        'ОШИБКА: Не удалось скачать ни одного файла.')
+                    raise CommandError('Нет файлов для импорта.')
 
-                logger.info(f'Успешно скачано {downloaded_count} файла.')
+                logger.info(f'Успешно скачано {downloaded_count} файла(ов).')
                 # --- КОНЕЦ ИЗМЕНЕНИЯ ---
 
         except ftplib.error_perm as e:
@@ -136,14 +131,20 @@ class Command(BaseCommand):
                 current_check_file = f_path
                 # 1. Проверка на существование
                 if not os.path.exists(f_path):
-                    logger.critical(
-                        f'Файл {f_path} отсутствует после скачивания.')
-                    raise FileNotFoundError(f'Файл {f_path} отсутствует.')
+                    logger.warning(
+                        f'Файл {f_path} отсутствует. Пропускаю его.')
+                    continue
 
-                # 2. Проверка на корректность XML (пытаемся распарсить корень)
-                ET.parse(f_path)
+                # 2. Проверка на корректность XML
+                try:
+                    ET.parse(f_path)
+                except ET.ParseError as e:
+                    logger.error(
+                        f'Ошибка парсинга XML: {f_path} - {e}. Файл будет проигнорирован.')
+                    # Удаляем битый файл, чтобы не мешался
+                    os.remove(f_path)
 
-            logger.info('...[OK] Все XML-файлы корректны и готовы к импорту.')
+            logger.info('...[OK] Проверка завершена.')
 
         except ET.ParseError as e:
             logger.critical(
@@ -169,34 +170,41 @@ class Command(BaseCommand):
             deleted_lenses = 0
 
             with transaction.atomic():
-                logger.info('Шаг 1: Импорт Оправ (import0_1.xml)...')
-                self.frame_id_map = self._import_frames()
+                if os.path.exists(self.file_frames_import):
+                    logger.info('Шаг 1: Импорт Оправ (import0_1.xml)...')
+                    self.frame_id_map = self._import_frames()
+                    logger.info(f'Обработано {len(self.frame_id_map)} Оправ.')
+                else:
+                    logger.warning('Шаг 1 ПРОПУЩЕН: Файл оправ не найден.')
 
-                logger.info(
-                    f'Обработано {len(self.frame_id_map)} Оправ.')
                 if self.skipped_frames > 0:
                     logger.warning(
                         f'Пропущено {self.skipped_frames} Оправ (отсутствует Ид).')
 
-                logger.info('Шаг 2: Импорт Линз (import1_1.xml)...')
-                self.lens_id_map = self._import_lenses()
-                logger.info(
-                    f'Обработано {len(self.lens_id_map)} Линз.')
+                if os.path.exists(self.file_lenses_import):
+                    logger.info('Шаг 2: Импорт Линз (import1_1.xml)...')
+                    self.lens_id_map = self._import_lenses()
+                    logger.info(f'Обработано {len(self.lens_id_map)} Линз.')
+                else:
+                    logger.warning('Шаг 2 ПРОПУЩЕН: Файл линз не найден.')
+
                 if self.skipped_lenses > 0:
                     logger.warning(
                         f'Пропущено {self.skipped_lenses} Линз (ошибки парсинга).')
 
-                logger.info(
-                    'Шаг 3: Обновление Цен/Остатков Оправ (offers0_1.xml)...')
-                count_f = self._update_offers(
-                    self.file_frames_offers, self.frame_id_map, Frame, step_num=3)
-                logger.info(f'Обновлено {count_f} Оправ.')
+                if os.path.exists(self.file_frames_offers) and self.frame_id_map:
+                    logger.info(
+                        'Шаг 3: Обновление Цен/Остатков Оправ (offers0_1.xml)...')
+                    count_f = self._update_offers(
+                        self.file_frames_offers, self.frame_id_map, Frame, step_num=3)
+                    logger.info(f'Обновлено {count_f} Оправ.')
 
-                logger.info(
-                    'Шаг 4: Обновление Цен/Остатков Линз (offers1_1.xml)...')
-                count_l = self._update_offers(
-                    self.file_lenses_offers, self.lens_id_map, Lens, step_num=4)
-                logger.info(f'Обновлено {count_l} Линз.')
+                if os.path.exists(self.file_lenses_offers) and self.lens_id_map:
+                    logger.info(
+                        'Шаг 4: Обновление Цен/Остатков Линз (offers1_1.xml)...')
+                    count_l = self._update_offers(
+                        self.file_lenses_offers, self.lens_id_map, Lens, step_num=4)
+                    logger.info(f'Обновлено {count_l} Линз.')
 
                 logger.info(
                     '--- Шаг 5: Атомарная очистка (Удаление старых товаров) ---')
@@ -208,13 +216,24 @@ class Command(BaseCommand):
                 # то импорт (Шаги 1-4) также откатится.
                # ... (Начало Шага 5) ...
                 with transaction.atomic():
-                    # deleted_frames_qs ТЕПЕРЬ ЯВЛЯЕТСЯ ЧИСЛОМ (int)
-                    deleted_frames_qs, _ = Frame.objects.exclude(
-                        run_id=self.current_run_id).delete()
+                    deleted_frames_qs = 0
+                    deleted_lenses_qs = 0
 
-                    # deleted_lenses_qs ТЕПЕРЬ ЯВЛЯЕТСЯ ЧИСЛОМ (int)
-                    deleted_lenses_qs, _ = Lens.objects.exclude(
-                        run_id=self.current_run_id).delete()
+                    if os.path.exists(self.file_frames_import):
+                        deleted_frames_qs, _ = Frame.objects.exclude(
+                            run_id=self.current_run_id).delete()
+                        deleted_frames = deleted_frames_qs
+                    else:
+                        logger.info("Очистка Оправ пропущена (файл не импортировался).")
+                        deleted_frames = 0
+
+                    if os.path.exists(self.file_lenses_import):
+                        deleted_lenses_qs, _ = Lens.objects.exclude(
+                            run_id=self.current_run_id).delete()
+                        deleted_lenses = deleted_lenses_qs
+                    else:
+                        logger.info("Очистка Линз пропущена (файл не импортировался).")
+                        deleted_lenses = 0
 
                     # --- ИСПРАВЛЕНИЕ ---
                     # Просто присваиваем это число.
@@ -376,10 +395,12 @@ class Command(BaseCommand):
                                 ftype = FrameType.objects.create(name=prop_val)
                                 types_cache[prop_val] = ftype
                             data['type'] = ftype
-                        elif prop_name == 'Цвет':
-                            data['color_code'] = prop_val
-                        elif prop_name == 'Оригинальный цвет производителя':
-                            data['color_name'] = prop_val
+                        elif prop_name == 'Цвет' or prop_name == 'Оригинальный цвет производителя':
+                            # Сохраняем имя цвета для последующей обработки
+                            if 'colors_to_create' not in data:
+                                data['colors_to_create'] = set()
+                            data['colors_to_create'].add(prop_val)
+
                         elif prop_name == 'Размер А':
                             data['size_a'] = Decimal(prop_val_clean)
                         elif prop_name == 'Размер B':
@@ -392,10 +413,39 @@ class Command(BaseCommand):
 
                         continue
 
+            # Извлекаем список цветов из временного поля в data
+            colors_to_create = data.pop('colors_to_create', set())
+
             frame_obj, created = Frame.objects.update_or_create(
                 id_1c=id_1c,
                 defaults=data
             )
+            
+            # Обработка цветов
+            if colors_to_create:
+                # Удаляем старые записи цветов для этого товара в рамках ТЕКУЩЕГО импорта,
+                # чтобы не дублировать, если в XML цвет указан несколько раз
+                content_type = ContentType.objects.get_for_model(Frame)
+                ProductColor.objects.filter(
+                    content_type=content_type, 
+                    object_id=frame_obj.id
+                ).delete()
+                
+                for color_name in colors_to_create:
+                    # Ищем или создаем запись в общем справочнике цветов
+                    color_obj, created = Color.objects.get_or_create(name=color_name)
+                    
+                    if created or not color_obj.group:
+                        # Пытаемся автоматически назначить группу
+                        color_obj.group = self._assign_color_group(color_name)
+                        color_obj.save()
+                    
+                    ProductColor.objects.create(
+                        product=frame_obj,
+                        color=color_obj,
+                        name=color_name
+                    )
+
             id_map[id_1c] = frame_obj.id
 
         return id_map
@@ -555,3 +605,36 @@ class Command(BaseCommand):
                 f"  ...[OK] BATCH-ЗАПИСЬ в БД завершена.")
 
         return count
+
+    def _assign_color_group(self, color_name):
+        """
+        Автоматическое назначение группы цвета по ключевым словам в названии
+        """
+        name_lower = color_name.lower()
+        
+        mapping = {
+            'черн': 'Черный', 'black': 'Черный',
+            'бел': 'Белый', 'white': 'Белый',
+            'золот': 'Золотой', 'gold': 'Золотой',
+            'серебр': 'Серебряный', 'silver': 'Серебряный',
+            'красн': 'Красный', 'red': 'Красный',
+            'син': 'Синий', 'blue': 'Синий',
+            'голуб': 'Синий',
+            'зелен': 'Зеленый', 'green': 'Зеленый',
+            'коричн': 'Коричневый', 'brown': 'Коричневый',
+            'сер': 'Серый', 'grey': 'Серый', 'gray': 'Серый',
+            'розов': 'Розовый', 'pink': 'Розовый',
+            'прозрач': 'Прозрачный', 'crystal': 'Прозрачный',
+            'беж': 'Бежевый', 'beige': 'Бежевый',
+            'желт': 'Золотой', 'yellow': 'Золотой',
+            'фиолет': 'Розовый', 'purple': 'Розовый'
+        }
+        
+        for key, group_name in mapping.items():
+            if key in name_lower:
+                from catalog.models import ColorGroup
+                return ColorGroup.objects.filter(name=group_name).first()
+        
+        # Fallback to 'Другое'
+        from catalog.models import ColorGroup
+        return ColorGroup.objects.filter(name='Другое').first()

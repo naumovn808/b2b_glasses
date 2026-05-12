@@ -1,13 +1,13 @@
+import type { LoginResponse } from '../types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userActions } from '../slice';
-import type { LoginResponse } from '../types';
 
 interface LoginByUsernameProps {
   login: string;
   password: string;
 }
 
-const LOGIN_URL = 'http://62.122.218.88/api/v1/auth/login/';
+const LOGIN_URL = 'http://localhost/api/v1/auth/login/';
 
 export const loginByUsername = createAsyncThunk<
   LoginResponse,

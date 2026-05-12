@@ -9,8 +9,10 @@ from django.db.models import Q
 
 from .models import Order, OrderItem, CustomOrder
 from .serializers import (
-    OrderSerializer, AddCartItemSerializer,
-    OrderItemSerializer, CustomOrderSerializer
+    OrderSerializer,
+    AddCartItemSerializer,
+    OrderItemSerializer,
+    CustomOrderSerializer,
 )
 from catalog.models import Frame, Lens
 from .ftp_uploader import schedule_ftp_upload
@@ -26,19 +28,20 @@ class CartView(generics.RetrieveAPIView):
     serializer_class = OrderSerializer
 
     @swagger_auto_schema(
-        tags=['Orders (Корзина)'],
+        tags=["Orders (Корзина)"],
         operation_summary="1. Получить текущую корзину",
         operation_description="Получает 'активную' корзину (status='cart') пользователя. Если корзины нет, создает новую пустую.",
-        responses={200: OrderSerializer, 401: "Не аутентифицирован"}
+        responses={200: OrderSerializer, 401: "Не аутентифицирован"},
     )
     def get_object(self):
+        user = self.request.user
         obj, created = Order.objects.get_or_create(
-            user=self.request.user,
-            status=Order.OrderStatus.CART
+            user=user, status=Order.OrderStatus.CART
         )
         if created:
             logger.info(
-                f"Создана новая пустая корзина для {self.request.user.username}")
+                f"Создана новая пустая корзина для {user.username} (order_id={obj.pk})"
+            )
         return obj
 
 
@@ -46,59 +49,52 @@ class AddCartItemView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        tags=['Orders (Корзина)'],
+        tags=["Orders (Корзина)"],
         operation_summary="2. Добавить/Обновить товар в корзине",
         operation_description="Добавляет товар в корзину. Если товар уже есть, обновляет его количество.",
         request_body=AddCartItemSerializer,
         responses={
             201: OrderSerializer,
-            400: "Ошибка валидации (напр. 'product_id не найден')"
-        }
+            400: "Ошибка валидации (напр. 'product_id не найден')",
+        },
     )
     def post(self, request, *args, **kwargs):
         serializer = AddCartItemSerializer(data=request.data)
         if not serializer.is_valid():
-            logger.warning(
-                f"Ошибка добавления в корзину (400): {serializer.errors}")
+            logger.warning(f"Ошибка добавления в корзину (400): {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        product = serializer.validated_data['product_instance']
-        quantity = serializer.validated_data['quantity']
+        product = serializer.validated_data["product_instance"]
+        quantity = serializer.validated_data["quantity"]
+        user = request.user
 
-        cart, _ = Order.objects.get_or_create(
-            user=request.user,
-            status=Order.OrderStatus.CART
-        )
+        cart, _ = Order.objects.get_or_create(user=user, status=Order.OrderStatus.CART)
 
         content_type = ContentType.objects.get_for_model(product)
 
         try:
             order_item = OrderItem.objects.get(
-                order=cart,
-                content_type=content_type,
-                object_id=product.pk
+                order=cart, content_type=content_type, object_id=product.pk
             )
             order_item.quantity = quantity
             order_item.price_at_order = product.price
             order_item.save()
-            logger.info(
-                f"Обновлено кол-во товара {str(product)} в корзине {cart.pk}")
+            logger.info(f"Обновлено кол-во товара {str(product)} в корзине {cart.pk}")
 
         except OrderItem.DoesNotExist:
             order_item = OrderItem.objects.create(
                 order=cart,
                 product=product,
                 quantity=quantity,
-                price_at_order=product.price
+                price_at_order=product.price,
             )
-            logger.info(
-                f"Добавлен новый товар {str(product)} в корзину {cart.pk}")
+            logger.info(f"Добавлен новый товар {str(product)} в корзину {cart.pk}")
 
         cart.update_total_price()
 
         return Response(
-            OrderSerializer(cart).data,
-            status=status.HTTP_201_CREATED
+            OrderSerializer(cart, context={"request": request}).data,
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -106,23 +102,22 @@ class ClearCartView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        tags=['Orders (Корзина)'],
+        tags=["Orders (Корзина)"],
         operation_summary="3. Очистить корзину (полностью)",
-        responses={204: "No Content", 404: "Корзина не найдена"}
+        responses={204: "No Content", 404: "Корзина не найдена"},
     )
     def delete(self, request, *args, **kwargs):
+        user = request.user
         try:
-            cart = Order.objects.get(
-                user=self.request.user,
-                status=Order.OrderStatus.CART
-            )
+            cart = Order.objects.get(user=user, status=Order.OrderStatus.CART)
         except Order.DoesNotExist:
-            return Response({"error": "Корзина не найдена."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Корзина не найдена."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         cart.items.all().delete()
         cart.update_total_price()
-        logger.info(
-            f"Корзина #{cart.pk} для {request.user.username} была очищена.")
+        logger.info(f"Корзина #{cart.pk} для {user.username} была очищена.")
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -132,15 +127,15 @@ class RemoveCartItemView(generics.DestroyAPIView):
     queryset = OrderItem.objects.all()
 
     @swagger_auto_schema(
-        tags=['Orders (Корзина)'],
+        tags=["Orders (Корзина)"],
         operation_summary="4. Удалить 1 позицию из корзины (по OrderItem ID)",
         operation_description="Принимает ID *позиции заказа* (OrderItem.id).",
-        responses={204: "No Content", 404: "Позиция заказа не найдена"}
+        responses={204: "No Content", 404: "Позиция заказа не найдена"},
     )
     def get_queryset(self):
+        user = self.request.user
         return self.queryset.filter(
-            order__user=self.request.user,
-            order__status=Order.OrderStatus.CART
+            order__user=user, order__status=Order.OrderStatus.CART
         )
 
     def perform_destroy(self, instance):
@@ -157,59 +152,83 @@ class UpdateCartItemView(generics.UpdateAPIView):
     serializer_class = OrderItemSerializer
 
     @swagger_auto_schema(
-        tags=['Orders (Корзина)'],
+        tags=["Orders (Корзина)"],
         operation_summary="5. Изменить кол-во товара (по OrderItem ID)",
         operation_description="Позволяет изменить 'quantity' у конкретной записи в корзине. Используйте PATCH.",
-        responses={200: OrderSerializer, 404: "Позиция не найдена"}
+        responses={200: OrderSerializer, 404: "Позиция не найдена"},
     )
     def get_queryset(self):
+        user = self.request.user
         return self.queryset.filter(
-            order__user=self.request.user,
-            order__status=Order.OrderStatus.CART
+            order__user=user, order__status=Order.OrderStatus.CART
         )
 
     def perform_update(self, serializer):
         instance = serializer.save()
         instance.order.update_total_price()
         logger.info(
-            f"В корзине {instance.order.pk} обновлено кол-во товара {instance.pk} -> {instance.quantity}")
+            f"В корзине {instance.order.pk} обновлено кол-во товара {instance.pk} -> {instance.quantity}"
+        )
 
 
 class CheckoutView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        tags=['Orders (Корзина)'],
+        tags=["Orders (Корзина)"],
         operation_summary="6. Оформить заказ (Checkout)",
         operation_description="Превращает 'Корзину' (status='cart') в 'Заказ' (status='pending').",
         request_body=None,
-        responses={200: "Заказ оформлен", 400: "Ошибка"}
+        responses={200: "Заказ оформлен", 400: "Ошибка"},
     )
     def post(self, request, *args, **kwargs):
+        user = request.user
         try:
-            cart = Order.objects.get(
-                user=request.user,
-                status=Order.OrderStatus.CART
-            )
+            cart = Order.objects.get(user=user, status=Order.OrderStatus.CART)
         except Order.DoesNotExist:
-            return Response({"error": "Корзина не найдена или пуста."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Корзина не найдена или пуста."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         if not cart.items.exists():
-            return Response({"error": "Нельзя оформить пустую корзину."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Нельзя оформить пустую корзину."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         with transaction.atomic():
             cart.status = Order.OrderStatus.PENDING
             cart.updated_at = timezone.now()
             cart.save()
 
-        logger.info(
-            f"Заказ #{cart.pk} оформлен пользователем {request.user.username}.")
+        order_items = []
+        for item in cart.items.all():
+            try:
+                product_str = str(item.product)
+            except Exception:
+                product_str = (
+                    f"content_type={item.content_type_id}, object_id={item.object_id}"
+                )
+            order_items.append(
+                f"{product_str} x{item.quantity} @ {item.price_at_order}"
+            )
 
+        print(
+            f"Заказ #{cart.pk} оформлен пользователем {user.username}. "
+            f"total_price={cart.total_price}, items_count={cart.items.count()}, "
+            f"items=[{'; '.join(order_items)}]"
+        )
+        serializer = OrderSerializer(cart, context={"request": request})
         schedule_ftp_upload(cart)
 
         return Response(
-            {"message": "Заказ успешно оформлен", "order_id": cart.pk},
-            status=status.HTTP_200_OK
+            {
+                "message": "Заказ успешно оформлен",
+                "order_id": cart.pk,
+                "cart": serializer.data,
+            },
+            status=status.HTTP_200_OK,
         )
 
 
@@ -218,16 +237,16 @@ class OrderHistoryView(generics.ListAPIView):
     serializer_class = OrderSerializer
 
     @swagger_auto_schema(
-        tags=['Orders (История)'],
+        tags=["Orders (История)"],
         operation_summary="7. Получить историю заказов",
-        responses={200: OrderSerializer(many=True)}
+        responses={200: OrderSerializer(many=True)},
     )
     def get_queryset(self):
-        return Order.objects.filter(
-            user=self.request.user
-        ).exclude(
-            status=Order.OrderStatus.CART
-        ).order_by('-created_at')
+        return (
+            Order.objects.filter(user=self.request.user)
+            .exclude(status=Order.OrderStatus.CART)
+            .order_by("-created_at")
+        )
 
 
 # --- НОВЫЙ VIEW: СОЗДАНИЕ ИНДИВИДУАЛЬНОГО ЗАКАЗА ---
@@ -236,13 +255,11 @@ class CreateCustomOrderView(generics.CreateAPIView):
     serializer_class = CustomOrderSerializer
 
     @swagger_auto_schema(
-        tags=['Orders (Индивидуальные)'],
+        tags=["Orders (Индивидуальные)"],
         operation_summary="Создать индивидуальный заказ (Custom)",
         operation_description="Создает заявку на линзы с произвольными параметрами.",
-        responses={201: CustomOrderSerializer}
+        responses={201: CustomOrderSerializer},
     )
     def perform_create(self, serializer):
         # Пользователь подставляется автоматически через HiddenField
-        order = serializer.save()
-        logger.info(
-            f"Создан Custom Order #{order.pk} пользователем {self.request.user}")
+        serializer.save()

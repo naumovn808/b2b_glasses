@@ -1,83 +1,90 @@
-import { Container } from '@/shared/ui';
+import { Container, EmptyState, RichText, Spinner } from '@/shared/ui';
+
 import { CertificatesSlider } from './CertificatesSlider';
-import brandLogo from '@/shared/assets/image/about/brand.png';
-import certificateImage from '@/shared/assets/image/about/certificate.png';
+import { getLocalizedField } from '@/shared/lib';
 import s from './AboutUsPage.module.scss';
+import { useGetAboutQuery } from '@/entities/about';
 import { useTranslation } from 'react-i18next';
 
-const certificates = [
-  {
-    id: 'product',
-    image: certificateImage,
-    title: 'Сертификат на продукцию',
-  },
-  {
-    id: 'conformity',
-    image: certificateImage,
-    title: 'Сертификат соответствия',
-  },
-  {
-    id: 'expert',
-    image: certificateImage,
-    title: 'Экспертное заключение',
-  },
-  {
-    id: 'permit',
-    image: certificateImage,
-    title: 'Разрешительная документация',
-  },
-];
-
-const partners = Array.from({ length: 18 }, (_, index) => ({
-  id: index + 1,
-  name: 'Brioni',
-  logo: brandLogo,
-}));
-
 export function AboutUsPage() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const { data, isLoading } = useGetAboutQuery();
+  const certificates =
+    data?.certificates.map((certificate) => ({
+      id: String(certificate.id),
+      image: certificate.image,
+      title: certificate.title ?? '',
+    })) ?? [];
+  const partners = data?.partners ?? [];
+  const title = data ? getLocalizedField(data, 'title', i18n.language) : '';
 
   return (
     <section className={s.page}>
       <Container>
-        <div className={s.intro}>
-          <h1 className={s.title}>{t('nav.about')}</h1>
+        {isLoading ? (
+          <div className={s.loader}>
+            <Spinner size="lg" />
+          </div>
+        ) : null}
 
-          <div className={s.introContent}>
-            <h2 className={s.lead}>{t('about.lead')}</h2>
+        {!isLoading && !data ? (
+          <EmptyState title={t('common.nothingHere')} />
+        ) : null}
 
-            <div className={s.storyList}>
-              <article className={s.storyItem}>
-                <h3>{t('about.historyTitle')}</h3>
-                <p>{t('about.historyText')}</p>
-              </article>
+        {!isLoading && data ? (
+          <>
+            <div className={s.intro}>
+              <h1 className={s.title}>{t('nav.about')}</h1>
 
-              <article className={s.storyItem}>
-                <h3>{t('about.missionTitle')}</h3>
-                <p>{t('about.missionText')}</p>
-              </article>
+              <div className={s.introContent}>
+                <h2 className={s.lead}>{title}</h2>
+                <RichText className={s.introRichText} html={data.text} />
+              </div>
             </div>
-          </div>
-        </div>
 
-        <section className={s.certificates}>
-          <div className={s.sectionHeader}>
-            <h2>{t('about.certificates')}</h2>
-            <p>{t('about.certificatesText')}</p>
-          </div>
+            {certificates.length > 0 ? (
+              <section className={s.certificates}>
+                <div className={s.sectionHeader}>
+                  <h2>{t('about.certificates')}</h2>
+                  <p>{t('about.certificatesText')}</p>
+                </div>
 
-          <CertificatesSlider certificates={certificates} />
-        </section>
+                <CertificatesSlider certificates={certificates} />
+              </section>
+            ) : null}
 
-        <section className={s.partners}>
-          <h2>{t('about.partners')}</h2>
+            {partners.length > 0 ? (
+              <section className={s.partners}>
+                <h2>{t('about.partners')}</h2>
 
-          <div className={s.partnerGrid}>
-            {partners.map((partner) => (
-              <img key={partner.id} src={partner.logo} alt={partner.name} />
-            ))}
-          </div>
-        </section>
+                <div className={s.partnerGrid}>
+                  {partners.map((partner) => {
+                    const image = (
+                      <img
+                        src={partner.image}
+                        alt={partner.name ?? ''}
+                        loading="lazy"
+                      />
+                    );
+
+                    return partner.link ? (
+                      <a
+                        key={partner.id}
+                        href={partner.link}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {image}
+                      </a>
+                    ) : (
+                      <span key={partner.id}>{image}</span>
+                    );
+                  })}
+                </div>
+              </section>
+            ) : null}
+          </>
+        ) : null}
       </Container>
     </section>
   );

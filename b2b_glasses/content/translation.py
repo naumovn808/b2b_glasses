@@ -9,7 +9,7 @@ class ContactsTranslationOptions(TranslationOptions):
 
 @register(AboutUs)
 class AboutUsTranslationOptions(TranslationOptions):
-    fields = ('text',)
+    fields = ('title', 'text')
 
 
 @register(Training)

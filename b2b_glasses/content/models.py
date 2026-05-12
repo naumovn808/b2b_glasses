@@ -1,7 +1,24 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from solo.models import SingletonModel
 from ckeditor.fields import RichTextField
+
+
+def validate_video_file(file):
+    """Валидирует, что загруженный файл является видео."""
+    allowed_extensions = ["mp4", "webm", "ogg", "mov", "avi", "flv", "mkv"]
+    ext = file.name.split(".")[-1].lower()
+    if ext not in allowed_extensions:
+        raise ValidationError(
+            f"Неподдерживаемый формат видео. Допустимые форматы: {', '.join(allowed_extensions)}"
+        )
+    # Проверяем максимальный размер файла (например, 100 МБ)
+    max_size = 100 * 1024 * 1024  # 100 MB
+    if file.size > max_size:
+        raise ValidationError(
+            f"Размер видео должен быть не более {max_size // (1024*1024)} МБ"
+        )
 
 
 class Contacts(SingletonModel):
@@ -19,6 +36,7 @@ class Contacts(SingletonModel):
 
 
 class AboutUs(SingletonModel):
+    title = models.CharField("Заголовок", max_length=255, blank=True, default="")
     text = RichTextField("Текст 'О нас'")
 
     def __str__(self):
@@ -30,10 +48,10 @@ class AboutUs(SingletonModel):
 
 class Certificate(models.Model):
     about_us = models.ForeignKey(
-        AboutUs, related_name='certificates', on_delete=models.CASCADE)
-    title = models.CharField("Название сертификата",
-                             max_length=255, blank=True)
-    image = models.ImageField("Изображение", upload_to='certificates/')
+        AboutUs, related_name="certificates", on_delete=models.CASCADE
+    )
+    title = models.CharField("Название сертификата", max_length=255, blank=True)
+    image = models.ImageField("Изображение", upload_to="certificates/")
 
     class Meta:
         verbose_name = "Сертификат"
@@ -42,9 +60,10 @@ class Certificate(models.Model):
 
 class Partner(models.Model):
     about_us = models.ForeignKey(
-        AboutUs, related_name='partners', on_delete=models.CASCADE)
+        AboutUs, related_name="partners", on_delete=models.CASCADE
+    )
     name = models.CharField("Название партнера", max_length=255, blank=True)
-    image = models.ImageField("Логотип", upload_to='partners/')
+    image = models.ImageField("Логотип", upload_to="partners/")
     link = models.URLField("Ссылка", blank=True, null=True)
 
     class Meta:
@@ -54,14 +73,22 @@ class Partner(models.Model):
 
 class Training(models.Model):
     title = models.CharField("Заголовок", max_length=255)
-    image = models.ImageField("Изображение", upload_to='training/')
+    image = models.ImageField("Изображение", upload_to="training/")
+    video = models.FileField(
+        "Видео",
+        upload_to="training/videos/",
+        blank=True,
+        null=True,
+        validators=[validate_video_file],
+        help_text="Поддерживаемые форматы: MP4, WebM, OGG, MOV, AVI, FLV, MKV. Максимальный размер: 100 МБ",
+    )
     description = RichTextField("Описание")
     order = models.PositiveIntegerField("Порядок отображения", default=0)
 
     class Meta:
         verbose_name = "Обучение"
         verbose_name_plural = "Обучение"
-        ordering = ['order']
+        ordering = ["order"]
 
 
 class FAQ(models.Model):
@@ -72,16 +99,16 @@ class FAQ(models.Model):
     class Meta:
         verbose_name = "Частый вопрос (FAQ)"
         verbose_name_plural = "Частые вопросы (FAQ)"
-        ordering = ['order']
+        ordering = ["order"]
 
 
 class News(models.Model):
     title = models.CharField("Заголовок", max_length=255)
-    image = models.ImageField("Изображение", upload_to='news/')
+    image = models.ImageField("Изображение", upload_to="news/")
     text = RichTextField("Текст новости")
     created_at = models.DateTimeField("Дата публикации", default=timezone.now)
 
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
-        ordering = ['-created_at']
+        ordering = ["-created_at"]

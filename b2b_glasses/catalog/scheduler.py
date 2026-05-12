@@ -8,7 +8,7 @@ from django.core.management import call_command
 logger = logging.getLogger(__name__)
 
 JOB_ID = "smart_1c_import"
-TIMESTAMP_FILE = os.path.join(settings.BASE_DIR, 'last_import_success.txt')
+TIMESTAMP_FILE = os.path.join(settings.BASE_DIR, "last_import_success.txt")
 SUCCESS_INTERVAL_MINUTES = 30
 
 
@@ -16,14 +16,14 @@ def get_last_success_time():
     if not os.path.exists(TIMESTAMP_FILE):
         return None
     try:
-        with open(TIMESTAMP_FILE, 'r') as f:
+        with open(TIMESTAMP_FILE, "r") as f:
             return timezone.datetime.fromisoformat(f.read().strip())
     except:
         return None
 
 
 def set_last_success_time(dt):
-    with open(TIMESTAMP_FILE, 'w') as f:
+    with open(TIMESTAMP_FILE, "w") as f:
         f.write(dt.isoformat())
 
 
@@ -44,7 +44,8 @@ def smart_import_job():
         logger.info("[Smart Import] Запуск команды импорта...")
 
         # Запускаем твою команду (имя файла из tree.txt)
-        call_command('import_1c_xml')
+        call_command("import_1c_xml")
+        # call_command("import_1c_users") № убрано временно
 
         # 3. Если команда выполнилась без ошибок — обновляем время успеха
         logger.info("[Smart Import] Импорт завершен успешно.")

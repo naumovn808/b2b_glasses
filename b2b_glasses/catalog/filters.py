@@ -14,6 +14,13 @@ class NumberInFilter(django_filters.BaseInFilter, django_filters.NumberFilter):
     """
     pass
 
+
+class CharInFilter(django_filters.BaseInFilter, django_filters.CharFilter):
+    """
+    Аналогичный фильтр для строк (например, для названий цветов)
+    """
+    pass
+
 # --- 2. ПРИМЕНЯЕМ ЕГО К ОПРАВАМ ---
 
 
@@ -48,6 +55,12 @@ class FrameFilter(django_filters.FilterSet):
     age_group = NumberInFilter(
         field_name='age_group_id', lookup_expr='in',
         help_text="ID Возрастной группы или список ID"
+    )
+
+    # Фильтр по цветам (по ID группы)
+    colors = NumberInFilter(
+        field_name='colors__color__group__id', lookup_expr='in',
+        help_text="ID группы цветов или список (напр. ?colors=1,7)"
     )
 
     # Фильтры по диапазону (остаются как есть)

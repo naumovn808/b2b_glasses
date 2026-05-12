@@ -2293,3 +2293,30 @@ aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: BUTTO
 2026-01-24 15:06:55,799 - aiogram.dispatcher - WARNING - Received SIGTERM signal
 2026-01-24 15:06:55,801 - aiogram.dispatcher - INFO - Polling stopped for bot @ijjgbwbjejabjfbje_bot id=7975130787 - 'test test test'
 2026-01-24 15:06:55,801 - aiogram.dispatcher - INFO - Polling stopped
+2026-05-11 22:41:37,278 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-11 22:41:37,288 - __main__ - INFO - --- Запуск бота ---
+2026-05-11 22:41:41,666 - aiogram.dispatcher - INFO - Start polling
+2026-05-11 22:41:41,779 - aiogram.dispatcher - INFO - Run polling for bot @optika_tests_bot id=8634112674 - 'optika test'
+2026-05-11 22:42:09,038 - __main__ - INFO - Попытка регистрации для TG ID: 752697899
+2026-05-11 22:42:09,600 - __main__ - INFO - Успешная регистрация для TG ID: 752697899
+2026-05-11 22:42:33,632 - __main__ - INFO - Пользователь 752697899 нажал /start
+2026-05-12 11:14:55,644 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 11:14:55,646 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 11:14:57,059 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7c605cdfe990>
+2026-05-12 11:47:05,206 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 11:47:05,209 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 11:47:05,827 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7b0d1a332c90>
+2026-05-12 12:07:53,232 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 12:07:53,235 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 12:07:53,890 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7742fbf2e9f0>
+2026-05-12 12:10:04,194 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 12:10:04,197 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 12:27:13,622 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 12:27:13,625 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 13:20:19,171 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 13:20:19,174 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 13:25:32,448 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 13:25:32,451 - __main__ - INFO - --- Запуск бота ---

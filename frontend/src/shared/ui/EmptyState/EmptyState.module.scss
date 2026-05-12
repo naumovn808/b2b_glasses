@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  min-height: 12rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e8e8e8;
+  background: #ffffff;
+  padding: 2rem;
+  text-align: center;
+}
+
+.root p {
+  margin: 0;
+  color: #8a8f98;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.15rem);
+  line-height: 1.5;
+}

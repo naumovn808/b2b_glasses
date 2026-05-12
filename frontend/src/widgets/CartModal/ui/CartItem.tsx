@@ -1,36 +1,42 @@
-import { CartQuantityControl } from '@/features/cart-quantity-control';
+import NoPhoto from '@/shared/assets/image/catalog/no-photo.png';
+import { QuantityControl } from '@/shared/ui';
 import s from './CartItem.module.scss';
 import { useTranslation } from 'react-i18next';
-
 export type CartItemData = {
-  id: string;
-  color: string;
-  colorId?: string;
-  image: string;
+  id: number;
+  image?: string;
   oldPrice?: string;
   price: string;
-  size: string;
-  stockText: string;
   title: string;
+  totalPrice?: string;
+  stock: number;
 };
 
 type CartItemProps = {
   item: CartItemData;
+  isUpdating?: boolean;
   quantity: number;
+  onDecrease: () => void;
+  onIncrease: () => void;
   onRemove: () => void;
 };
 
 export function CartItem({
+  isUpdating = false,
   item,
+  onDecrease,
+  onIncrease,
   onRemove,
   quantity,
 }: CartItemProps) {
   const { t } = useTranslation();
-
   return (
     <div className={s.item}>
-      <img className={s.itemImage} src={item.image} alt={item.title} />
-
+      <img
+        className={s.itemImage}
+        src={item?.image || NoPhoto}
+        alt={item.title}
+      />
       <div className={s.itemInfo}>
         <div className={s.itemTopLine}>
           <h3>{item.title}</h3>
@@ -44,18 +50,6 @@ export function CartItem({
           </button>
         </div>
 
-        <div className={s.meta}>
-          <span>
-            {t('common.color')}:{' '}
-            {item.colorId
-              ? t(`catalog.option.${item.colorId}`, item.color)
-              : item.color}
-          </span>
-          <span>
-            {t('common.size')}: {item.size}
-          </span>
-        </div>
-
         <div className={s.priceRow}>
           <span className={s.price}>{item.price}</span>
           {item.oldPrice ? (
@@ -64,14 +58,23 @@ export function CartItem({
         </div>
 
         <div className={s.itemActions}>
-          <CartQuantityControl
+          <QuantityControl
             className={s.quantity}
-            itemId={item.id}
+            decreaseDisabled={quantity <= 1 || isUpdating}
+            increaseDisabled={quantity >= item.stock}
+            disabled={isUpdating}
+            isLoading={isUpdating}
             quantity={quantity}
+            onDecrease={onDecrease}
+            onIncrease={onIncrease}
           />
 
           <div className={s.stock}>
-            <span className={s.stockText}>{t('common.inStockCount')}</span>
+            <span className={s.stockText}>
+              {item.stock !== undefined
+                ? t('common.inStockCount', { count: item.stock })
+                : t('common.inStock')}
+            </span>
             <span className={s.stockBar} />
           </div>
         </div>

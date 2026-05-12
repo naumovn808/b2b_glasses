@@ -1,7 +1,5 @@
-import {
-  decrementCartItem,
-  incrementCartItem,
-} from '@/entities/cart';
+import { decrementCartItem, incrementCartItem } from '@/entities/cart';
+
 import { QuantityControl } from '@/shared/ui';
 import { useDispatch } from 'react-redux';
 
@@ -10,11 +8,13 @@ type CartQuantityControlProps = {
   quantity: number;
   className?: string;
   disabled?: boolean;
+  increaseDisabled?: boolean;
 };
 
 export function CartQuantityControl({
   className,
   disabled = false,
+  increaseDisabled,
   itemId,
   quantity,
 }: CartQuantityControlProps) {
@@ -25,6 +25,7 @@ export function CartQuantityControl({
       className={className}
       decreaseDisabled={quantity <= 1}
       disabled={disabled}
+      increaseDisabled={increaseDisabled}
       quantity={quantity}
       onDecrease={() => dispatch(decrementCartItem(itemId))}
       onIncrease={() => dispatch(incrementCartItem(itemId))}

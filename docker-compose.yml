@@ -7,7 +7,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '5433:5432'
 
   web:
     build: .
@@ -53,7 +53,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - web
 
@@ -61,10 +61,11 @@ services:
     image: nginx:1.25-alpine
     container_name: b2b_nginx
     ports:
-      - "80:80"
+      - '80:80'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - static_volume:/app/staticfiles
+      - ./b2b_glasses/media:/app/b2b_glasses/media:ro
       - media_volume:/app/media
     depends_on:
       - web

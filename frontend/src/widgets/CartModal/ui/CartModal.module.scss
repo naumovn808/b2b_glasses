@@ -44,6 +44,12 @@
   overflow-y: auto;
 }
 
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 0;
+}
+
 .empty {
   display: flex;
   min-height: 8rem;
@@ -92,6 +98,12 @@
   background: #ffc516;
   color: #111111;
   font-weight: 600;
+}
+
+.checkoutButton:disabled,
+.promoButton:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 
 .promoButton {

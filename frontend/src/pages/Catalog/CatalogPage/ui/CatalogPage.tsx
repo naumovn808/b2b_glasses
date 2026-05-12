@@ -1,114 +1,136 @@
-import { AccordionItem, Container, Pagination } from '@/shared/ui';
-import { CatalogFilters, type ActiveCatalogFilters } from './CatalogFilters';
-import { CategoryTabs } from './CategoryTabs';
-import { ProductCard } from '@/features/product-card';
 import {
-  catalogCategories,
-  catalogFiltersByCategory,
-  catalogProducts,
-  catalogSortOptions,
-} from '../model/catalogContent';
+  AccordionItem,
+  Container,
+  EmptyState,
+  Pagination,
+  Spinner,
+} from '@/shared/ui';
+import {
+  PRODUCTS_PER_PAGE,
+  clearCatalogFilterParams,
+  createFramesParams,
+  createLensesParams,
+  getCatalogCategory,
+  getCatalogFilterGroups,
+  getCatalogFilters,
+  getCatalogPage,
+  getCatalogSort,
+  hasCatalogFilters,
+  mapFrameToProduct,
+  mapLensToProduct,
+  sortCatalogProducts,
+  updateCatalogSearchParams,
+} from '../model/catalogApiMappers';
+import { catalogCategories, catalogSortOptions } from '../model/catalogContent';
+import {
+  useGetFrameFiltersQuery,
+  useGetFramesQuery,
+  useGetLensOptionsQuery,
+  useGetLensesQuery,
+} from '@/entities/catalog';
+import { useMemo, useState } from 'react';
+
+import { CatalogFilters } from './CatalogFilters';
+import { CategoryTabs } from './CategoryTabs';
+import { ProductCard, type ProductCardProduct } from '@/features/product-card';
 import clsx from 'clsx';
 import s from './CatalogPage.module.scss';
-import { useMemo, useState } from 'react';
+import { useAddCartItemMutation } from '@/entities/cart';
+import { useDebouncedValue } from '@/shared/lib';
+import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-
-const PRODUCTS_PER_PAGE = 6;
-
-function hasActiveFilters(activeFilters: ActiveCatalogFilters) {
-  return Object.values(activeFilters).some((filters) => filters.length > 0);
-}
-
-function getPriceValue(price: string) {
-  const normalizedPrice = price.replace(',', '.').replace(/[^\d.]/g, '');
-
-  return Number(normalizedPrice) || 0;
-}
-
-function getDiscountValue(price: string, oldPrice?: string) {
-  if (!oldPrice) return 0;
-
-  const currentPrice = getPriceValue(price);
-  const previousPrice = getPriceValue(oldPrice);
-
-  if (previousPrice <= 0) return 0;
-
-  return Math.round(((previousPrice - currentPrice) / previousPrice) * 100);
-}
 
 export function CatalogPage() {
   const { t } = useTranslation();
-  const [activeCategoryId, setActiveCategoryId] = useState(
-    catalogCategories[0]?.id ?? '',
-  );
-  const [activeFilters, setActiveFilters] = useState<ActiveCatalogFilters>({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
-  const [activeSortId, setActiveSortId] = useState(
+  const [addCartItem] = useAddCartItemMutation();
+
+  const activeCategoryId = getCatalogCategory(searchParams);
+  const activeFilters = useMemo(
+    () => getCatalogFilters(searchParams),
+    [searchParams],
+  );
+  const currentPage = getCatalogPage(searchParams);
+  const activeSortId = getCatalogSort(
+    searchParams,
     catalogSortOptions[0]?.id ?? '',
   );
-  const activeFilterGroups =
-    catalogFiltersByCategory[activeCategoryId] ??
-    catalogFiltersByCategory.frames;
-  const categoryProducts = useMemo(
-    () =>
-      catalogProducts.filter(
-        (product) => product.categoryId === activeCategoryId,
-      ),
-    [activeCategoryId],
+
+  const framesParams = useMemo(
+    () => createFramesParams(activeFilters, currentPage),
+    [activeFilters, currentPage],
   );
-  const filteredProducts = useMemo(() => {
-    const products = categoryProducts.filter((product) =>
-      Object.entries(activeFilters).every(([groupId, selectedOptionIds]) => {
-        if (selectedOptionIds.length === 0) return true;
+  const lensesParams = useMemo(
+    () => createLensesParams(activeFilters, currentPage),
+    [activeFilters, currentPage],
+  );
+  const [debouncedFramesParams, isFramesParamsDebouncing] = useDebouncedValue(
+    framesParams,
+    350,
+  );
+  const [debouncedLensesParams, isLensesParamsDebouncing] = useDebouncedValue(
+    lensesParams,
+    350,
+  );
 
-        const productOptionIds = product.filterTags?.[groupId] ?? [];
-
-        return selectedOptionIds.some((optionId) =>
-          productOptionIds.includes(optionId),
-        );
-      }),
-    );
-
-    return [...products].sort((firstProduct, secondProduct) => {
-      if (activeSortId === 'cheap-first') {
-        return (
-          getPriceValue(firstProduct.price) - getPriceValue(secondProduct.price)
-        );
-      }
-
-      if (activeSortId === 'expensive-first') {
-        return (
-          getPriceValue(secondProduct.price) - getPriceValue(firstProduct.price)
-        );
-      }
-
-      if (activeSortId === 'discount-first') {
-        return (
-          getDiscountValue(secondProduct.price, secondProduct.oldPrice) -
-          getDiscountValue(firstProduct.price, firstProduct.oldPrice)
-        );
-      }
-
-      return 0;
+  const { data: frameFiltersData, isFetching: isFrameFiltersFetching } =
+    useGetFrameFiltersQuery(undefined, {
+      skip: activeCategoryId !== 'frames',
     });
-  }, [activeFilters, activeSortId, categoryProducts]);
+  const { data: lensOptionsData, isFetching: isLensOptionsFetching } =
+    useGetLensOptionsQuery(undefined, {
+      skip: activeCategoryId !== 'lenses',
+    });
+  const { data: framesData, isFetching: isFramesFetching } = useGetFramesQuery(
+    debouncedFramesParams,
+    { skip: activeCategoryId !== 'frames' },
+  );
+  const { data: lensesData, isFetching: isLensesFetching } = useGetLensesQuery(
+    debouncedLensesParams,
+    { skip: activeCategoryId !== 'lenses' },
+  );
+
+  const filterGroups = useMemo(
+    () =>
+      getCatalogFilterGroups(
+        activeCategoryId,
+        activeCategoryId === 'frames' ? frameFiltersData : lensOptionsData,
+      ),
+    [activeCategoryId, frameFiltersData, lensOptionsData],
+  );
+  const products = useMemo(() => {
+    const categoryProducts =
+      activeCategoryId === 'frames'
+        ? framesData?.results.map(mapFrameToProduct)
+        : lensesData?.results.map(mapLensToProduct);
+
+    return sortCatalogProducts(categoryProducts ?? [], activeSortId);
+  }, [
+    activeCategoryId,
+    activeSortId,
+    framesData?.results,
+    lensesData?.results,
+  ]);
+
+  const productsCount =
+    activeCategoryId === 'frames' ? framesData?.count : lensesData?.count;
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE),
+    Math.ceil((productsCount ?? 0) / PRODUCTS_PER_PAGE),
   );
-  const visibleProducts = filteredProducts.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE,
-  );
-  const suggestedProducts =
-    categoryProducts.length >= 3
-      ? categoryProducts.slice(0, 3)
-      : catalogProducts.slice(0, 3);
+  const isProductsLoading =
+    (activeCategoryId === 'frames' &&
+      (isFramesFetching || isFramesParamsDebouncing)) ||
+    (activeCategoryId === 'lenses' &&
+      (isLensesFetching || isLensesParamsDebouncing));
+  const isFiltersLoading =
+    (activeCategoryId === 'frames' && isFrameFiltersFetching) ||
+    (activeCategoryId === 'lenses' && isLensOptionsFetching);
   const isEmptySearch =
-    hasActiveFilters(activeFilters) && filteredProducts.length === 0;
+    hasCatalogFilters(activeFilters) && products.length === 0;
   const filterActionButton =
     activeCategoryId === 'lenses'
       ? {
@@ -118,32 +140,72 @@ export function CatalogPage() {
       : undefined;
 
   const handleCategoryChange = (categoryId: string) => {
-    setActiveCategoryId(categoryId);
-    setActiveFilters({});
-    setCurrentPage(1);
+    setSearchParams(
+      updateCatalogSearchParams(searchParams, (params) => {
+        params.set('category', categoryId);
+        params.delete('page');
+        clearCatalogFilterParams(params);
+      }),
+    );
     setIsMobileFiltersOpen(false);
     setIsMobileSortOpen(false);
   };
 
   const handleFilterToggle = (groupId: string, optionId: string) => {
-    setCurrentPage(1);
-    setActiveFilters((currentFilters) => {
-      const currentGroupFilters = currentFilters[groupId] ?? [];
-      const nextGroupFilters = currentGroupFilters.includes(optionId)
-        ? currentGroupFilters.filter((id) => id !== optionId)
-        : [...currentGroupFilters, optionId];
+    setSearchParams(
+      updateCatalogSearchParams(searchParams, (params) => {
+        const currentValues =
+          params.get(groupId)?.split(',').filter(Boolean) ?? [];
+        const nextValues = currentValues.includes(optionId)
+          ? currentValues.filter((id) => id !== optionId)
+          : [...currentValues, optionId];
 
-      if (nextGroupFilters.length === 0) {
-        const nextFilters = { ...currentFilters };
-        delete nextFilters[groupId];
-        return nextFilters;
-      }
+        if (nextValues.length > 0) {
+          params.set(groupId, nextValues.join(','));
+        } else {
+          params.delete(groupId);
+        }
 
-      return {
-        ...currentFilters,
-        [groupId]: nextGroupFilters,
-      };
-    });
+        params.delete('page');
+      }),
+    );
+  };
+
+  const handleSortChange = (sortId: string) => {
+    setSearchParams(
+      updateCatalogSearchParams(searchParams, (params) => {
+        params.set('sort', sortId);
+        params.delete('page');
+      }),
+    );
+  };
+
+  const handlePageChange = (page: number) => {
+    setSearchParams(
+      updateCatalogSearchParams(searchParams, (params) => {
+        if (page > 1) {
+          params.set('page', String(page));
+          return;
+        }
+
+        params.delete('page');
+      }),
+    );
+  };
+
+  const handleAddToCart = async (
+    product: ProductCardProduct,
+    quantity: number,
+  ) => {
+    if (!product.apiProductId || !product.apiProductType) {
+      return;
+    }
+
+    await addCartItem({
+      product_id: product.apiProductId,
+      product_type: product.apiProductType,
+      quantity,
+    }).unwrap();
   };
 
   return (
@@ -159,12 +221,18 @@ export function CatalogPage() {
 
         <div className={s.catalogShell}>
           <div className={s.desktopFilters}>
-            <CatalogFilters
-              activeFilters={activeFilters}
-              actionButton={filterActionButton}
-              groups={activeFilterGroups}
-              onFilterToggle={handleFilterToggle}
-            />
+            {isFiltersLoading ? (
+              <div className={s.filtersLoader}>
+                <Spinner size="md" />
+              </div>
+            ) : (
+              <CatalogFilters
+                activeFilters={activeFilters}
+                actionButton={filterActionButton}
+                groups={filterGroups}
+                onFilterToggle={handleFilterToggle}
+              />
+            )}
           </div>
 
           <div className={s.productsArea}>
@@ -189,10 +257,7 @@ export function CatalogPage() {
                       key={option.id}
                       type="button"
                       aria-pressed={activeSortId === option.id}
-                      onClick={() => {
-                        setActiveSortId(option.id);
-                        setCurrentPage(1);
-                      }}
+                      onClick={() => handleSortChange(option.id)}
                     >
                       {t(`catalog.sort.${option.id}`, option.label)}
                     </button>
@@ -216,14 +281,20 @@ export function CatalogPage() {
                   setIsMobileSortOpen(false);
                 }}
               >
-                <CatalogFilters
-                  activeFilters={activeFilters}
-                  actionButton={filterActionButton}
-                  compact
-                  groups={activeFilterGroups}
-                  showTitle={false}
-                  onFilterToggle={handleFilterToggle}
-                />
+                {isFiltersLoading ? (
+                  <div className={s.filtersLoader}>
+                    <Spinner size="md" />
+                  </div>
+                ) : (
+                  <CatalogFilters
+                    activeFilters={activeFilters}
+                    actionButton={filterActionButton}
+                    compact
+                    groups={filterGroups}
+                    showTitle={false}
+                    onFilterToggle={handleFilterToggle}
+                  />
+                )}
               </AccordionItem>
 
               <AccordionItem
@@ -251,8 +322,7 @@ export function CatalogPage() {
                       type="button"
                       aria-pressed={activeSortId === option.id}
                       onClick={() => {
-                        setActiveSortId(option.id);
-                        setCurrentPage(1);
+                        handleSortChange(option.id);
                         setIsMobileSortOpen(false);
                       }}
                     >
@@ -263,31 +333,36 @@ export function CatalogPage() {
               </AccordionItem>
             </div>
 
-            {isEmptySearch ? (
+            {isProductsLoading ? (
+              <div className={s.loader}>
+                <Spinner size="lg" />
+              </div>
+            ) : isEmptySearch ? (
               <div className={s.emptyState}>
                 <h2>{t('catalog.emptyTitle')}</h2>
                 <div className={s.emptyDivider} />
                 <p>{t('catalog.emptySuggestion')}</p>
-                <div className={s.productGrid}>
-                  {suggestedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
               </div>
+            ) : products.length === 0 ? (
+              <EmptyState title={t('catalog.emptyProducts')} />
             ) : (
               <div className={s.productGrid}>
-                {visibleProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                  />
                 ))}
               </div>
             )}
 
-            {!isEmptySearch && filteredProducts.length > PRODUCTS_PER_PAGE ? (
+            {!isProductsLoading && !isEmptySearch && totalPages > 1 ? (
               <Pagination
                 className={s.pagination}
                 currentPage={currentPage}
                 totalPages={totalPages}
-                onPageChange={setCurrentPage}
+                onPageChange={handlePageChange}
               />
             ) : null}
           </div>
