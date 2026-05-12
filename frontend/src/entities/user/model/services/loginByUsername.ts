@@ -7,7 +7,7 @@ interface LoginByUsernameProps {
   password: string;
 }
 
-const LOGIN_URL = 'http://localhost/api/v1/auth/login/';
+const LOGIN_URL = '/api/v1/auth/login/';
 
 export const loginByUsername = createAsyncThunk<
   LoginResponse,

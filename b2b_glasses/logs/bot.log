@@ -2320,3 +2320,20 @@ client_session: <aiohttp.client.ClientSession object at 0x7742fbf2e9f0>
 2026-05-12 13:20:19,174 - __main__ - INFO - --- Запуск бота ---
 2026-05-12 13:25:32,448 - root - INFO - --- Логгирование бота успешно настроено ---
 2026-05-12 13:25:32,451 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 14:27:56,861 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 14:27:56,866 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 14:36:22,496 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 14:36:22,501 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 14:36:22,983 - aiogram.dispatcher - INFO - Start polling
+2026-05-12 14:36:23,081 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2026-05-12 14:36:23,185 - __main__ - INFO - Пользователь 120559201 нажал /start
+2026-05-12 14:36:23,186 - __main__ - INFO - Пользователь 120559201 нажал /start
+2026-05-12 14:36:30,774 - __main__ - INFO - Попытка регистрации для TG ID: 120559201
+2026-05-12 14:36:31,843 - __main__ - INFO - Успешная регистрация для TG ID: 120559201
+2026-05-12 15:16:44,912 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-05-12 15:16:44,913 - aiogram.dispatcher - INFO - Polling stopped for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'
+2026-05-12 15:16:44,914 - aiogram.dispatcher - INFO - Polling stopped
+2026-05-12 15:17:05,591 - root - INFO - --- Логгирование бота успешно настроено ---
+2026-05-12 15:17:05,597 - __main__ - INFO - --- Запуск бота ---
+2026-05-12 15:17:05,949 - aiogram.dispatcher - INFO - Start polling
+2026-05-12 15:17:06,055 - aiogram.dispatcher - INFO - Run polling for bot @glasses_uz_test_bot id=8578961673 - 'Glasses Bot'

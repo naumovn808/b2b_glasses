@@ -1289,9 +1289,7 @@ async def set_main_commands(bot: Bot):
 
 async def main() -> None:
     # Отключаем проверку SSL для работы в корпоративных сетях / через прокси
-    session = AiohttpSession(
-        connector=aiohttp.TCPConnector(ssl=False)
-    )
+    session = AiohttpSession()
     bot = Bot(
         token=BOT_TOKEN, 
         session=session,
