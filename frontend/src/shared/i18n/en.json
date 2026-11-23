@@ -7,7 +7,42 @@
     "passwordPlaceholder": "Enter your password",
     "submit": "Sign In",
     "agreement": "By clicking the button, you agree to the terms of data processing.",
-    "loading": "Signing in..."
+    "loading": "Signing in...",
+    "forgotPassword": "Forgot password? Reset via Telegram"
+  },
+  "profile": {
+    "title": "Personal Account",
+    "b2bClient": "B2B Partner",
+    "company": "Company",
+    "notSpecified": "Not specified",
+    "phone": "Phone",
+    "login": "Login",
+    "telegram": "Telegram",
+    "ordersTitle": "Order History",
+    "noOrders": "You have no orders yet",
+    "noOrdersDesc": "Go to the catalog and place your first order",
+    "orderNum": "Order #{{id}}",
+    "itemsCount": "Items: {{count}}",
+    "status": {
+      "cart": "In Cart",
+      "pending": "Pending",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "securityTitle": "Security",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "savePassword": "Save Password",
+    "passwordChanged": "Password changed successfully",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 4 characters long",
+    "telegramResetHint": "You can also reset your password via our Telegram bot",
+    "resetViaTelegram": "Reset via Telegram",
+    "logout": "Log Out",
+    "logoutConfirm": "Are you sure you want to log out?",
+    "logoutYes": "Yes, log out",
+    "logoutCancel": "Cancel"
   },
   "common": {
     "add": "Add",

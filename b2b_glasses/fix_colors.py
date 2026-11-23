@@ -1,60 +1,59 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'b2b_glasses.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "b2b_glasses.settings")
 django.setup()
 
 from catalog.models import Color, ColorGroup
+from catalog.one_c_sync import assign_color_group
+
+STANDARD_GROUPS = [
+    ("Черный", "#1A1A1A", 1),
+    ("Серый", "#808080", 2),
+    ("Серебряный", "#C0C0C0", 3),
+    ("Белый", "#FFFFFF", 4),
+    ("Прозрачный", "#E6F4FA", 5),
+    ("Бежевый", "#E8D5B7", 6),
+    ("Золотой", "#E6B800", 7),
+    ("Коричневый", "#7B4B2A", 8),
+    ("Оранжевый", "#FF8C00", 9),
+    ("Красный", "#D32F2F", 10),
+    ("Розовый", "#F48FB1", 11),
+    ("Фиолетовый", "#7E57C2", 12),
+    ("Синий", "#1976D2", 13),
+    ("Зеленый", "#2E7D32", 14),
+    ("Другое", "#B0BEC5", 100),
+]
+
 
 def run():
-    # Создаем группу "Другое"
-    other, _ = ColorGroup.objects.get_or_create(
-        name='Другое', 
-        defaults={'hex_value': '#808080', 'order': 100}
-    )
+    groups_cache = {}
+    for name, hex_value, order in STANDARD_GROUPS:
+        group, created = ColorGroup.objects.get_or_create(
+            name=name,
+            defaults={"hex_value": hex_value, "order": order},
+        )
+        if not created and (group.hex_value != hex_value or group.order != order):
+            group.hex_value = hex_value
+            group.order = order
+            group.save(update_fields=["hex_value", "order"])
+        groups_cache[name] = group
 
-    mapping = {
-        'черн': 'Черный', 'black': 'Черный',
-        'бел': 'Белый', 'white': 'Белый',
-        'золот': 'Золотой', 'gold': 'Золотой',
-        'серебр': 'Серебряный', 'silver': 'Серебряный',
-        'красн': 'Красный', 'red': 'Красный',
-        'син': 'Синий', 'blue': 'Синий',
-        'голуб': 'Синий',
-        'зелен': 'Зеленый', 'green': 'Зеленый',
-        'коричн': 'Коричневый', 'brown': 'Коричневый',
-        'сер': 'Серый', 'grey': 'Серый', 'gray': 'Серый',
-        'розов': 'Розовый', 'pink': 'Розовый',
-        'прозрач': 'Прозрачный', 'crystal': 'Прозрачный',
-        'беж': 'Бежевый', 'beige': 'Бежевый',
-        'желт': 'Золотой', 'yellow': 'Золотой',
-        'фиолет': 'Розовый', 'purple': 'Розовый'
-    }
-
-    colors = Color.objects.all()
-    count = 0
+    updated = 0
     other_count = 0
-
-    for c in colors:
-        name = c.name.lower()
-        assigned = False
-        for key, group_name in mapping.items():
-            if key in name:
-                group = ColorGroup.objects.filter(name=group_name).first()
-                if group:
-                    c.group = group
-                    c.save()
-                    assigned = True
-                    count += 1
-                    break
-        
-        if not assigned:
-            c.group = other
-            c.save()
+    for color in Color.objects.select_related("group").all():
+        target = assign_color_group(color.name, groups_cache)
+        if target is None:
+            continue
+        if target.name == "Другое":
             other_count += 1
+        if color.group_id != target.id:
+            color.group = target
+            color.save(update_fields=["group"])
+            updated += 1
 
-    print(f"Successfully grouped {count} colors.")
-    print(f"Moved {other_count} colors to 'Other' group.")
+    print(f"Updated group for {updated} colors. Remaining in 'Другое': {other_count}.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     run()

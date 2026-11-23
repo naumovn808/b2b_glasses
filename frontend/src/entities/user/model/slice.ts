@@ -6,6 +6,7 @@ const AUTH_TOKEN_KEY = 'authToken';
 const initialState: UserSchema = {
   _inited: false,
   isLoading: false,
+  isAuthModalOpen: false,
 };
 
 export const userSlice = createSlice({
@@ -36,6 +37,13 @@ export const userSlice = createSlice({
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
+    },
+    openAuthModal: (state) => {
+      state.isAuthModalOpen = true;
+    },
+    closeAuthModal: (state) => {
+      state.isAuthModalOpen = false;
+      state.error = undefined;
     },
   },
 });

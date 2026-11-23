@@ -10,7 +10,6 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app/frontend
 COPY --from=builder /app/frontend/dist ./dist
+COPY --from=builder /app/frontend/node_modules ./node_modules
 COPY package.json .
-# RUN npm install
-RUN npm config set strict-ssl false && npm install
 CMD ["npm", "run", "preview", "--", "--host", "--port", "3000"]

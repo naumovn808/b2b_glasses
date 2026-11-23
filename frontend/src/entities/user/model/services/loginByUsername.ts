@@ -38,7 +38,12 @@ export const loginByUsername = createAsyncThunk<
     }
 
     thunkApi.dispatch(userActions.setToken(data.token));
-    thunkApi.dispatch(userActions.setAuthData({ login: authData.login }));
+    if (data.user) {
+      thunkApi.dispatch(userActions.setAuthData(data.user));
+    } else {
+      thunkApi.dispatch(userActions.setAuthData({ login: authData.login, username: authData.login }));
+    }
+    thunkApi.dispatch(userActions.closeAuthModal());
 
     return data;
   } catch (e: any) {

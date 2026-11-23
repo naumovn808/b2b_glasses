@@ -9,6 +9,33 @@ class Company(models.Model):
     external_id = models.CharField(
         max_length=255, blank=True, null=True, unique=True, verbose_name="Внешний ID"
     )
+    inn = models.CharField(
+        max_length=64, blank=True, default="", verbose_name="ИНН"
+    )
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
+    partner_id_1c = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        db_index=True,
+        verbose_name="ID партнера в 1С",
+    )
+    partner_name = models.CharField(
+        max_length=255, blank=True, default="", verbose_name="Наименование партнера"
+    )
+    head_partner_id_1c = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        db_index=True,
+        verbose_name="ID головного партнера в 1С",
+    )
+    head_partner_name = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name="Наименование головного партнера",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

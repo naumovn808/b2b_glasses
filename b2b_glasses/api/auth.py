@@ -102,3 +102,60 @@ class TelegramWebAppDataAuth(BaseAuthentication):
             raise ValueError(
                 "Не удалось извлечь данные пользователя (user) из initData.")
         return True, user_data
+
+
+class OneCWebhookPrincipal:
+    """Сервисный пользователь для аутентификации входящих вебхуков от 1С."""
+
+    is_authenticated = True
+    is_active = True
+    is_anonymous = False
+    username = "1c_webhook"
+
+    def __str__(self):
+        return self.username
+
+
+class OneCBasicAuthentication(BaseAuthentication):
+    """
+    HTTP Basic Authentication специально для входящих вебхуков от 1С
+    (POST /api/v1/webhooks/1c/stocks/ и POST /api/v1/webhooks/1c/customers/).
+    """
+
+    def authenticate_header(self, request):
+        return 'Basic realm="1C Webhook"'
+
+    def authenticate(self, request):
+        auth_header = request.headers.get("Authorization") or ""
+        parts = auth_header.split(" ", 1)
+        if len(parts) != 2 or parts[0].lower() != "basic":
+            return None
+
+        expected_user = getattr(settings, "ONE_C_WEBHOOK_USER", "")
+        expected_password = getattr(settings, "ONE_C_WEBHOOK_PASSWORD", "")
+        if not expected_user or not expected_password:
+            logger.error(
+                "1C Webhook Auth: ONE_C_WEBHOOK_USER или ONE_C_WEBHOOK_PASSWORD не настроены."
+            )
+            raise AuthenticationFailed("Учетные данные вебхука не настроены на сервере.")
+
+        try:
+            decoded = base64.b64decode(parts[1].strip()).decode("utf-8")
+        except Exception:
+            try:
+                decoded = base64.b64decode(parts[1].strip()).decode("latin-1")
+            except Exception as exc:
+                logger.warning("1C Webhook Auth: некорректный base64 в Basic-заголовке.")
+                raise AuthenticationFailed("Некорректный заголовок Authorization.") from exc
+
+        if ":" not in decoded:
+            raise AuthenticationFailed("Некорректный формат Basic-авторизации.")
+
+        username, password = decoded.split(":", 1)
+        user_ok = hmac.compare_digest(username, expected_user)
+        pass_ok = hmac.compare_digest(password, expected_password)
+        if not (user_ok and pass_ok):
+            logger.warning("1C Webhook Auth: неверные учетные данные для пользователя '%s'.", username)
+            raise AuthenticationFailed("Неверные учетные данные.")
+
+        return (OneCWebhookPrincipal(), "1c_basic")

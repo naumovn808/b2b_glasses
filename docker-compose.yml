@@ -2,6 +2,7 @@ services:
   db:
     image: postgres:15-alpine
     container_name: b2b_db
+    restart: unless-stopped
     env_file:
       - ./b2b_glasses/.env
     volumes:
@@ -12,6 +13,7 @@ services:
   web:
     build: .
     container_name: b2b_web
+    restart: unless-stopped
     command: gunicorn b2b_glasses.wsgi:application --bind 0.0.0.0:8000 --workers 4
     volumes:
       - .:/app
@@ -25,6 +27,7 @@ services:
   scheduler:
     build: .
     container_name: b2b_scheduler
+    restart: unless-stopped
     command: python manage.py run_scheduler
     volumes:
       - .:/app
@@ -38,6 +41,7 @@ services:
   bot:
     build: .
     container_name: b2b_bot
+    restart: unless-stopped
     command: python bot.py
     volumes:
       - .:/app
@@ -49,6 +53,7 @@ services:
 
   frontend:
     container_name: b2b_frontend
+    restart: unless-stopped
     build:
       context: ./frontend
       dockerfile: Dockerfile.frontend
@@ -60,6 +65,7 @@ services:
   nginx:
     image: nginx:1.25-alpine
     container_name: b2b_nginx
+    restart: unless-stopped
     ports:
       - '80:80'
     volumes:

@@ -198,6 +198,7 @@
 #             })
 
 #         return Response({"detail": "Неверный тип продукта."}, status=status.HTTP_404_NOT_FOUND)
+from django.db.models import Case, IntegerField, Value, When
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -271,7 +272,18 @@ lens_params = [
 
 
 class FrameListView(generics.ListAPIView):
-    queryset = Frame.objects.filter(stock__gt=0).distinct()
+    queryset = (
+        Frame.objects.filter(stock__gt=0)
+        .annotate(
+            has_price=Case(
+                When(price__gt=0, then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField(),
+            )
+        )
+        .order_by('has_price', 'id')
+        .distinct()
+    )
     serializer_class = FrameSerializer
     filterset_class = FrameFilter
     permission_classes = [AllowAny]
@@ -296,8 +308,13 @@ class FrameFilterOptionsView(APIView):
         operation_description="Возвращает ВСЕ доступные Бренды, Материалы, Формы и т.д."
     )
     def get(self, request, *args, **kwargs):
-        # Получаем список групп цветов для фильтра
-        groups = ColorGroup.objects.all().order_by('order', 'name')
+        # Возвращаем только те группы цветов, у которых есть оправы в наличии (stock > 0)
+        active_group_ids = (
+            Frame.objects.filter(stock__gt=0, colors__color__group__isnull=False)
+            .values_list('colors__color__group_id', flat=True)
+            .distinct()
+        )
+        groups = ColorGroup.objects.filter(id__in=active_group_ids).order_by('order', 'name')
 
         data = {
             'brands': BrandSerializer(Brand.objects.all(), many=True).data,
@@ -312,12 +329,23 @@ class FrameFilterOptionsView(APIView):
 
 
 class LensListView(generics.ListAPIView):
-    queryset = Lens.objects.filter(stock__gt=0).select_related('series')
+    queryset = (
+        Lens.objects.filter(stock__gt=0)
+        .select_related('series')
+        .annotate(
+            has_price=Case(
+                When(price__gt=0, then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField(),
+            )
+        )
+        .order_by('has_price', 'id')
+    )
     serializer_class = LensSerializer
     filterset_class = LensFilter
     permission_classes = [AllowAny]
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ('series__name', 'id_1c')
+    search_fields = ('series__name', 'name', 'sku', 'id_1c')
 
     @swagger_auto_schema(
         tags=['Catalog (Каталог)'],
@@ -390,13 +418,15 @@ class LensOptionsView(APIView):
             if rep1_match:
                 sph_set.add(rep1_sph)
                 cyl_set.add(rep1_cyl)
-                dia_set.add(db_dia)
+                if db_dia is not None:
+                    dia_set.add(db_dia)
                 series_set.add(db_series)
                 
             if rep2_match:
                 sph_set.add(rep2_sph)
                 cyl_set.add(rep2_cyl)
-                dia_set.add(db_dia)
+                if db_dia is not None:
+                    dia_set.add(db_dia)
                 series_set.add(db_series)
 
         available_series = LensSeries.objects.filter(id__in=series_set).order_by('name')

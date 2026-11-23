@@ -54,10 +54,13 @@ export type FrameFilters = Record<string, unknown>;
 export type Lens = {
   id: number;
   id_1c: string;
+  name?: string;
+  sku?: string;
+  barcode?: string | null;
   series: string;
   sph: string;
   cyl: string;
-  dia: number;
+  dia: number | null;
   price: string;
   stock?: number;
   colors?: ProductColor[];

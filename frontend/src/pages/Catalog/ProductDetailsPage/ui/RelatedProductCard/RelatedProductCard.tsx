@@ -63,23 +63,26 @@ export function RelatedProductCard({ product }: RelatedProductCardProps) {
           </div>
         </Link>
 
-        <div className={s.swatches} aria-label={t('common.color')}>
-          {product.colors.map((color) => (
-            <button
-              className={clsx(
-                s.swatch,
-                selectedColorId === color.id && s.swatchActive,
-                color.backgroundImage && s.swatchPattern,
-              )}
-              key={color.id}
-              type="button"
-              style={getSwatchStyle(color)}
-              aria-label={t(`catalog.option.${color.id}`, color.name)}
-              aria-pressed={selectedColorId === color.id}
-              onClick={() => setSelectedColorId(color.id)}
-            />
-          ))}
-        </div>
+        {product.colors.length > 0 ? (
+          <div className={s.swatches} aria-label={t('common.color')}>
+            {product.colors.map((color) => (
+              <button
+                className={clsx(
+                  s.swatch,
+                  selectedColorId === color.id && s.swatchActive,
+                  color.backgroundImage && s.swatchPattern,
+                )}
+                key={color.id}
+                type="button"
+                style={getSwatchStyle(color)}
+                title={t(`catalog.option.${color.id}`, color.name)}
+                aria-label={t(`catalog.option.${color.id}`, color.name)}
+                aria-pressed={selectedColorId === color.id}
+                onClick={() => setSelectedColorId(color.id)}
+              />
+            ))}
+          </div>
+        ) : null}
 
         <div className={s.cartRow}>
           <button

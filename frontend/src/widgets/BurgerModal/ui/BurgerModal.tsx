@@ -4,7 +4,9 @@ import { NavLink } from 'react-router';
 import Tg from '@/shared/assets/icons/header/tg.svg';
 import WhatsApp from '@/shared/assets/icons/header/whatsapp.svg';
 import s from './BurgerModal.module.scss';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUserIsAuth, userActions } from '@/entities/user';
 
 export default function BurgerModal({
   isOpen,
@@ -13,6 +15,17 @@ export default function BurgerModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const isAuth = useSelector(selectUserIsAuth);
+
+  const visibleLinks = LINKS.filter((item) => !item.authOnly || isAuth);
+
+  const handleOpenAuth = () => {
+    onClose();
+    dispatch(userActions.openAuthModal());
+  };
+
   return (
     <ModalWindowShell
       isOpen={isOpen}
@@ -23,7 +36,7 @@ export default function BurgerModal({
     >
       <div className={s.burgerContent}>
         <ul className={s.burgerLinks}>
-          {LINKS.map((item) => (
+          {visibleLinks.map((item) => (
             <li key={item.href}>
               <NavLink
                 className={s.burgerLink}
@@ -34,6 +47,28 @@ export default function BurgerModal({
               </NavLink>
             </li>
           ))}
+          {isAuth ? (
+            <li>
+              <NavLink
+                className={s.burgerLink}
+                to="/profile"
+                onClick={onClose}
+              >
+                {t('profile.title')}
+              </NavLink>
+            </li>
+          ) : (
+            <li>
+              <button
+                type="button"
+                className={s.burgerLink}
+                onClick={handleOpenAuth}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', color: '#ffc516' }}
+              >
+                {t('auth.submit')}
+              </button>
+            </li>
+          )}
         </ul>
 
         <div className={s.burgerDivider} />

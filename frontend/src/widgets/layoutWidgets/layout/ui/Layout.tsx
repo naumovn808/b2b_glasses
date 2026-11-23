@@ -1,6 +1,5 @@
 import {
-  selectUserInited,
-  selectUserIsAuth,
+  selectIsAuthModalOpen,
   userActions,
 } from '@/entities/user';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,8 +12,7 @@ import { useEffect } from 'react';
 
 export function Layout() {
   const dispatch = useDispatch();
-  const isAuth = useSelector(selectUserIsAuth);
-  const inited = useSelector(selectUserInited);
+  const isAuthModalOpen = useSelector(selectIsAuthModalOpen);
 
   useEffect(() => {
     dispatch(userActions.initAuthData());
@@ -27,7 +25,10 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
-      {inited && !isAuth && <AuthModal isOpen={!isAuth} />}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => dispatch(userActions.closeAuthModal())}
+      />
     </>
   );
 }

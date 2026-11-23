@@ -103,6 +103,10 @@ class CartEditFSM(StatesGroup):
     waiting_for_new_qty = State()
 
 
+class PasswordResetFSM(StatesGroup):
+    waiting_for_new_password = State()
+
+
 # --- 3. НАСТРОЙКИ И API-КЛИЕНТ ---
 BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
 WEBSITE_URL = settings.WEBSITE_URL
@@ -293,10 +297,18 @@ async def checkout_cart(auth_token: str) -> dict | None:
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(CART_CHECKOUT_URL, headers=headers) as response:
+                try:
+                    data = await response.json()
+                except Exception:
+                    data = {}
                 if response.status == 200:
-                    return await response.json()
-                logger.error(f"Ошибка checkout_cart: {response.status}")
-                return None
+                    return data
+                logger.error(f"Ошибка checkout_cart: {response.status} - {data}")
+                return {
+                    "error": data.get("message")
+                    or data.get("error")
+                    or f"Ошибка сервера ({response.status})"
+                }
     except Exception as e:
         logger.error(f"Ошибка checkout_cart: {e}")
         return None
@@ -337,6 +349,10 @@ def get_main_menu_keyboard():
         InlineKeyboardButton(text="🛒 Моя Корзина", callback_data="view_cart"),
         InlineKeyboardButton(text="📜 История Заказов",
                              callback_data="view_history")
+    )
+    builder.row(
+        InlineKeyboardButton(text="🔑 Сменить пароль сайта",
+                             callback_data="reset_password_start")
     )
     return builder.as_markup()
 
@@ -445,13 +461,18 @@ def get_no_results_keyboard() -> InlineKeyboardBuilder:
 
 @dp.message(CommandStart(deep_link=True))
 async def handler_start_with_token(message: Message, state: FSMContext):
-    if await check_user_status(message.from_user.id):
-        await message.answer("Вы уже зарегистрированы...", reply_markup=get_main_menu_keyboard())
-        return
     try:
         token = message.text.split()[1]
     except IndexError:
         await message.answer("Ошибка: неверный формат ссылки...")
+        return
+
+    if token == "reset_password":
+        await start_reset_password_flow(message, state)
+        return
+
+    if await check_user_status(message.from_user.id):
+        await message.answer("Вы уже зарегистрированы...", reply_markup=get_main_menu_keyboard())
         return
     await state.update_data(token=token)
     await state.set_state(RegistrationFSM.waiting_for_phone)
@@ -541,6 +562,76 @@ async def handler_start_simple(message: Message, state: FSMContext):
             f"Здравствуйте, {html.bold(message.from_user.full_name)}!\n\n"
             "Ваш аккаунт неактивен или еще не привязан."
         )
+
+
+# --- Восстановление и смена пароля ---
+
+async def start_reset_password_flow(message: Message, state: FSMContext):
+    await state.clear()
+    from users.models import User
+    try:
+        user = await User.objects.aget(telegram_id=message.from_user.id, is_active=True)
+    except User.DoesNotExist:
+        await message.answer(
+            "❌ Ваш Telegram-аккаунт еще не привязан к личному кабинету.\n"
+            "Пожалуйста, свяжитесь с вашим менеджером для регистрации."
+        )
+        return
+
+    await state.set_state(PasswordResetFSM.waiting_for_new_password)
+    await message.answer(
+        "🔑 <b>Смена пароля для входа на сайт</b>\n\n"
+        "Пожалуйста, отправьте новый пароль сообщением.\n"
+        "<i>(Минимум 4 символа. Для отмены отправьте /cancel)</i>",
+        reply_markup=ReplyKeyboardRemove()
+    )
+
+
+@dp.callback_query(F.data == "reset_password_start")
+async def callback_reset_password(query: CallbackQuery, state: FSMContext):
+    await state.clear()
+    await start_reset_password_flow(query.message, state)
+
+
+@dp.message(Command("reset_password"))
+async def command_reset_password(message: Message, state: FSMContext):
+    await start_reset_password_flow(message, state)
+
+
+@dp.message(PasswordResetFSM.waiting_for_new_password, F.text, ~F.text.startswith('/'))
+async def handler_new_password(message: Message, state: FSMContext):
+    new_password = message.text.strip()
+    if len(new_password) < 4:
+        await message.answer("⚠️ Пароль должен быть не короче 4 символов. Пожалуйста, введите другой пароль:")
+        return
+
+    from users.models import User
+    try:
+        user = await User.objects.aget(telegram_id=message.from_user.id, is_active=True)
+        user.set_password(new_password)
+        await user.asave()
+    except Exception as e:
+        logger.error(f"Ошибка смены пароля: {e}")
+        await message.answer("❌ Произошла ошибка при сохранении пароля. Попробуйте позже.")
+        await state.clear()
+        return
+
+    try:
+        await message.delete()
+    except Exception:
+        pass
+
+    await state.clear()
+    login_id = user.phone_number or user.username
+    await message.answer(
+        f"✅ <b>Пароль успешно изменен!</b>\n\n"
+        f"Теперь вы можете войти на сайт:\n"
+        f"<b>Сайт:</b> {WEBSITE_URL}\n"
+        f"<b>Логин:</b> <code>{login_id}</code>\n"
+        f"<b>Новый пароль:</b> <tg-spoiler>{html.quote(new_password)}</tg-spoiler>",
+        reply_markup=get_main_menu_keyboard()
+    )
+
 
 # --- Логика Фильтра ---
 
@@ -1187,13 +1278,24 @@ async def handle_checkout(query: CallbackQuery, state: FSMContext):
 
     result = await checkout_cart(token.key)
     if result and result.get('order_id'):
+        doc_num = result.get('doc_number_1c')
+        doc_line = f"Номер документа в 1С: <b>{doc_num}</b>\n" if doc_num else ""
         await query.message.edit_text(
-            f"✅ <b>Заказ #{result.get('order_id')} успешно оформлен!</b>\n\n"
+            f"✅ <b>Заказ #{result.get('order_id')} успешно оформлен!</b>\n"
+            f"{doc_line}\n"
             "Он отправлен на обработку.",
             reply_markup=get_main_menu_keyboard()
         )
     else:
-        await query.message.edit_text("❌ Ошибка: не удалось оформить заказ (возможно, корзина пуста?).")
+        error_msg = (
+            result.get("error")
+            if isinstance(result, dict) and result.get("error")
+            else "не удалось оформить заказ (возможно, корзина пуста?)."
+        )
+        await query.message.edit_text(
+            f"❌ Ошибка: {error_msg}",
+            reply_markup=get_main_menu_keyboard()
+        )
 
 
 @dp.callback_query(F.data == "view_history")

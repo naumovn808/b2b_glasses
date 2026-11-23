@@ -22,6 +22,8 @@ export type OrderItem = {
 
 export type Order = {
   id: number;
+  id_1c?: string | null;
+  doc_number_1c?: string | null;
   user: number;
   status?: OrderStatus;
   total_price?: string;
@@ -50,6 +52,11 @@ export type PartialUpdateCartItemRequest = {
 
 export type CheckoutCartResponse = {
   detail?: string;
+  message?: string;
+  order_id?: number;
+  order_id_1c?: string | null;
+  doc_number_1c?: string | null;
+  cart?: Order;
 };
 
 export type CustomOrderRequest = {

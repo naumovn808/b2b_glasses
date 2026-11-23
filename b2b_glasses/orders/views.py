@@ -15,7 +15,9 @@ from .serializers import (
     CustomOrderSerializer,
 )
 from catalog.models import Frame, Lens
-from .ftp_uploader import schedule_ftp_upload
+from catalog.one_c_sync import apply_stock_updates
+from api.one_c_client import OneCAPIError, OneCConnectionError
+from .one_c_orders import OrderCustomerConfigError, submit_order_to_1c
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -165,6 +167,9 @@ class UpdateCartItemView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         instance = serializer.save()
+        if instance.product is not None:
+            instance.price_at_order = instance.product.price
+            instance.save(update_fields=["price_at_order"])
         instance.order.update_total_price()
         logger.info(
             f"В корзине {instance.order.pk} обновлено кол-во товара {instance.pk} -> {instance.quantity}"
@@ -177,55 +182,183 @@ class CheckoutView(views.APIView):
     @swagger_auto_schema(
         tags=["Orders (Корзина)"],
         operation_summary="6. Оформить заказ (Checkout)",
-        operation_description="Превращает 'Корзину' (status='cart') в 'Заказ' (status='pending').",
+        operation_description=(
+            "Проверяет остатки, синхронно отправляет заказ в 1С (POST /v1/orders), "
+            "обновляет остатки и переводит корзину в статус 'pending'."
+        ),
         request_body=None,
-        responses={200: "Заказ оформлен", 400: "Ошибка"},
+        responses={
+            200: "Заказ оформлен",
+            400: "Ошибка валидации",
+            422: "Недостаточно остатков или ошибка данных в 1С",
+            502: "Ошибка на стороне 1С",
+            503: "Сервис 1С временно недоступен",
+        },
     )
     def post(self, request, *args, **kwargs):
         user = request.user
-        try:
-            cart = Order.objects.get(user=user, status=Order.OrderStatus.CART)
-        except Order.DoesNotExist:
-            return Response(
-                {"error": "Корзина не найдена или пуста."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
 
-        if not cart.items.exists():
+        # Шаг 1. Атомарно проверяем корзину и локальные остатки до отправки в 1С
+        with transaction.atomic():
+            try:
+                cart = (
+                    Order.objects.select_for_update(of=("self",))
+                    .select_related("user__company")
+                    .get(user=user, status=Order.OrderStatus.CART)
+                )
+            except Order.DoesNotExist:
+                return Response(
+                    {"error": "Корзина не найдена или пуста."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            items = list(cart.items.all())
+            if not items:
+                return Response(
+                    {"error": "Нельзя оформить пустую корзину."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            company = getattr(user, "company", None)
+            if not company or not company.external_id:
+                return Response(
+                    {
+                        "status": "error",
+                        "error_code": "CUSTOMER_NOT_CONFIGURED",
+                        "error": "У вашей компании не указан идентификатор 1С. Обратитесь к менеджеру.",
+                        "message": "У вашей компании не указан идентификатор 1С. Обратитесь к менеджеру.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            out_of_stock = []
+            for item in items:
+                product = item.product
+                if product is None:
+                    out_of_stock.append(
+                        {
+                            "id_1c": None,
+                            "requested": item.quantity,
+                            "stock": 0,
+                        }
+                    )
+                    continue
+
+                if product.stock <= 0 or item.quantity > product.stock:
+                    out_of_stock.append(
+                        {
+                            "id_1c": product.id_1c,
+                            "requested": item.quantity,
+                            "stock": product.stock,
+                        }
+                    )
+                    continue
+
+                if item.price_at_order != product.price:
+                    item.price_at_order = product.price
+                    item.save(update_fields=["price_at_order"])
+
+            if out_of_stock:
+                return Response(
+                    {
+                        "status": "error",
+                        "error_code": "PRODUCT_OUT_OF_STOCK",
+                        "error": "Недостаточно остатка по ряду позиций",
+                        "message": "Недостаточно остатка по ряду позиций",
+                        "updated_stocks": out_of_stock,
+                    },
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+
+            cart.update_total_price()
+
+        # Шаг 2. Синхронно отправляем заказ в 1С (вне блокировки транзакции БД)
+        try:
+            one_c_response = submit_order_to_1c(cart)
+        except OrderCustomerConfigError as exc:
             return Response(
-                {"error": "Нельзя оформить пустую корзину."},
+                {
+                    "status": "error",
+                    "error_code": "CUSTOMER_NOT_CONFIGURED",
+                    "error": str(exc),
+                    "message": str(exc),
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        except OneCConnectionError as exc:
+            logger.error("Checkout #%s: 1С недоступна: %s", cart.pk, exc)
+            return Response(
+                {
+                    "status": "error",
+                    "error_code": exc.error_code or "ONE_C_UNAVAILABLE",
+                    "error": "Сервис 1С временно недоступен. Попробуйте оформить заказ позже.",
+                    "message": "Сервис 1С временно недоступен. Попробуйте оформить заказ позже.",
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        except OneCAPIError as exc:
+            updated_stocks = exc.payload.get("updated_stocks") or []
+            if exc.error_code == "PRODUCT_OUT_OF_STOCK":
+                if updated_stocks:
+                    apply_stock_updates(updated_stocks)
+                return Response(
+                    {
+                        "status": "error",
+                        "order_id_site": cart.pk,
+                        "error_code": "PRODUCT_OUT_OF_STOCK",
+                        "error": exc.message,
+                        "message": exc.message,
+                        "updated_stocks": updated_stocks,
+                    },
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+
+            http_status = (
+                status.HTTP_422_UNPROCESSABLE_ENTITY
+                if exc.status_code and 400 <= exc.status_code < 500
+                else status.HTTP_502_BAD_GATEWAY
+            )
+            return Response(
+                {
+                    "status": "error",
+                    "order_id_site": cart.pk,
+                    "error_code": exc.error_code or "ONE_C_ERROR",
+                    "error": exc.message,
+                    "message": exc.message,
+                    "updated_stocks": updated_stocks,
+                },
+                status=http_status,
+            )
+
+        # Шаг 3. Фиксируем заказ и точечно обновляем остатки из ответа 1С
+        updated_stocks = one_c_response.get("updated_stocks") or []
+        if updated_stocks:
+            apply_stock_updates(updated_stocks)
 
         with transaction.atomic():
             cart.status = Order.OrderStatus.PENDING
-            cart.updated_at = timezone.now()
-            cart.save()
-
-        order_items = []
-        for item in cart.items.all():
-            try:
-                product_str = str(item.product)
-            except Exception:
-                product_str = (
-                    f"content_type={item.content_type_id}, object_id={item.object_id}"
-                )
-            order_items.append(
-                f"{product_str} x{item.quantity} @ {item.price_at_order}"
+            cart.id_1c = one_c_response.get("order_id_1c") or cart.id_1c
+            cart.doc_number_1c = (
+                one_c_response.get("doc_number_1c") or cart.doc_number_1c
             )
+            cart.updated_at = timezone.now()
+            cart.save(update_fields=["status", "id_1c", "doc_number_1c", "updated_at"])
 
-        print(
-            f"Заказ #{cart.pk} оформлен пользователем {user.username}. "
-            f"total_price={cart.total_price}, items_count={cart.items.count()}, "
-            f"items=[{'; '.join(order_items)}]"
+        logger.info(
+            "Заказ #%s оформлен пользователем %s (1C doc=%s, total=%s).",
+            cart.pk,
+            user.username,
+            cart.doc_number_1c,
+            cart.total_price,
         )
         serializer = OrderSerializer(cart, context={"request": request})
-        schedule_ftp_upload(cart)
 
         return Response(
             {
-                "message": "Заказ успешно оформлен",
+                "message": one_c_response.get("message") or "Заказ успешно оформлен",
                 "order_id": cart.pk,
+                "order_id_1c": cart.id_1c,
+                "doc_number_1c": cart.doc_number_1c,
                 "cart": serializer.data,
             },
             status=status.HTTP_200_OK,

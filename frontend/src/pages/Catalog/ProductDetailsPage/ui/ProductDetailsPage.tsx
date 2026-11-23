@@ -105,7 +105,11 @@ function getLensOptionGroups(
     { id: 'series', title: 'Серия', value: lens.series },
     { id: 'sph', title: 'SPH', value: lens.sph },
     { id: 'cyl', title: 'CYL', value: lens.cyl },
-    { id: 'dia', title: 'DIA', value: String(lens.dia) },
+    {
+      id: 'dia',
+      title: 'DIA',
+      value: lens.dia !== null && lens.dia !== undefined ? String(lens.dia) : '',
+    },
   ]
     .filter((group) => group.value)
     .map((group) => ({

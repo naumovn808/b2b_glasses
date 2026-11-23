@@ -278,6 +278,10 @@ export function createLensesParams(
   };
 }
 
+function formatCatalogPrice(price: string) {
+  return `$${price}`;
+}
+
 export function mapFrameToProduct(frame: Frame): ProductCardProduct {
   const sizes = [
     frame.size_a,
@@ -294,7 +298,7 @@ export function mapFrameToProduct(frame: Frame): ProductCardProduct {
     title: frame.name,
     image: getProductImage(frame.images, NoPhoto),
     images: getProductImages(frame.images, NoPhoto),
-    price: `${frame.price}Р`,
+    price: formatCatalogPrice(frame.price),
     colors: getProductColors(frame.colors, {
       id: 'default',
       name: 'Цвет',
@@ -312,15 +316,11 @@ export function mapLensToProduct(lens: Lens): ProductCardProduct {
     apiProductId: lens.id,
     apiProductType: 'lens',
     categoryId: 'lenses',
-    title: lens.series,
+    title: lens.name || lens.series,
     image: getProductImage(lens.images, NoPhoto),
     images: getProductImages(lens.images, NoPhoto),
-    price: `${lens.price}Р`,
-    colors: getProductColors(lens.colors, {
-      id: 'transparent',
-      name: 'Прозрачные',
-      value: '#ffffff',
-    }),
+    price: formatCatalogPrice(lens.price),
+    colors: [],
     sizes: [],
     isSoldOut: lens.stock === 0,
     stock: lens.stock,

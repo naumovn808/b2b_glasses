@@ -1,5 +1,5 @@
 import { Container, IconButton } from '@/shared/ui';
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { selectCartTotalQuantity, useGetCartQuery } from '@/entities/cart';
 import {
   selectUserIsAuth,
@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 export function Header() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = useSelector(selectUserToken);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -39,11 +40,13 @@ export function Header() {
   );
   const isAuth = useSelector(selectUserIsAuth);
 
+  const visibleLinks = LINKS.filter((item) => !item.authOnly || isAuth);
+
   const handleAccountClick = () => {
     if (isAuth) {
-      if (window.confirm('Вы уверены, что хотите выйти?')) {
-        dispatch(userActions.logout());
-      }
+      navigate('/profile');
+    } else {
+      dispatch(userActions.openAuthModal());
     }
   };
 
@@ -57,7 +60,7 @@ export function Header() {
 
           <div className={s.headerLinks}>
             <ul className={s.navList}>
-              {LINKS.map((item) => (
+              {visibleLinks.map((item) => (
                 <li key={item.href}>
                   <NavLink
                     className={({ isActive }) =>
@@ -80,21 +83,23 @@ export function Header() {
               onClick={() => setIsBurgerOpen(true)}
             />
             <LanguageSwitch />
+            {isAuth && (
+              <IconButton
+                aria-label="Cart"
+                className={clsx(s.actionBtn, s.cartBtn)}
+                icon={
+                  <>
+                    <CartIcon />
+                    {cartTotalQuantity > 0 ? (
+                      <span className={s.cartBadge}>{cartTotalQuantity}</span>
+                    ) : null}
+                  </>
+                }
+                onClick={() => setIsCartOpen(true)}
+              />
+            )}
             <IconButton
-              aria-label="Cart"
-              className={clsx(s.actionBtn, s.cartBtn)}
-              icon={
-                <>
-                  <CartIcon />
-                  {cartTotalQuantity > 0 ? (
-                    <span className={s.cartBadge}>{cartTotalQuantity}</span>
-                  ) : null}
-                </>
-              }
-              onClick={() => setIsCartOpen(true)}
-            />
-            <IconButton
-              aria-label="Account"
+              aria-label={isAuth ? "Account" : "Sign In"}
               onClick={handleAccountClick}
               className={clsx(s.actionBtn, isAuth && s.activeAuth)}
               icon={<ProfileIcon />}
@@ -107,7 +112,9 @@ export function Header() {
         isOpen={isBurgerOpen}
         onClose={() => setIsBurgerOpen(false)}
       />
-      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {isAuth && (
+        <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      )}
     </header>
   );
 }

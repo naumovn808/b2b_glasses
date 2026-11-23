@@ -105,6 +105,12 @@ class LensSeries(models.Model):
 class Lens(models.Model):
     id_1c = models.CharField(max_length=100, unique=True,
                              db_index=True, verbose_name="Ид из 1С")
+    name = models.CharField(
+        max_length=500, blank=True, default="", verbose_name="Наименование")
+    sku = models.CharField(
+        max_length=255, blank=True, default="", db_index=True, verbose_name="Артикул")
+    barcode = models.CharField(
+        max_length=50, blank=True, null=True, verbose_name="Штрихкод")
     series = models.ForeignKey(
         LensSeries, on_delete=models.CASCADE, verbose_name="Серия")
 
@@ -112,7 +118,8 @@ class Lens(models.Model):
         max_digits=5, decimal_places=2, db_index=True, verbose_name="Сфера (SPH)")
     cyl = models.DecimalField(
         max_digits=5, decimal_places=2, db_index=True, verbose_name="Цилиндр (CYL)")
-    dia = models.IntegerField(db_index=True, verbose_name="Диаметр (DIA)")
+    dia = models.IntegerField(
+        db_index=True, null=True, blank=True, verbose_name="Диаметр (DIA)")
 
     price = models.DecimalField(
         max_digits=12, decimal_places=2, default=0, verbose_name="Цена")
@@ -125,7 +132,10 @@ class Lens(models.Model):
     images = GenericRelation('ProductImage', related_query_name='lenses')
 
     def __str__(self):
-        return f"{self.series.name} (SPH: {self.sph} CYL: {self.cyl} DIA: {self.dia})"
+        if self.name:
+            return self.name
+        dia_display = self.dia if self.dia is not None else "-"
+        return f"{self.series.name} (SPH: {self.sph} CYL: {self.cyl} DIA: {dia_display})"
 
 
 class ColorGroup(models.Model):

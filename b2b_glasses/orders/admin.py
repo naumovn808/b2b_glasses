@@ -17,15 +17,15 @@ class OrderItemInline(admin.TabularInline):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'user', 'get_company', 'status', 'total_price', 'created_at'
+        'id', 'doc_number_1c', 'user', 'get_company', 'status', 'total_price', 'created_at'
     )
     list_filter = ('status', 'user__company', 'created_at')
-    search_fields = ('id', 'user__username',
+    search_fields = ('id', 'doc_number_1c', 'id_1c', 'user__username',
                      'user__phone_number', 'user__company__name')
     inlines = [OrderItemInline]
     fieldsets = (
         ('Детали Заказа', {
-            'fields': ('status', 'total_price', 'created_at', 'updated_at')
+            'fields': ('status', 'total_price', 'doc_number_1c', 'id_1c', 'created_at', 'updated_at')
         }),
         ('Контрагент', {
             'fields': ('user', 'get_company')
@@ -37,9 +37,9 @@ class OrderAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.status != Order.OrderStatus.CART:
-            return ('user', 'total_price', 'created_at', 'updated_at', 'get_company')
+            return ('user', 'total_price', 'id_1c', 'doc_number_1c', 'created_at', 'updated_at', 'get_company')
         else:
-            return ('user', 'status', 'total_price', 'created_at', 'updated_at', 'get_company')
+            return ('user', 'status', 'total_price', 'id_1c', 'doc_number_1c', 'created_at', 'updated_at', 'get_company')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

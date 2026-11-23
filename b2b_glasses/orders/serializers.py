@@ -264,9 +264,10 @@ class AddCartItemSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(min_value=1, default=1)
 
     def validate(self, data):
-        """Проверяем, что товар существует в БД."""
+        """Проверяем, что товар существует в БД и доступен в нужном количестве."""
         product_type = data.get("product_type")
         product_id = data.get("product_id")
+        quantity = data.get("quantity", 1)
 
         try:
             if product_type == "frame":
@@ -278,6 +279,18 @@ class AddCartItemSerializer(serializers.Serializer):
 
             # Ищем товар
             product = model.objects.get(pk=product_id)
+
+            if product.stock <= 0:
+                raise serializers.ValidationError(
+                    {"quantity": "Товар отсутствует на складе."}
+                )
+            if quantity > product.stock:
+                raise serializers.ValidationError(
+                    {
+                        "quantity": f"Недостаточно остатка на складе. Доступно: {product.stock} шт."
+                    }
+                )
+
             # Сохраняем "найденный" объект, чтобы передать его в View
             data["product_instance"] = product
 
@@ -285,6 +298,8 @@ class AddCartItemSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 f"{product_type} с ID {product_id} не найден."
             )
+        except serializers.ValidationError:
+            raise
         except Exception as e:
             raise serializers.ValidationError(f"Ошибка валидации: {e}")
 
@@ -329,6 +344,19 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "total_price",
         )
 
+    def validate_quantity(self, value):
+        if value < 1:
+            raise serializers.ValidationError("Количество должно быть не меньше 1.")
+        if self.instance is not None and self.instance.product is not None:
+            available = getattr(self.instance.product, "stock", 0)
+            if available <= 0:
+                raise serializers.ValidationError("Товар отсутствует на складе.")
+            if value > available:
+                raise serializers.ValidationError(
+                    f"Недостаточно остатка на складе. Доступно: {available} шт."
+                )
+        return value
+
     def get_stock(self, obj):
         product = obj.product
         if not product:
@@ -364,7 +392,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "user", "status", "total_price", "created_at", "items")
+        fields = (
+            "id",
+            "id_1c",
+            "doc_number_1c",
+            "user",
+            "status",
+            "total_price",
+            "created_at",
+            "items",
+        )
 
 
 # --- НОВЫЙ СЕРИАЛИЗАТОР ---

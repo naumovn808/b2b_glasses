@@ -126,10 +126,20 @@ REST_FRAMEWORK = {
 }
 
 
-FTP_HOST = env("FTP_HOST")
+FTP_HOST = env("FTP_HOST", default="")
 FTP_PORT = env.int("FTP_PORT", default=21)
-FTP_USER = env("FTP_USER")
-FTP_PASS = env("FTP_PASS")
+FTP_USER = env("FTP_USER", default="")
+FTP_PASS = env("FTP_PASS", default="")
+
+# --- 1C REST API ---
+ONE_C_BASE_URL = env("ONE_C_BASE_URL", default="http://192.168.0.244/Test/hs/api").rstrip("/")
+ONE_C_API_USER = env("ONE_C_API_USER", default="")
+ONE_C_API_PASSWORD = env("ONE_C_API_PASSWORD", default="")
+ONE_C_TIMEOUT = env.int("ONE_C_TIMEOUT", default=30)
+ONE_C_PAGE_LIMIT = env.int("ONE_C_PAGE_LIMIT", default=500)
+ONE_C_ORDER_CURRENCY = env("ONE_C_ORDER_CURRENCY", default="UZS")
+ONE_C_WEBHOOK_USER = env("ONE_C_WEBHOOK_USER", default="")
+ONE_C_WEBHOOK_PASSWORD = env("ONE_C_WEBHOOK_PASSWORD", default="")
 
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
@@ -220,6 +230,11 @@ LOGGING = {
             "propagate": False,
         },
         "users": {
+            "handlers": ["console", "file_django"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "orders": {
             "handlers": ["console", "file_django"],
             "level": "DEBUG",
             "propagate": False,

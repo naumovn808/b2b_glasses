@@ -34,6 +34,7 @@ export const baseApi = createApi({
     'OrderHistory',
     'CustomOrders',
     'Training',
+    'User',
   ],
   endpoints: () => ({}),
 });

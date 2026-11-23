@@ -7,6 +7,7 @@ import {
   selectCartItemById,
   useAddCartItemMutation,
 } from '@/entities/cart';
+import { selectUserIsAuth } from '@/entities/user';
 import { CartQuantityControl } from '@/features/cart-quantity-control';
 import { QuantityControl, Spinner } from '@/shared/ui';
 import clsx from 'clsx';
@@ -41,6 +42,7 @@ type ProductInfoProps = {
 export function ProductInfo({ product }: ProductInfoProps) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const isAuth = useSelector(selectUserIsAuth);
   const [addCartItem, { isLoading: isAddingToCart }] = useAddCartItemMutation();
   const [quantity, setQuantity] = useState(1);
   const [isChosen, setIsChosen] = useState(false);
@@ -55,21 +57,21 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const hasSizes = product.sizes.length > 0;
   const canAddToCart =
     !product.isSoldOut && !!product.apiProductId && !!product.apiProductType;
-  const cartItemPayload = selectedColor
-    ? {
-        productId: product.id,
-        title: product.title,
-        image: product.image,
-        price: product.price,
-        oldPrice: product.oldPrice,
-        color: t(`catalog.option.${selectedColor.id}`, selectedColor.name),
-        colorId: selectedColor.id,
-        size: selectedSize || '-',
-        stockText: t('common.inStock'),
-        quantity,
-      }
-    : null;
-  const cartItemId = cartItemPayload ? makeCartItemId(cartItemPayload) : '';
+  const cartItemPayload = {
+    productId: product.id,
+    title: product.title,
+    image: product.image,
+    price: product.price,
+    oldPrice: product.oldPrice,
+    color: selectedColor
+      ? t(`catalog.option.${selectedColor.id}`, selectedColor.name)
+      : '',
+    colorId: selectedColor?.id ?? 'default',
+    size: selectedSize || '-',
+    stockText: t('common.inStock'),
+    quantity,
+  };
+  const cartItemId = makeCartItemId(cartItemPayload);
   const cartItem = useSelector((state: CartRootState) =>
     selectCartItemById(state, cartItemId),
   );
@@ -82,7 +84,6 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const addProductToCart = async () => {
     if (
       !canAddToCart ||
-      !cartItemPayload ||
       (hasStockLimit && quantityInCart + quantity > product.stock!)
     ) {
       return;
@@ -182,74 +183,79 @@ export function ProductInfo({ product }: ProductInfoProps) {
             </div>
           ) : null}
 
-          <div className={s.optionGroup}>
-            <h2>
-              {t('common.color')}:{' '}
-              {t(
-                `catalog.option.${selectedColorId}`,
-                product.colors.find((color) => color.id === selectedColorId)
-                  ?.name ?? product.colors[0]?.name,
-              )}
-            </h2>
-            <div className={s.colors}>
-              {product.colors.map((color) => (
-                <button
-                  className={clsx(
-                    s.colorButton,
-                    selectedColorId === color.id && s.colorActive,
-                  )}
-                  key={color.id}
-                  type="button"
-                  style={{ backgroundColor: color.value }}
-                  aria-label={t(`catalog.option.${color.id}`, color.name)}
-                  aria-pressed={selectedColorId === color.id}
-                  onClick={() => setSelectedColorId(color.id)}
-                />
-              ))}
+          {product.colors.length > 0 ? (
+            <div className={s.optionGroup}>
+              <h2>
+                {t('common.color')}:{' '}
+                {t(
+                  `catalog.option.${selectedColorId}`,
+                  product.colors.find((color) => color.id === selectedColorId)
+                    ?.name ?? product.colors[0]?.name,
+                )}
+              </h2>
+              <div className={s.colors}>
+                {product.colors.map((color) => (
+                  <button
+                    className={clsx(
+                      s.colorButton,
+                      selectedColorId === color.id && s.colorActive,
+                    )}
+                    key={color.id}
+                    type="button"
+                    style={{ backgroundColor: color.value }}
+                    title={t(`catalog.option.${color.id}`, color.name)}
+                    aria-label={t(`catalog.option.${color.id}`, color.name)}
+                    aria-pressed={selectedColorId === color.id}
+                    onClick={() => setSelectedColorId(color.id)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </>
       )}
 
-      <div className={s.cartRow}>
-        {cartItem && quantityInCart > 0 ? (
-          <CartQuantityControl
-            className={s.quantity}
-            disabled={product.isSoldOut}
-            increaseDisabled={isCartQuantityStockReached}
-            itemId={cartItem.id}
-            quantity={quantityInCart}
-          />
-        ) : (
-          <QuantityControl
-            className={s.quantity}
-            decreaseDisabled={quantity <= 1}
-            increaseDisabled={isInitialQuantityStockReached}
-            quantity={quantity}
-            onDecrease={() =>
-              setQuantity((current) => Math.max(1, current - 1))
-            }
-            onIncrease={() =>
-              setQuantity((current) =>
-                hasStockLimit ? Math.min(current + 1, product.stock!) : current + 1,
-              )
-            }
-          />
-        )}
+      {isAuth && (
+        <div className={s.cartRow}>
+          {cartItem && quantityInCart > 0 ? (
+            <CartQuantityControl
+              className={s.quantity}
+              disabled={product.isSoldOut}
+              increaseDisabled={isCartQuantityStockReached}
+              itemId={cartItem.id}
+              quantity={quantityInCart}
+            />
+          ) : (
+            <QuantityControl
+              className={s.quantity}
+              decreaseDisabled={quantity <= 1}
+              increaseDisabled={isInitialQuantityStockReached}
+              quantity={quantity}
+              onDecrease={() =>
+                setQuantity((current) => Math.max(1, current - 1))
+              }
+              onIncrease={() =>
+                setQuantity((current) =>
+                  hasStockLimit ? Math.min(current + 1, product.stock!) : current + 1,
+                )
+              }
+            />
+          )}
 
-        <button
-          className={s.cartButton}
-          disabled={
-            !canAddToCart ||
-            isAddingToCart ||
-            (hasStockLimit && quantityInCart + quantity > product.stock!)
-          }
-          onClick={addProductToCart}
-          type="button"
-        >
-          {isAddingToCart ? <Spinner size="sm" /> : t('catalog.addToCart')}
-        </button>
-      </div>
+          <button
+            className={s.cartButton}
+            disabled={
+              !canAddToCart ||
+              isAddingToCart ||
+              (hasStockLimit && quantityInCart + quantity > product.stock!)
+            }
+            onClick={addProductToCart}
+            type="button"
+          >
+            {isAddingToCart ? <Spinner size="sm" /> : t('catalog.addToCart')}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

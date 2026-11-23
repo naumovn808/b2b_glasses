@@ -94,6 +94,20 @@
   line-height: 1.45;
 }
 
+.forgotPasswordLink {
+  display: block;
+  color: #ffc516;
+  text-align: center;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  margin-top: -0.2rem;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
 @media (max-width: 900px) {
   .form {
     padding: 1.4rem;

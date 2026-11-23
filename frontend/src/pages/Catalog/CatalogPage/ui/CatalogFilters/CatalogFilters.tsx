@@ -121,6 +121,7 @@ export function CatalogFilters({
                     key={option.id}
                     type="button"
                     style={{ backgroundColor: option.value }}
+                    title={t(`catalog.option.${option.id}`, option.label)}
                     aria-label={t(`catalog.option.${option.id}`, option.label)}
                     aria-pressed={isFilterActive(
                       activeFilters,

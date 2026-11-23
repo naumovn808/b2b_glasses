@@ -142,7 +142,20 @@ class LoginView(APIView):
             token, created = Token.objects.get_or_create(user=user)
             logger.info(
                 f"Успешный вход: Пользователь {user.username} вошел через браузер.")
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            company_name = user.company.name if getattr(user, 'company', None) else None
+            return Response({
+                'token': token.key,
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'first_name': user.first_name or '',
+                    'last_name': user.last_name or '',
+                    'company': company_name,
+                    'phone_number': user.phone_number or '',
+                    'telegram_username': user.telegram_username or '',
+                    'email': user.email or '',
+                }
+            }, status=status.HTTP_200_OK)
 
         logger.warning(
             f"Неудачный вход (Ошибка 401): Неверные учетные данные для логина '{login}'.")
@@ -150,3 +163,27 @@ class LoginView(APIView):
             {"error": "Неверные учетные данные"},
             status=status.HTTP_401_UNAUTHORIZED
         )
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        tags=['Auth (Авторизация)'],
+        operation_summary="Получить профиль текущего пользователя",
+        responses={200: "Данные профиля", 401: "Не авторизован"}
+    )
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        company_name = user.company.name if getattr(user, 'company', None) else None
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "first_name": user.first_name or "",
+            "last_name": user.last_name or "",
+            "company": company_name,
+            "phone_number": user.phone_number or "",
+            "telegram_username": user.telegram_username or "",
+            "email": user.email or "",
+        }, status=status.HTTP_200_OK)
+

@@ -32,5 +32,5 @@ export function selectCartItemById(state: CartRootState, itemId: string) {
 }
 
 export function formatCartPrice(price: number) {
-  return `${price.toFixed(2)}Р`;
+  return `$${price.toFixed(2)}`;
 }

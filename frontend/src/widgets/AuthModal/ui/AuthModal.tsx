@@ -91,6 +91,16 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {isLoading ? t('auth.loading') : t('auth.submit')}
         </button>
 
+        {/* FORGOT PASSWORD */}
+        <a
+          className={s.forgotPasswordLink}
+          href="https://t.me/glasses_uz_test_bot?start=reset_password"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('auth.forgotPassword')}
+        </a>
+
         {/* AGREEMENT */}
         <p className={s.agreement}>{t('auth.agreement')}</p>
       </form>

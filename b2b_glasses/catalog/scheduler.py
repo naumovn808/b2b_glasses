@@ -41,11 +41,9 @@ def smart_import_job():
 
     # 2. Пытаемся запустить импорт
     try:
-        logger.info("[Smart Import] Запуск команды импорта...")
+        logger.info("[Smart Import] Запуск команды REST-синхронизации с 1С...")
 
-        # Запускаем твою команду (имя файла из tree.txt)
-        call_command("import_1c_xml")
-        # call_command("import_1c_users") № убрано временно
+        call_command("import_1c_rest")
 
         # 3. Если команда выполнилась без ошибок — обновляем время успеха
         logger.info("[Smart Import] Импорт завершен успешно.")

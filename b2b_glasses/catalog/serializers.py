@@ -122,6 +122,7 @@ class LensSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Lens
         fields = (
-            'id', 'id_1c', 'series', 'sph', 'cyl', 'dia', 'price', 'stock',
+            'id', 'id_1c', 'name', 'sku', 'barcode', 'series',
+            'sph', 'cyl', 'dia', 'price', 'stock',
             'colors', 'images',
         )

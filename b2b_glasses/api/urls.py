@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from . import views
+from . import views, webhooks
 
 # Импорты для Swagger
 from rest_framework import permissions
@@ -33,8 +33,15 @@ urlpatterns = [
     # --- ЭТИ ПУТИ ОСТАЮТСЯ ---
     path('auth/set-password/', views.SetPasswordView.as_view(), name='set-password'),
     path('auth/login/', views.LoginView.as_view(), name='api-token-auth'),
+    path('auth/me/', views.UserProfileView.as_view(), name='user-profile'),
     path('internal/check-status/', views.CheckUserStatusView.as_view(),
          name='internal-check-status'),
+
+    # --- ВЕБХУКИ ОТ 1С ---
+    path('webhooks/1c/stocks/', webhooks.OneCStocksWebhookView.as_view(),
+         name='webhook-1c-stocks'),
+    path('webhooks/1c/customers/', webhooks.OneCCustomersWebhookView.as_view(),
+         name='webhook-1c-customers'),
 
     # --- 2. НАША ДОКУМЕНТАЦИЯ (SWAGGER) ---
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',

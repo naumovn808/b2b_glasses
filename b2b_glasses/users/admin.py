@@ -129,8 +129,9 @@ class UserInline(admin.TabularInline):
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_at')
-    search_fields = ('name',)
+    list_display = ('name', 'external_id', 'inn', 'is_active', 'created_at')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'external_id', 'inn', 'partner_name', 'head_partner_name')
     inlines = [UserInline]
 
 

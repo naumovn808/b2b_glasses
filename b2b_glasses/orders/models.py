@@ -32,6 +32,19 @@ class Order(models.Model):
     total_price = models.DecimalField(
         max_digits=12, decimal_places=2, default=0, verbose_name="Итоговая цена"
     )
+    id_1c = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        db_index=True,
+        verbose_name="ID заказа в 1С",
+    )
+    doc_number_1c = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Номер документа в 1С",
+    )
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(

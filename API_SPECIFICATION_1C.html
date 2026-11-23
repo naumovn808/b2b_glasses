@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Спецификация REST API для интеграции 1С и B2B-платформы</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --border: #334155;
+      --code-bg: #090d16;
+      --accent: #10b981;
+      --tag-get: #0ea5e9;
+      --tag-post: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 15px;
+    }
+
+    .print-btn {
+      background: var(--primary);
+      color: #041226;
+      font-weight: 600;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .print-btn:hover { background: var(--primary-hover); color: #fff; }
+
+    h2 {
+      font-size: 20px;
+      margin: 32px 0 16px;
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+      padding-left: 12px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 20px 0 10px;
+      color: #e2e8f0;
+    }
+
+    p, ul {
+      margin-bottom: 16px;
+      color: #cbd5e1;
+      font-size: 15px;
+    }
+
+    ul { padding-left: 24px; }
+    li { margin-bottom: 6px; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .endpoint-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f172a;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .method {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #fff;
+    }
+    .method.get { background-color: var(--tag-get); }
+    .method.post { background-color: var(--tag-post); }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    td code {
+      background: rgba(56, 189, 248, 0.1);
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    .badge-yes {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .badge-no {
+      color: #94a3b8;
+    }
+
+    .highlight-box {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 4px solid var(--primary);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #e2e8f0;
+    }
+
+    @media print {
+      body { background: #fff; color: #1e293b; padding: 0; }
+      .print-btn { display: none; }
+      .card { border: 1px solid #cbd5e1; background: #fff; page-break-inside: avoid; }
+      pre { background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; }
+      h2 { color: #0284c7; border-color: #0284c7; }
+      th { background: #f1f5f9; color: #475569; }
+      td, th { border-bottom: 1px solid #e2e8f0; }
+      td code { background: #f1f5f9; color: #0369a1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>Спецификация REST API для 1С (Luxury Optic)</h1>
+      <p class="subtitle">Интеграция каталога оправ, очковых линз, контрагентов и выгрузки заказов</p>
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      🖨️ Печать / Сохранить в PDF
+    </button>
+  </header>
+
+  <div class="card">
+    <h2>1. Архитектурный подход</h2>
+    <p>Используется комбинированная <strong>Pull + Push (Webhook)</strong> модель взаимодействия в реальном времени без перегрузки 1С и сайта:</p>
+    <ul>
+      <li><strong>Каталог (оправы и линзы — полная сверка):</strong> 1С публикует HTTP-сервис (REST API), сайт обращается к нему по расписанию (Pull-модель).</li>
+      <li><strong>Точечное обновление остатков и цен в реал-тайме (Webhook от 1С &rarr; Сайт):</strong> При проведении заказа, продаже или оприходовании в 1С — 1С отправляет <code>POST /api/v1/webhooks/1c/stocks/</code> на сайт со списком только изменившихся товаров (<code>id_1c</code>), чтобы сайт мгновенно обновил остатки без тяжёлого полного GET-запроса.</li>
+      <li><strong>Контрагенты (Webhook от 1С &rarr; Сайт + резервный Pull):</strong> При создании/изменении контрагента 1С сразу отправляет вебхук <code>POST /api/v1/webhooks/1c/customers/</code> на сайт для моментальной регистрации клиента (плюс остаётся резервный <code>GET /api/v1/customers</code>).</li>
+      <li><strong>Заказы и защита от нулевых остатков (Push от Сайта &rarr; 1С):</strong> Сайт блокирует добавление в корзину и оформление товаров с <code>stock &le; 0</code> или при превышении остатка. При оформлении сайт отправляет <code>POST /api/v1/orders</code> в 1С, а 1С резервирует товар и возвращает актуальные остатки (либо ошибку <code>422 PRODUCT_OUT_OF_STOCK</code> с актуальными остатками).</li>
+    </ul>
+    <div class="highlight-box">
+      <strong>Общие требования:</strong> Формат данных — <code>JSON (UTF-8)</code>. Авторизация (двусторонняя) — <code>Authorization: Bearer &lt;token&gt;</code> или Basic Auth. Даты в формате ISO 8601 (<code>YYYY-MM-DDTHH:MM:SS</code>). Валюта цен — <code>UZS</code>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. Каталог: Оправы</h2>
+    <div class="endpoint-badge">
+      <span class="method get">GET</span>
+      <span>/api/v1/catalog/frames</span>
+    </div>
+    <p>Возвращает актуальный каталог оправ со всеми характеристиками, размерами, цветами, ценами и остатками.</p>
+
+    <h3>Пример ответа от 1С:</h3>
+<pre>{
+  "count": 1250,
+  "items": [
+    {
+      "id_1c": "1dc92560-58c0-11f0-b0e4-ee81ce5b1c14",
+      "sku": "DPAA121C71 44-35,3-17-120",
+      "name": "OPAL Disney Frozens DPAA121C71 44-35,3-17-120",
+      "barcode": "4601234567890",
+      "brand": "OPAL Disney",
+      "price": 420000.00,
+      "stock": 14,
+      "properties": {
+        "gender": "Детский",
+        "age_group": "Детский",
+        "material": "Пластик",
+        "shape": "Овальные",
+        "frame_type": "Ободковая",
+        "colors": [
+          "Розовый глянец",
+          "Голубой"
+        ],
+        "sizes": {
+          "size_a": 44.0,
+          "size_b": 35.3,
+          "size_d": 17.0,
+          "size_temple": 120.0
+        }
+      },
+      "images": [
+        "https://domain.com/media/products/dpaa121_front.jpg",
+        "https://domain.com/media/products/dpaa121_side.jpg"
+      ]
+    }
+  ]
+}</pre>
+
+    <h3>Таблица параметров оправ:</h3>
+    <table>
+      <thead>
+        <tr><th>Поле</th><th>Тип</th><th>Обяз.</th><th>Описание</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id_1c</code></td><td>string (UUID)</td><td class="badge-yes">Да</td><td>Уникальный GUID номенклатуры в 1С</td></tr>
+        <tr><td><code>sku</code></td><td>string</td><td class="badge-yes">Да</td><td>Артикул оправы</td></tr>
+        <tr><td><code>name</code></td><td>string</td><td class="badge-yes">Да</td><td>Наименование товара</td></tr>
+        <tr><td><code>barcode</code></td><td>string</td><td class="badge-no">Нет</td><td>Штрихкод</td></tr>
+        <tr><td><code>brand</code></td><td>string</td><td class="badge-no">Нет</td><td>Изготовитель / Бренд</td></tr>
+        <tr><td><code>price</code></td><td>number</td><td class="badge-yes">Да</td><td>Текущая цена в UZS</td></tr>
+        <tr><td><code>stock</code></td><td>integer</td><td class="badge-yes">Да</td><td>Остаток на складе</td></tr>
+        <tr><td><code>properties.gender</code></td><td>string</td><td class="badge-no">Нет</td><td>Пол (Мужской, Женский, Унисекс, Детский)</td></tr>
+        <tr><td><code>properties.age_group</code></td><td>string</td><td class="badge-no">Нет</td><td>Возраст (Взрослый, Детский)</td></tr>
+        <tr><td><code>properties.material</code></td><td>string</td><td class="badge-no">Нет</td><td>Материал (Пластик, Металл, Титан)</td></tr>
+        <tr><td><code>properties.shape</code></td><td>string</td><td class="badge-no">Нет</td><td>Форма оправы</td></tr>
+        <tr><td><code>properties.frame_type</code></td><td>string</td><td class="badge-no">Нет</td><td>Тип (Ободковая, Полуободковая, Безободковая)</td></tr>
+        <tr><td><code>properties.colors</code></td><td>array[string]</td><td class="badge-no">Нет</td><td>Список доступных названий цветов</td></tr>
+        <tr><td><code>properties.sizes</code></td><td>object</td><td class="badge-no">Нет</td><td>Размеры: линза A, высота B, мост D, заушник temple</td></tr>
+        <tr><td><code>images</code></td><td>array[string]</td><td class="badge-no">Нет</td><td>Массив прямых URL фото товара</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>3. Каталог: Очковые линзы</h2>
+    <div class="endpoint-badge">
+      <span class="method get">GET</span>
+      <span>/api/v1/catalog/lenses</span>
+    </div>
+    <div class="highlight-box">
+      <strong>Важно:</strong> В старом XML оптические параметры парсились из текста наименования регулярными выражениями. В REST API 1С должна отдавать их <strong>отдельными полями</strong> (<code>series</code>, <code>sph</code>, <code>cyl</code>, <code>dia</code>), что исключит любые ошибки. Также линзы на сайте поддерживают <strong>цвета</strong> (для тонированных/фотохромных линз) и <strong>фотографии</strong>.
+    </div>
+
+    <h3>Пример ответа от 1С:</h3>
+<pre>{
+  "count": 4800,
+  "items": [
+    {
+      "id_1c": "3c84636c-099c-11f0-96ec-d85ed3a775a0#e3e35f25-9dcc-11e5-8146-001e676d277d",
+      "sku": "UN-150-CLAR",
+      "barcode": "4609876543210",
+      "name": "Unor 150 Clar's Бесцветная Прозрачная (+0.00 cyl +0.25 D.70)",
+      "series": "Unor 150 Clar's",
+      "sph": "+0.00",
+      "cyl": "+0.25",
+      "dia": 70,
+      "price": 180000.00,
+      "stock": 25,
+      "colors": [
+        "Бесцветная Прозрачная"
+      ],
+      "properties": {
+        "index": "1.50",
+        "coating": "Clar's"
+      },
+      "images": [
+        "https://domain.com/media/lenses/unor_150.jpg"
+      ]
+    },
+    {
+      "id_1c": "2fc8123a-58c0-11f0-b0e4-ee81ce5b1c14",
+      "sku": "ESS-TRIO-200",
+      "barcode": "",
+      "name": "Essilor 1.56 Trio (+2.00 cyl -0.50 D.70)",
+      "series": "Essilor 1.56 Trio",
+      "sph": "+2.00",
+      "cyl": "-0.50",
+      "dia": 70,
+      "price": 240000.00,
+      "stock": 10,
+      "colors": [
+        "Прозрачный"
+      ],
+      "properties": {
+        "index": "1.56",
+        "coating": "Trio"
+      },
+      "images": []
+    }
+  ]
+}</pre>
+
+    <h3>Таблица параметров линз:</h3>
+    <table>
+      <thead>
+        <tr><th>Поле</th><th>Тип</th><th>Обяз.</th><th>Описание</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id_1c</code></td><td>string</td><td class="badge-yes">Да</td><td>Уникальный GUID номенклатуры / характеристики в 1С</td></tr>
+        <tr><td><code>name</code></td><td>string</td><td class="badge-yes">Да</td><td>Полное наименование номенклатуры</td></tr>
+        <tr><td><code>series</code></td><td>string</td><td class="badge-yes">Да</td><td>Серия / линейка линзы</td></tr>
+        <tr><td><code>sph</code></td><td>string / number</td><td class="badge-yes">Да</td><td>Сфера со знаком (напр. <code>"+2.00"</code>, <code>"-1.50"</code>)</td></tr>
+        <tr><td><code>cyl</code></td><td>string / number</td><td class="badge-yes">Да</td><td>Цилиндр со знаком (напр. <code>"-0.50"</code>, или <code>"0.00"</code>)</td></tr>
+        <tr><td><code>dia</code></td><td>integer</td><td class="badge-yes">Да</td><td>Диаметр линзы (напр. <code>65</code>, <code>70</code>)</td></tr>
+        <tr><td><code>price</code></td><td>number</td><td class="badge-yes">Да</td><td>Цена за штуку (UZS)</td></tr>
+        <tr><td><code>stock</code></td><td>integer</td><td class="badge-yes">Да</td><td>Доступный остаток</td></tr>
+        <tr><td><code>sku</code></td><td>string</td><td class="badge-no">Нет</td><td>Артикул линзы</td></tr>
+        <tr><td><code>barcode</code></td><td>string</td><td class="badge-no">Нет</td><td>Штрихкод линзы</td></tr>
+        <tr><td><code>colors</code></td><td>array[string]</td><td class="badge-no">Нет</td><td>Цвет линзы (для солнцезащитных/тонированных линз)</td></tr>
+        <tr><td><code>properties.index</code></td><td>string</td><td class="badge-no">Нет</td><td>Индекс преломления (1.50, 1.56, 1.61, 1.67)</td></tr>
+        <tr><td><code>properties.coating</code></td><td>string</td><td class="badge-no">Нет</td><td>Покрытие линзы (Clar's, Trio, Crizal и др.)</td></tr>
+        <tr><td><code>images</code></td><td>array[string]</td><td class="badge-no">Нет</td><td>Ссылки на изображения товара</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>4. Контрагенты (Клиенты B2B — Вебхук + Сверка)</h2>
+    <p>Для моментальной регистрации новых клиентов в B2B-кабинете и Telegram-боте используется реал-тайм вебхук от 1С к сайту, дополненный периодическим <code>GET</code>-запросом.</p>
+
+    <h3>4.1. Вебхук от 1С при создании/изменении контрагента (1С &rarr; Сайт):</h3>
+    <div class="endpoint-badge">
+      <span class="method post">POST</span>
+      <span>/api/v1/webhooks/1c/customers/</span>
+    </div>
+    <p>Вызывается 1С автоматически при записи нового контрагента или изменении его контактных данных.</p>
+<pre>{
+  "items": [
+    {
+      "id_1c": "7ea8102b-11c2-4a01-99ee-ab012845c110",
+      "company_name": "ООО «Optic Grand Tashkent»",
+      "inn": "123456789",
+      "is_active": true,
+      "contact_person": {
+        "full_name": "Азизов Азиз Азизович",
+        "first_name": "Азиз",
+        "last_name": "Азизов",
+        "phone": "+998901234567",
+        "email": "aziz@opticgrand.uz"
+      }
+    }
+  ]
+}</pre>
+    <h3>Ответ сайта (HTTP 200 OK):</h3>
+<pre>{
+  "status": "success",
+  "processed": 1,
+  "results": [
+    {
+      "id_1c": "7ea8102b-11c2-4a01-99ee-ab012845c110",
+      "company_id_site": 12,
+      "user_id_site": 15,
+      "telegram_link_token": "c4f1d2e3-88a1-4b2c-9f00-112233445566"
+    }
+  ]
+}</pre>
+
+    <h3>4.2. Периодическая сверка контрагентов (Сайт &rarr; 1С):</h3>
+    <div class="endpoint-badge">
+      <span class="method get">GET</span>
+      <span>/api/v1/customers</span>
+    </div>
+    <p>Возвращает полный список активных контрагентов в том же формате <code>{"items": [...]}</code> для фоновой сверки.</p>
+  </div>
+
+  <div class="card">
+    <h2>5. Выгрузка заказов в 1С и контроль остатков</h2>
+    <div class="endpoint-badge">
+      <span class="method post">POST</span>
+      <span>/api/v1/orders</span>
+    </div>
+    <div class="highlight-box">
+      <strong>Защита от заказов при отсутствии остатков:</strong> Сайт проверяет <code>stock &gt; 0</code> и <code>quantity &le; stock</code> при добавлении в корзину и оформлении. В момент оформления сайт синхронно отправляет заказ в 1С. 1С проверяет остатки, проводит заказ и возвращает обновлённые остатки по позициям в массиве <code>updated_stocks</code> (либо возвращает <code>422 PRODUCT_OUT_OF_STOCK</code> с актуальными остатками, чтобы сайт сразу обновил их у себя и не пропустил заказ).
+    </div>
+
+    <h3>Тело запроса от сайта к 1С:</h3>
+<pre>{
+  "order_id": 482,
+  "order_number": "Т00482",
+  "created_at": "2026-10-25T14:30:00",
+  "currency": "UZS",
+  "total_price": 1020000.00,
+  "comment": "Заказ #482 от пользователя +998901234567",
+  "customer": {
+    "user_id_site": 15,
+    "company_id_1c": "7ea8102b-11c2-4a01-99ee-ab012845c110",
+    "company_name": "ООО «Optic Grand Tashkent»",
+    "contact_name": "Азиз Азизов",
+    "phone": "+998901234567",
+    "email": "aziz@opticgrand.uz"
+  },
+  "items": [
+    {
+      "id_1c": "1dc92560-58c0-11f0-b0e4-ee81ce5b1c14",
+      "sku": "DPAA121C71 44-35,3-17-120",
+      "name": "OPAL Disney Frozens DPAA121C71 44-35,3-17-120",
+      "category_type": "Оправы",
+      "unit": "шт",
+      "unit_code": "796",
+      "quantity": 2,
+      "price": 420000.00,
+      "total_price": 840000.00
+    },
+    {
+      "id_1c": "2fc8123a-58c0-11f0-b0e4-ee81ce5b1c14",
+      "sku": "ESS-TRIO-200",
+      "name": "Essilor 1.56 Trio (+2.00 cyl -0.50 D.70)",
+      "category_type": "Очковые линзы",
+      "unit": "шт",
+      "unit_code": "796",
+      "quantity": 1,
+      "price": 180000.00,
+      "total_price": 180000.00
+    }
+  ]
+}</pre>
+
+    <h3>Ответ 1С (Успешно — HTTP 200/201):</h3>
+<pre>{
+  "status": "success",
+  "order_id_site": 482,
+  "order_id_1c": "9ba12345-58c0-11f0-b0e4-ee81ce5b1c14",
+  "doc_number_1c": "ЗК-0000482",
+  "message": "Заказ успешно создан и проведен",
+  "updated_stocks": [
+    {
+      "id_1c": "1dc92560-58c0-11f0-b0e4-ee81ce5b1c14",
+      "stock": 12
+    },
+    {
+      "id_1c": "2fc8123a-58c0-11f0-b0e4-ee81ce5b1c14",
+      "stock": 9
+    }
+  ]
+}</pre>
+
+    <h3>Ответ 1С при нехватке остатка (HTTP 422 Unprocessable Entity):</h3>
+<pre>{
+  "status": "error",
+  "order_id_site": 482,
+  "error_code": "PRODUCT_OUT_OF_STOCK",
+  "message": "Недостаточно остатка по ряду позиций",
+  "updated_stocks": [
+    {
+      "id_1c": "1dc92560-58c0-11f0-b0e4-ee81ce5b1c14",
+      "requested": 2,
+      "stock": 0
+    }
+  ]
+}</pre>
+  </div>
+
+  <div class="card">
+    <h2>6. Вебхук от 1С: Точечное обновление остатков и цен в реал-тайме</h2>
+    <div class="endpoint-badge">
+      <span class="method post">POST</span>
+      <span>/api/v1/webhooks/1c/stocks/</span>
+    </div>
+    <p>Вызывается 1С при проведении заказа, офлайн-продаже, списании или оприходовании. Передаёт только изменившиеся позиции (<code>id_1c</code>), чтобы сайт мгновенно обновил остатки без тяжёлого полного GET-запроса всего каталога.</p>
+
+    <h3>Тело запроса от 1С к сайту:</h3>
+<pre>{
+  "reason": "order_created",
+  "items": [
+    {
+      "id_1c": "1dc92560-58c0-11f0-b0e4-ee81ce5b1c14",
+      "stock": 12,
+      "price": 420000.00
+    },
+    {
+      "id_1c": "3c84636c-099c-11f0-96ec-d85ed3a775a0#e3e35f25-9dcc-11e5-8146-001e676d277d",
+      "stock": 0
+    }
+  ]
+}</pre>
+
+    <h3>Ответ сайта (HTTP 200 OK):</h3>
+<pre>{
+  "status": "success",
+  "updated_frames": 1,
+  "updated_lenses": 1,
+  "not_found": []
+}</pre>
+  </div>
+</div>
+
+</body>
+</html>
